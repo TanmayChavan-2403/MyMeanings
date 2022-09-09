@@ -1,5 +1,7 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
+# 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
+
 # dependencies
 /node_modules
 /.pnp
@@ -21,3 +23,9 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+
+.firebaserc
+.gitignore
+firebase.json
+package-lock.json
