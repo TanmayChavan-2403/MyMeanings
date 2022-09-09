@@ -1,0 +1,179 @@
+#listContainer{
+	width: 100%;
+	height: 75%;
+	overflow: scroll;
+}
+
+
+
+
+.newTask{
+	width: 100%;
+	height: 10%;
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: center;
+	
+}
+
+#newTaskBtn{
+	color: white;
+	border: none;
+	display: flex;
+	cursor: pointer;
+	flex-wrap: wrap;
+	font-size: 1rem;
+	font-weight: 500;
+	padding: 7px 20px;
+	align-items: center;
+	border-radius: 50px;
+	justify-content: center;
+	background-color: #6A5ACD;
+}
+
+#newTaskBtn p{
+	margin: 0px 4px;
+}
+
+
+
+
+
+
+#list{
+	width: 100%;
+	display: flex;
+	min-height: 55px;
+	align-items: center;
+	justify-content: space-between;
+	
+}
+
+.checkBox{
+	height: 55px;
+	display: flex;
+	padding: 0px 4px;
+	align-items: center;
+	justify-content: center;
+}
+
+.radioBtn{
+	width: 22px;
+	height: 22px;
+	cursor: pointer;
+	border: 1px solid white;
+}
+
+.radioBtn img{
+	width: 100%;
+	height: 100%;
+}
+
+.meaning{
+	width: 77%;
+	padding: 5px;
+	color: white;
+	display: flex;
+	align-items: center;
+	min-height: inherit;
+}
+
+.tag{
+	height: 55px;
+	display: flex;
+	padding-right: 5px;
+	min-width: 79.86px;
+	width: fit-content;
+	align-items: center;
+	justify-content: center;
+}	
+
+.tagName{
+	cursor: pointer;
+	font-weight: 700;
+	padding: 2px 12px;
+	width: fit-content;
+	border-radius: 50px;
+	background-color: #6AB8FF;
+}
+
+.pin{
+	height: 55px;
+	display: flex;
+	min-width: 55px;
+	padding: 0px 5px;
+	align-items: center;
+	justify-content: center;
+}
+
+.pin img{
+	width: 24px;
+	height: 24px;
+	cursor: pointer;
+}
+
+.menuList{
+	top: 45%;
+	right: 105%;
+	width: 110px;
+	height: 0px;
+	overflow: hidden;
+	transition: 0.1s;
+	position: absolute;
+	/*border-radius: 5px;*/
+	/*background-color: #474747;*/
+	background-color: white;
+}
+
+.menuList ul{
+	width: 100%;
+	height: 100%;
+	list-style: none;
+}
+
+.menuList ul li{
+	width: 100%;
+	height: 50%;
+	/*color: white;*/
+	display: flex;
+	cursor: pointer;
+	align-items: center;
+}
+
+.menuList ul li:hover{
+	background-color: #e6e3e3;
+}
+
+.menuList ul li img{
+	width: 15px;
+	height: 15px;
+	margin: 0px 3px;
+}
+
+.menu{
+	height: 55px;
+	display: flex;
+	min-width: 55px;
+	padding: 0px 5px;
+	position: relative;
+	align-items: center;
+	justify-content: center;
+}
+
+.menu img{
+	width: 24px;
+	height: 24px;
+	cursor: pointer;
+}
+
+
+@media (max-width:  950px){
+	.menu{
+		min-width:  fit-content !important;
+	}
+	.pin{
+		min-width: 36px;
+		padding: 5px;
+	}
+}

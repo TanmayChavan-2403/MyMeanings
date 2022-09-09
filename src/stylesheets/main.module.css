@@ -1,0 +1,300 @@
+*{
+    padding: 0px;
+    margin: 0px;
+    box-sizing: border-box;
+    /*border: 1px solid red;*/
+    font-family: 'Poppins', sans-serif;
+}
+
+#OuterWrapper{
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    background-color: #242424;
+    /* border: 2px solid white; */
+}
+
+#InnerWrapper{
+    width: 100%;
+    height: 88%;
+    max-height: 800px;
+    max-width: 1100px;
+    /* border: 1px dashed lightblue; */
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#taskBgSupport{
+    top: 0px;
+    width: 100%;
+    height: 100%;
+    display: none;
+    position: absolute;
+    align-items: center;
+    transform: scale(0);
+    transition: 2 ease-in;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.7);
+}
+
+#taskContainer{
+    width: 50%;
+    /*height: 50%;*/
+    background-color: #242424;
+}
+
+.closeBtnContainer{
+    width: 100%;
+    height: 38px;
+    margin-bottom: 10px;
+    /*border: 1px solid white;*/
+}
+
+.closeBtnContainer img{
+    height: 100%;
+    float: right;
+    cursor: pointer;
+}
+
+.inputContainer{
+    width: 100%;
+    height: 20%;
+    display: flex;
+    margin: 10px 0px;
+    align-items: center;
+    justify-content: center;
+    /*border: 1px solid white;*/
+}
+
+.inputContainer input{
+    height: 40px;
+    color: white;
+    outline: none;
+    padding: 0px 15px;
+    margin: 5px 5px;
+    border: 1px solid white;
+    background-color: #242424;
+}
+
+.inputContainer input::placeholder{
+    opacity: 0.8;
+}
+
+.inputContainer input:nth-child(1){
+    width: 30%;
+}
+.inputContainer input:nth-child(2){
+    width: 60%;
+}
+
+.settings{
+    width: 100%;
+    display: flex;
+    padding: 7px 0px;
+    margin: 10px 0px;
+    align-items: center;
+    justify-content: center;
+}
+
+.folderSelection{
+    width: 60%;
+    height: 40px;
+    margin: 5px 5px;
+    position: relative;
+}
+
+.folderName{
+    width: 100%;
+    height: 99%;
+    color: white;
+    display: flex;
+    padding: 0.8rem;
+    cursor: pointer;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #808080;
+}
+
+.arrowIcon{
+    transition: 0.4s;
+    pointer-events: none;
+}
+
+.folderList{
+    width: 100%;
+    height: 0px;
+    overflow: scroll;
+    max-height: 140px;
+    position: absolute;
+    transition: 0.2s ease-in-out;
+    background-color: #3b3b3b;
+}
+
+.folderList ul{
+    width: 100%;
+    height: 100%;
+    list-style: none;
+    /*border: 1px solid white;*/
+}
+
+.folderList ul li{
+    width: 100%;
+    height: 30%;
+    color: white;
+    display: flex;
+    cursor: pointer;
+    padding: 0px 15px;
+    align-items: center;
+    border-bottom: 1px solid white;
+}
+
+.folderList ul li input{
+    width: 90%;
+    height: 100%;
+    border: none;
+    outline: none;
+    color: white;
+    background-color: inherit;
+}
+
+.folderList ul li input::placeholder{
+    opacity: 1;
+}
+
+#enter{
+    height: 70%;
+    border-radius: 50%;
+    background-color: white;
+}
+
+.pin{
+    width: 30%;
+    height: 40px;
+    display: flex;
+    margin: 5px 5px;
+    align-items: center;
+    border: 1px solid white;
+    justify-content: left;
+}
+
+.pin p{
+    display: flex;
+    color: white;
+    margin: 0px 5px;
+    padding: 0px 5px;
+    width: fit-content;
+    align-items: center;
+}
+
+.radioButton{
+    width: 20px;
+    height: 20px;
+    margin: 0px 5px;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 50%;
+    border: 1px solid white;
+}
+
+.radioButton:nth-child(2){
+    border: 1px solid red;
+}
+
+.radioButton:nth-child(3){
+    border: 1px solid green;
+}
+
+.radioButton div{
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+}
+
+
+.submitBtnContainer{
+    width: 100%;
+    height: 40px;
+    display: flex;
+    margin: 10px 0px;
+    justify-content: center;
+}
+
+#submit{
+    height: 100%;
+    border: none;
+    color: white;
+    cursor: pointer;
+    font-weight: 700;
+    padding: 0px 1.2rem;
+    border-radius: 50px;
+    background-color: #6A5ACD;
+}
+
+
+
+
+@media (max-width: 800px){
+    #taskContainer{
+        width: 80%;
+        height: 50%;
+        background-color: #242424;
+    }
+    #InnerWrapper{
+        padding: 10px;
+    }
+}
+
+@media (max-width: 550px){
+    .inputContainer input{
+        width: 90% !important;
+    }
+
+    .inputContainer{
+        flex-direction: column;
+    }
+
+    .settings{
+        flex-direction: column;
+    }
+
+    .folderSelection, .pin{
+        width: 90%;
+        height: 40px;
+    }
+
+    /*.pin{
+        width: 90%;
+    }*/
+}

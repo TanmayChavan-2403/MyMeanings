@@ -1,0 +1,15 @@
+{
+  "short_name": "My Meanings",
+  "name": "MyMeanings-Created by dev TanmayChavan2403",
+  "icons": [
+    {
+      "src": "Logo.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#242424",
+  "background_color": "#242424"
+}

@@ -1,0 +1,144 @@
+import React, {useState, useEffect} from 'react';
+import ReactDOM from 'react-dom';
+import styles from "../stylesheets/main.module.css";
+import UpdateComponent from './updateComponent.js';
+import { storeDataInDb, getFolderInfo } from "../db/firebase.js";
+
+
+const AddNewTask = (props) => {
+	const [word, updateWord] = useState("");
+	const [pinned, updatePin] = useState(false);
+	const [meaning, updateMeaning] = useState("");
+	const [folderNames, updateFolderNames] = useState([]);
+	const [folderName, updateFolderName ] = useState("mix");
+	const [isNewfolder, updateisNewFolder] = useState(false);
+	
+
+	useEffect(() => {
+		getFolderInfo()
+		.then(data => updateFolderNames(data.names))
+		.catch(err => console.log(err))
+	}, [])
+
+	function toggleFolderList(e){
+		let list  = document.getElementsByClassName(`${styles.folderList}`)[0];
+		let image = document.getElementsByClassName(`${styles.arrowIcon}`)[0];
+		let state = list.getAttribute("data-state");
+		if (state == "close"){
+			image.style.transform = "rotate(180deg)";
+			list.style.height = "200px";
+			list.setAttribute("data-state", "open")	
+		} else {
+			list.style.height = "0px";
+			image.style.transform = "rotate(0deg)";
+			list.setAttribute("data-state", "close")
+		}
+	}
+
+
+	function submit(e){
+		if (word.length !== 0 && meaning.length !== 0 && folderName.length !== 0){
+			storeDataInDb({word, meaning, pinned, folderName, isNewfolder})
+			.then(resp => {
+				// RESETTING the default values of the input field
+				updateWord("");
+				updateMeaning("")
+				updatePin(false)
+				
+				props.pullDownModal(resp);
+				props.mountUnmount();
+				
+			})
+			.catch(err => props.pullDownModal(err))
+		} else {
+			props.pullDownModal("Please check all fields are filled properly");
+		}
+	}
+
+	document.onkeypress = (e) => {
+		if (e.charCode == 13){
+			submit();
+		}
+	}
+
+	function selectFolder(e=undefined, name=undefined){
+		if (name === "From Image"){
+			updateFolderName(e.target.previousSibling.value);
+			updateisNewFolder(true);
+			toggleFolderList();
+		}
+		else if (e && (e.code == "NumpadEnter" || e.code == "Enter")){
+			if (e.target.value.length !== 0){
+				console.log('Clicked 1');
+				updateFolderName(e.target.value);
+				updateisNewFolder(true);
+				toggleFolderList();
+			}
+		} else if(!e){
+			console.log(name);
+			updateFolderName(name);
+			updateisNewFolder(false);
+			toggleFolderList();	
+		}
+	}
+
+	return ReactDOM.createPortal(
+		<>
+			<div id={styles.taskBgSupport} data-status="close">
+				<div id={styles.taskContainer}>
+					<div className={styles.closeBtnContainer}>
+						<img onClick={props.mountUnmount} src="./icons/closeIcon.svg" />
+					</div>
+					<div className={styles.inputContainer}>
+						<input onChange={(e) => updateWord(e.target.value)} type="text" placeholder="word"/>
+						<input onChange={(e) => updateMeaning(e.target.value)} type="text" placeholder="meaning"/>
+					</div>
+					<div className={styles.settings}>
+						<div className={styles.pin} data-status="no">
+							<p>Pin?</p>
+							<div className={styles.radioButton} onClick={() => updatePin(false)}>
+								{!pinned ? 
+									<div style={{backgroundColor: 'red'}}></div> : 
+									<div style={{backgroundColor: '#242424'}}></div>
+								}
+							</div>
+							<div className={styles.radioButton} onClick={() => updatePin(true)}>
+								{pinned ? 
+									<div style={{backgroundColor: 'green'}}></div> : 
+									<div style={{backgroundColor: '#242424'}}></div>
+								}
+							</div>
+						</div>
+						<div className={styles.folderSelection}>
+							<div onClick={toggleFolderList} className={styles.folderName}>
+								<p styles={{pointerEvents: "none"}}> {folderName}</p>
+								<img className={styles.arrowIcon} src="./icons/downArrow.png" />
+							</div>
+							<div data-state="close" className={styles.folderList}>
+								<ul>
+									<li>
+									<input onKeyPress={selectFolder} placeholder="Create New [Type & hit enter]" />
+									<img onClick={(e) => selectFolder(e, "From Image")} id = {styles.enter}src="./icons/enterBlack.svg"></img>
+									</li>
+									{folderNames.map(folder => {
+										return(
+											<li key={folder} onClick={() => selectFolder("", folder)}>{folder}</li>
+										)
+									})}
+								</ul>
+							</div>
+						</div>
+					</div>
+					<div className={styles.submitBtnContainer}>
+						<button id={styles.submit} onClick={submit}>
+							Done
+						</button>
+					</div>
+				</div>
+			</div>
+		</>,
+		document.getElementById("portals")
+	)
+}
+
+export default UpdateComponent(AddNewTask);
