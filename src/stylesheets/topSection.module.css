@@ -8,7 +8,7 @@
     width: 100%;
     height: 11%;
     display: flex;
-    max-height: 75px;
+    /*max-height: 75px;*/
     align-items: center;
     justify-content: center;
     /* border: 1px solid white; */
@@ -97,12 +97,13 @@
     width: 100%;
     height: 10%;
     display: flex;
+    max-height: 80px;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
 }
 
 .searchBar{
-    width: 40%;
+    width: 30%;
     height: 70%;
     overflow: hidden;
     border-radius: 50px;
@@ -130,6 +131,18 @@
 }
 
 
+.notification{
+    height: 55px;
+    display: flex;
+    min-width: 55px;
+    align-items: center;
+    justify-content: center;
+}
+
+.notification img{
+    width: 60%;
+    cursor: pointer;
+}
 
 
 

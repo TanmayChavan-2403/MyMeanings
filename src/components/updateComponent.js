@@ -43,6 +43,7 @@ const UpdateComponent = OriginalComponent => {
 				mountUnmount={this.mountUnmount}
 				checkForToggleClearance = {this.props.checkForToggleClearance}
 				listTaggedAuthor = {this.props.listTaggedAuthor}
+				highLight = {this.props.highLight}
 			/>
 		}
 	}

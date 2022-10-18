@@ -1,8 +1,11 @@
+html {
+    scroll-behavior: smooth;
+}
+
 *{
     padding: 0px;
     margin: 0px;
     box-sizing: border-box;
-    /*border: 1px solid red;*/
     font-family: 'Poppins', sans-serif;
 }
 
@@ -11,20 +14,23 @@
     height: 100vh;
     display: flex;
     flex-wrap: wrap;
-    align-items: center;
     justify-content: center;
+    align-content: flex-start;
     background-color: #242424;
-    /* border: 2px solid white; */
 }
 
 #InnerWrapper{
     width: 100%;
     height: 88%;
-    max-height: 800px;
-    max-width: 1100px;
-    /* border: 1px dashed lightblue; */
+    padding: 0px 20px;
 }
 
+
+@media (max-width: 700px){
+   #InnerWrapper{
+        padding: 0px 5px;
+    } 
+}
 
 
 

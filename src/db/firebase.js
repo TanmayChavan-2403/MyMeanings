@@ -6,6 +6,47 @@ import app, { messaging } from "./CONFIG.js"
 
 const db = getFirestore(app);
 
+export function getStatus(){
+	return new Promise(async(resolve, reject) => {
+		const docRef = doc(db, 'subscriptions', 'status')
+		const docSnap = await getDoc(docRef)
+
+	 	if (docSnap.exists()) {
+			if (window.screen.width < 700){
+				resolve(docSnap.data()[1])
+			} else {
+				resolve(docSnap.data()[0])
+			}
+	 	} else {
+			// doc.data() will be undefined in this case
+			reject('Something went wrong in [getStatus]');
+	  	}
+	})
+}
+
+export async function storeSubscription(subscription, status, client='client2'){
+	if (window.screen.width < 700){
+		client = 'client2'
+	} else {
+		client = 'client1'
+	}
+	return new Promise((resolve, reject) => {
+		const docRef = doc(db, 'subscriptions', client)
+		const docRef2 = doc(db, 'subscriptions', 'status')
+		try{
+			setDoc(docRef, {
+				0: subscription
+			})
+			setDoc(docRef2, {
+				0: status
+			}, {merge: true})
+			resolve('Subscription URL saved to database Successfully!')
+		} catch(err) {
+			reject('Failed to save URL')
+		}
+	})
+}
+
 export async function getCollection(folder, tag=""){
 	let colRef;
 	if (tag.length !== 0){

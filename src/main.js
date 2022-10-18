@@ -1,9 +1,13 @@
-import React, { Component } from "react";
+import React, { Component, Suspense } from "react";
 import mainStyle from "./stylesheets/main.module.css"
 import Navbar, {StatusLine} from "./components/topSection";
 import { SearchBar,Modal } from "./components/topSection";
-import Newtask, { ListContainer } from "./components/bottomSection";
+import Newtask from "./components/bottomSection";
 import AddNewTask from "./components/newTask.js";
+import Fallback from './components/fallbackComp.js'
+import ErrorBoundary from './components/ErrorBoundary.js';
+const ListContainer = React.lazy(() => import("./components/listContainer.js"))
+
 
 class Body extends Component{
     constructor(){
@@ -11,7 +15,7 @@ class Body extends Component{
     }
     render(){
         return(
-            <React.Fragment>
+            <ErrorBoundary>
                 <div id={mainStyle.OuterWrapper}>
                     <AddNewTask />
                     <Modal />
@@ -19,11 +23,13 @@ class Body extends Component{
                     <StatusLine />
                     <div id={mainStyle.InnerWrapper}>
                         <SearchBar />
-                        <ListContainer />
+                        <Suspense fallback={<Fallback />}>
+                            <ListContainer />
+                        </Suspense>
                         <Newtask />
                     </div>
                 </div>
-            </React.Fragment>
+            </ErrorBoundary>
         )
     }
 }

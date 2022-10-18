@@ -21,7 +21,13 @@ class List extends Component{
 		}
 	}
 
+	// returnLink() {
+	// 	return <a style={{color:'white'}} onClick={this.props.highLight} href="#Pester"> link </a>
+	// }
+
 	render(){
+
+		const key = this.state.key;
 
 		const removeAndAppend = (child) => {
 			const parent = document.getElementById(`${styles.listContainer}`)
@@ -107,56 +113,54 @@ class List extends Component{
 		}
 
 		return(
-			<>
-				<div id={styles.list}>
-					<div className={styles.checkBox}>
-						<div onClick={check} className={styles.radioBtn}>
-							{
-								this.state.checked ? 
-								<img src="./icons/checkmark.svg"/> : ""
-							}
-						</div>
-					</div>
-					<div className={styles.meaning}>
+			<div className={styles.list} id={key}>
+				<div className={styles.checkBox}>
+					<div onClick={check} className={styles.radioBtn}>
 						{
-							this.state.checked ?
-							<p> <strong>{this.state.key}</strong> - <s> {this.props.data[this.state.key]["meaning"]}	 </s> </p> :
-							<p> <strong>{this.state.key}</strong> - {this.props.data[this.state.key]["meaning"]} </p>
+							this.state.checked ? 
+							<img src="./icons/checkmark.svg"/> : ""
 						}
-					</div>
-					<div className={styles.tag}>
-						{
-							this.props.data[this.state.key]["tag"] ?
-							<div className={styles.tagName} onClick={() => this.props.listTaggedAuthor(this.props.data[this.state.key]["docId"])}>
-								<p>{this.props.data[this.state.key]["tag"]}</p>
-							</div> : 
-							""
-						}
-					</div>
-					<div className={styles.pin}>
-						{
-							this.state.pinned ?
-							<img src="./icons/pin2.svg" /> : ""
-						}
-					</div>
-					<div className={styles.menu}>
-						<div className={styles.menuList} ref={this.menu} data-status="close">
-							<ul>
-								<li onClick={pin}
-									style={{ borderBottom: "1px solid white" }}>
-									<img src="./icons/pin.svg"/>
-									{this.state.pinned ? "Unpin" : "Pin"}
-								</li>
-								<li onClick={deleteList} >
-									<img src="./icons/deleteIcon.svg" />
-									Delete 
-								</li>
-							</ul>
-						</div>
-						<img onClick={() => this.props.checkForToggleClearance(this.menu)} src="./icons/three-dots.svg" />
 					</div>
 				</div>
-			</>
+				<div className={styles.meaning}>
+					{
+						this.state.checked ?
+						<p> <strong>{key}</strong> - <s> {this.props.data[key]["meaning"]}</s>  </p> :
+						<p> <strong>{key}</strong> - {this.props.data[key]["meaning"]}</p>
+					}
+				</div>
+				<div className={styles.tag}>
+					{
+						this.props.data[key]["tag"] ?
+						<div className={styles.tagName} onClick={() => this.props.listTaggedAuthor(this.props.data[key]["docId"])}>
+							<p>{this.props.data[key]["tag"]}</p>
+						</div> : 
+						""
+					}
+				</div>
+				<div className={styles.pin}>
+					{
+						this.state.pinned ?
+						<img src="./icons/pin2.svg" /> : ""
+					}
+				</div>
+				<div className={styles.menu}>
+					<div className={styles.menuList} ref={this.menu} data-status="close">
+						<ul>
+							<li onClick={pin}
+								style={{ borderBottom: "1px solid white" }}>
+								<img src="./icons/pin.svg"/>
+								{this.state.pinned ? "Unpin" : "Pin"}
+							</li>
+							<li onClick={deleteList} >
+								<img src="./icons/deleteIcon.svg" />
+								Delete 
+							</li>
+						</ul>
+					</div>
+					<img onClick={() => this.props.checkForToggleClearance(this.menu)} src="./icons/three-dots.svg" />
+				</div>
+			</div>
 		);
 	}
 }

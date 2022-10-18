@@ -46,7 +46,13 @@
       To create a production bundle, use `npm run build` or `yarn build`.
     -->
   </body>
-
+    <script type="text/javascript">
+      addEventListener("load", function() {
+          console.log('Website loaded');
+          var viewport = document.querySelector("meta[name=viewport]");
+          viewport.setAttribute("content", viewport.content + ", height=" + window.innerHeight);
+      })
+    </script>
     <script src="https://www.gstatic.com/firebasejs/7.20.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/7.7.0/firebase-messaging.js"></script>
 
