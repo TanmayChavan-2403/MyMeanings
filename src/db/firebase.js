@@ -37,9 +37,15 @@ export async function storeSubscription(subscription, status, client='client2'){
 			setDoc(docRef, {
 				0: subscription
 			})
-			setDoc(docRef2, {
-				0: status
-			}, {merge: true})
+			if (window.screen.width < 700){
+				setDoc(docRef2, {
+					1: status
+				}, {merge: true})
+			} else {
+				setDoc(docRef2, {
+					0: status
+				}, {merge: true})
+			}
 			resolve('Subscription URL saved to database Successfully!')
 		} catch(err) {
 			reject('Failed to save URL')
