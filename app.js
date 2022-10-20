@@ -40,7 +40,7 @@ schedule.scheduleJob(schedule1, () => {
 
 // Schedule operation for evening(5:30) notification
 schedule.scheduleJob(schedule2, () => {
-    let payload = JSON.stringify({title: `My Meanings for-${schedule2.match(timePattern)}`})
+    let payload = JSON.stringify({title: `1st Notification successfull!-${schedule2.match(timePattern)}`})
     webpush.sendNotification(subscription, payload)
     .then(res => methods.log(`Notification sent on ${schedule2}`))
     .catch(err => methods.log(err))
