@@ -1,12 +1,12 @@
 require('dotenv').config();
 
-const methods = require('./helperFunctions.js')
+const path = require('path');
+const express = require('express');
 const webpush = require('web-push');
 const admin = require('firebase-admin');
 const schedule = require('node-schedule');
 const moment = require('moment-timezone');
-const express = require('express');
-const path = require('path');
+const methods = require('./helperFunctions.js')
 
 // Global variables
 var datePattern = /\d{4}-\d{2}-\d{2}/;
@@ -47,31 +47,39 @@ app.listen(process.env.PORT, () => {
 
 
 // Schedule operation for morning(12:00) notification
-schedule.scheduleJob("0 9 * * *", () => {
+schedule.scheduleJob("30 13 * * *", () => {
     let payload = JSON.stringify({title: `My Meanings for-${dateTime}`})
     webpush.sendNotification(subscription, payload)
-    .then(res => methods.log(`Notification sent on ${dateTime.match(datePattern)}`))
+    .then(res => methods.log(`Notification sent on 01:30`))
     .catch(err => methods.log(err))
 })
 
 // Schedule operation for evening(5:30) notification
-schedule.scheduleJob("0 13 * * *", () => {
-    let payload = JSON.stringify({title: `1st Notification successfull!-${dateTime.match(timePattern)}`})
+schedule.scheduleJob("5 14 * * *", () => {
+    let payload = JSON.stringify({title: `Notification successfull!-${dateTime.match(timePattern)}`})
     webpush.sendNotification(subscription, payload)
-    .then(res => methods.log(`Notification sent on 01:00 ${dateTime.match(datePattern)}`))
+    .then(res => methods.log(`Notification sent on 02:05`))
     .catch(err => methods.log(err))
 })
 
 // Schedule operation for night(9:30) notification
-schedule.scheduleJob("0 16 * * *", () => {
+schedule.scheduleJob("10 14 * * *", () => {
     let payload = JSON.stringify({title: `My Meanings for-${dateTime.match(timePattern)}`})
     webpush.sendNotification(subscription, payload)
-    .then(res => methods.log(`Notification sent on ${dateTime.match(timePattern)}`))
+    .then(res => methods.log(`Notification sent on 02:14`))
+    .catch(err => methods.log(err))
+})
+
+// Schedule operation for night(9:30) notification
+schedule.scheduleJob("15 14 * * *", () => {
+    let payload = JSON.stringify({title: `My Meanings for-${dateTime.match(timePattern)}`})
+    webpush.sendNotification(subscription, payload)
+    .then(res => methods.log(`Notification sent on 02:15`))
     .catch(err => methods.log(err))
 })
 
 // Logging and sending notification of first set-up time to console and in file.
-let setupMsg = `Set-up completed on date ${moment.tz('Asia/Kolkata').format().match(datePattern)} and time ${moment.tz('Asia/Kolkata').format().match(timePattern)}`
+let setupMsg = `Set-up completed on time ${moment.tz('Asia/Kolkata').format().match(timePattern)}`
 webpush.sendNotification(subscription, JSON.stringify({title: setupMsg}))
-.then(res => methods.log(setupMsg))
+.then(res => methods.log(`Set-up completed on date ${moment.tz('Asia/Kolkata').format().match(datePattern)} and on time ${moment.tz('Asia/Kolkata').format().match(timePattern)}`))
 .catch(err => methods.log(err))
