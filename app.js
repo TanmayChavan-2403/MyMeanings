@@ -47,32 +47,32 @@ app.listen(process.env.PORT, () => {
 
 
 // Schedule operation for morning(12:00) notification
-schedule.scheduleJob("4 23 * * *", () => {
-    let payload = JSON.stringify({title: `My Meanings for-${dateTime}`})
+schedule.scheduleJob("10 23 * * *", () => {
+    let payload = JSON.stringify({title: `My Meanings for- 11:10`})
     webpush.sendNotification(subscription, payload)
     .then(res => methods.log(`Notification sent on 01:30`))
     .catch(err => methods.log(err))
 })
 
 // Schedule operation for evening(5:30) notification
-schedule.scheduleJob("30 4 23 * * *", () => {
-    let payload = JSON.stringify({title: `Notification successfull!-${dateTime.match(timePattern)}`})
+schedule.scheduleJob("30 10 23 * * *", () => {
+    let payload = JSON.stringify({title: `Notification successfull!- 11:10:30`})
     webpush.sendNotification(subscription, payload)
     .then(res => methods.log(`Notification sent on 02:05`))
     .catch(err => methods.log(err))
 })
 
 // Schedule operation for night(9:30) notification
-schedule.scheduleJob("6 23 * * *", () => {
-    let payload = JSON.stringify({title: `My Meanings for-${dateTime.match(timePattern)}`})
+schedule.scheduleJob("12 23 * * *", () => {
+    let payload = JSON.stringify({title: `My Meanings for- 11:12 `})
     webpush.sendNotification(subscription, payload)
     .then(res => methods.log(`Notification sent on 02:14`))
     .catch(err => methods.log(err))
 })
 
 // Schedule operation for night(9:30) notification
-schedule.scheduleJob("30 6 23 * * *", () => {
-    let payload = JSON.stringify({title: `My Meanings for-${dateTime.match(timePattern)}`})
+schedule.scheduleJob("30 23 * * *", () => {
+    let payload = JSON.stringify({title: `My Meanings for - 11:30`})
     webpush.sendNotification(subscription, payload)
     .then(res => methods.log(`Notification sent on 02:15`))
     .catch(err => methods.log(err))
