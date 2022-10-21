@@ -6,7 +6,7 @@ const webpush = require('web-push');
 const admin = require('firebase-admin');
 const schedule = require('node-schedule');
 const moment = require('moment-timezone');
-const methods = require('./helperFunctions.js')
+const methods = require('./helperFunctions.js');
 
 // Global variables
 var datePattern = /\d{4}-\d{2}-\d{2}/;
@@ -47,7 +47,7 @@ app.listen(process.env.PORT, () => {
 
 
 // Schedule operation for morning(12:00) notification
-schedule.scheduleJob("30 13 * * *", () => {
+schedule.scheduleJob("4 23 * * *", () => {
     let payload = JSON.stringify({title: `My Meanings for-${dateTime}`})
     webpush.sendNotification(subscription, payload)
     .then(res => methods.log(`Notification sent on 01:30`))
@@ -55,7 +55,7 @@ schedule.scheduleJob("30 13 * * *", () => {
 })
 
 // Schedule operation for evening(5:30) notification
-schedule.scheduleJob("5 14 * * *", () => {
+schedule.scheduleJob("30 4 23 * * *", () => {
     let payload = JSON.stringify({title: `Notification successfull!-${dateTime.match(timePattern)}`})
     webpush.sendNotification(subscription, payload)
     .then(res => methods.log(`Notification sent on 02:05`))
@@ -63,7 +63,7 @@ schedule.scheduleJob("5 14 * * *", () => {
 })
 
 // Schedule operation for night(9:30) notification
-schedule.scheduleJob("10 14 * * *", () => {
+schedule.scheduleJob("6 23 * * *", () => {
     let payload = JSON.stringify({title: `My Meanings for-${dateTime.match(timePattern)}`})
     webpush.sendNotification(subscription, payload)
     .then(res => methods.log(`Notification sent on 02:14`))
@@ -71,7 +71,7 @@ schedule.scheduleJob("10 14 * * *", () => {
 })
 
 // Schedule operation for night(9:30) notification
-schedule.scheduleJob("15 14 * * *", () => {
+schedule.scheduleJob("30 6 23 * * *", () => {
     let payload = JSON.stringify({title: `My Meanings for-${dateTime.match(timePattern)}`})
     webpush.sendNotification(subscription, payload)
     .then(res => methods.log(`Notification sent on 02:15`))
