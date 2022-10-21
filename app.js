@@ -5,6 +5,8 @@ const webpush = require('web-push');
 const admin = require('firebase-admin');
 const schedule = require('node-schedule');
 const moment = require('moment-timezone');
+const express = require('express');
+const path = require('path');
 
 // Global variables
 let DATE = "2022-10-20";
@@ -20,8 +22,23 @@ admin.initializeApp({
     credential: admin.credential.cert(JSON.parse(process.env.SERVER_KEY))
 })
 
-// Initializing instance of firestore
+// Initializing instance of firestore and express app
 const db = admin.firestore();
+const app = express();
+
+// Parsing incoming requests with json payloads
+app.use(express.json());
+
+app.get('/sendLogFile', (req, res) => {
+    console.log('Reached here...');
+    res.sendFile(path.resolve(__dirname, "./log.txt"))
+})
+
+app.listen(process.env.PORT, () => {
+    console.log('Listening to port ', process.env.PORT);
+})
+
+
 
 // Applying settings of web-push
 webpush.setVapidDetails(
