@@ -20,11 +20,18 @@ admin.initializeApp({
 })
 
 // Applying settings of web-push
+const vapidKeys = webpush.generateVAPIDKeys();
 webpush.setVapidDetails(
-    "mailto:tanmaychavan1306@gmail.com",
-    "BJthRQ5myDgc7OSXzPCMftGw-n16F7zQBEN7EUD6XxcfTTvrLGWSIG7y_JxiWtVlCFua0S8MTB5rPziBqNx1qIo",
-    "3KzvKasA2SoCxsp0iIG_o9B0Ozvl1XDwI63JRKNIWBM"
-)
+    'mailto:codebreakers1306@gmail.com',
+    vapidKeys.publicKey,
+    vapidKeys.privateKey
+  );
+// webpush.setVapidDetails(
+//     "mailto:tanmaychavan1306@gmail.com",
+//     "BJthRQ5myDgc7OSXzPCMftGw-n16F7zQBEN7EUD6XxcfTTvrLGWSIG7y_JxiWtVlCFua0S8MTB5rPziBqNx1qIo",
+//     "3KzvKasA2SoCxsp0iIG_o9B0Ozvl1XDwI63JRKNIWBM"
+// )
+
 
 // Initializing instance of firestore and express app
 const db = admin.firestore();
