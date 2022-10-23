@@ -59,7 +59,7 @@ app.listen(process.env.PORT, () => {
 
 
 // Schedule operation for morning(12:00) notification
-schedule.scheduleJob("55 22 * * *", () => {
+schedule.scheduleJob("25 23 * * *", () => {
     let payload = JSON.stringify({title: `My Meanings for- 11:10`})
     webpush.sendNotification(subscription, payload)
     .then(res => methods.log(`Notification sent on 01:30`))
@@ -67,7 +67,7 @@ schedule.scheduleJob("55 22 * * *", () => {
 })
 
 // Schedule operation for evening(5:30) notification
-schedule.scheduleJob("57 22 * * *", () => {
+schedule.scheduleJob("30 23 * * *", () => {
     let payload = JSON.stringify({title: `Notification successfull!- 11:10:30`})
     webpush.sendNotification(subscription, payload)
     .then(res => methods.log(`Notification sent on 02:05`))
@@ -75,7 +75,7 @@ schedule.scheduleJob("57 22 * * *", () => {
 })
 
 // Schedule operation for night(9:30) notification
-schedule.scheduleJob("5 23 * * *", () => {
+schedule.scheduleJob("40 23 * * *", () => {
     let payload = JSON.stringify({title: `My Meanings for- 11:12 `})
     webpush.sendNotification(subscription, payload)
     .then(res => methods.log(`Notification sent on 02:14`))
@@ -83,7 +83,7 @@ schedule.scheduleJob("5 23 * * *", () => {
 })
 
 // Schedule operation for night(9:30) notification
-schedule.scheduleJob("15 23 * * *", () => {
+schedule.scheduleJob("57 23 * * *", () => {
     let payload = JSON.stringify({title: `My Meanings for - 11:30`})
     webpush.sendNotification(subscription, payload)
     .then(res => methods.log(`Notification sent on 02:15`))
