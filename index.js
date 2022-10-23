@@ -22,8 +22,8 @@ admin.initializeApp({
 // Applying settings of web-push
 webpush.setVapidDetails(
     "mailto:tanmaychavan1306@gmail.com",
-    process.env.PUBLIC_KEY,
-    process.env.PRIVATE_KEY
+    "BJthRQ5myDgc7OSXzPCMftGw-n16F7zQBEN7EUD6XxcfTTvrLGWSIG7y_JxiWtVlCFua0S8MTB5rPziBqNx1qIo",
+    "3KzvKasA2SoCxsp0iIG_o9B0Ozvl1XDwI63JRKNIWBM"
 )
 
 // Initializing instance of firestore and express app
