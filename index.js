@@ -33,6 +33,11 @@ const app = express();
 // Parsing incoming requests with json payloads
 app.use(express.json());
 
+app.get('/', (req, res) => {
+    res.json({
+        hello: "Hey there! Handsome."
+    });
+});
 
 // Routes to handle incoming requests
 app.get('/sendLogFile', (req, res) => {
