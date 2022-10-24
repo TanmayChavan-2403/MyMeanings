@@ -227,29 +227,29 @@ export const updatePinStatus = (data, key, action) => {
 	})
 }
 
-export const requestPermission = () => {
-	console.log('Requesting permission...');
-	Notification.requestPermission().then((permission) => {
-	    if (permission === 'granted') {
-	    	console.log('Notification permission granted.');
-	    }
-	})
+// export const requestPermission = () => {
+// 	console.log('Requesting permission...');
+// 	Notification.requestPermission().then((permission) => {
+// 	    if (permission === 'granted') {
+// 	    	console.log('Notification permission granted.');
+// 	    }
+// 	})
 
-	// Get registration token. Initially this makes a network call, once retrieved
-	// subsequent calls to getToken will return from cache.
-	const messaging = getMessaging();
-	getToken(messaging, { vapidKey: 'BAXNz7PVOJ9CX-asU4B8RV1sx5a_2dgLXCOQEd8-IOBL2AcY1E6PgVYxDYz6Lw2mWA5hbI4bQnXeqQrNRI8ZLJI' })
-	.then((currentToken) => {
-	  if (currentToken) {
-	  	console.log(currentToken);
-	  } else {
-	    // Show permission request UI
-	    console.log('No registration token available. Request permission to generate one.');
-	  }
-	}).catch((err) => {
-	  console.log('An error occurred while retrieving token. ', err);
-	});
-}
+// 	// Get registration token. Initially this makes a network call, once retrieved
+// 	// subsequent calls to getToken will return from cache.
+// 	const messaging = getMessaging();
+// 	getToken(messaging, { vapidKey: 'BAXNz7PVOJ9CX-asU4B8RV1sx5a_2dgLXCOQEd8-IOBL2AcY1E6PgVYxDYz6Lw2mWA5hbI4bQnXeqQrNRI8ZLJI' })
+// 	.then((currentToken) => {
+// 	  if (currentToken) {
+// 	  	console.log(currentToken);
+// 	  } else {
+// 	    // Show permission request UI
+// 	    console.log('No registration token available. Request permission to generate one.');
+// 	  }
+// 	}).catch((err) => {
+// 	  console.log('An error occurred while retrieving token. ', err);
+// 	});
+// }
 
 export const deleteListFromDB = (key, data) => {
 	return new Promise( (resolve, reject) => {
