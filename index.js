@@ -3,11 +3,16 @@ require('dotenv').config();
 const path = require('path');
 const express = require('express');
 const webpush = require('web-push');
-const methods = require('./supplementary/helperFunctions')
+const moment = require('moment-timezone')
 const status = require("./supplementary/status")
+const methods = require('./supplementary/helperFunctions')
 const Middleware = require('./supplementary/middlewares')
 
-// Const variables
+
+// Global variables
+var datePattern = /\d{4}-\d{2}-\d{2}/;
+var timePattern = /\d{1,2}:\d{1,2}:\d{1,2}/;
+var dateTime = moment.tz("Asia/Kolkata").format();
 const subscription = JSON.parse(process.env.ANDROID_SUBCRIPTION_URL);
 const subscription2 =JSON.parse(process.env.DESKTOP_SUBSCRIPTION_URL);
 
@@ -77,7 +82,7 @@ app.listen(process.env.PORT, () => {
 })
 
 // Logging and sending notification of first set-up time to console and in file.
-// let setupMsg = `Set-up completed on time ${moment.tz('Asia/Kolkata').format().match(timePattern)}`
-// webpush.sendNotification(subscription, JSON.stringify({title: setupMsg}))
-// .then(res => methods.log(`Set-up completed on date ${moment.tz('Asia/Kolkata').format().match(datePattern)} and on time ${moment.tz('Asia/Kolkata').format().match(timePattern)}`))
-// .catch(err => methods.log(err))
+let setupMsg = `Set-up completed on time ${moment.tz('Asia/Kolkata').format().match(timePattern)}`
+webpush.sendNotification(subscription, JSON.stringify({title: setupMsg}))
+.then(res => methods.log(`Set-up completed on date ${moment.tz('Asia/Kolkata').format().match(datePattern)} and on time ${moment.tz('Asia/Kolkata').format().match(timePattern)}`))
+.catch(err => methods.log(err))
