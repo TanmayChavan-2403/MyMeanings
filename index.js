@@ -21,16 +21,17 @@ admin.initializeApp({
 
 // Applying settings of web-push
 const vapidKeys = webpush.generateVAPIDKeys();
-webpush.setVapidDetails(
-    'mailto:codebreakers1306@gmail.com',
-    vapidKeys.publicKey,
-    vapidKeys.privateKey
-  );
 // webpush.setVapidDetails(
-//     "mailto:tanmaychavan1306@gmail.com",
-//     "BJthRQ5myDgc7OSXzPCMftGw-n16F7zQBEN7EUD6XxcfTTvrLGWSIG7y_JxiWtVlCFua0S8MTB5rPziBqNx1qIo",
-//     "3KzvKasA2SoCxsp0iIG_o9B0Ozvl1XDwI63JRKNIWBM"
-// )
+//     'mailto:codebreakers1306@gmail.com',
+//     vapidKeys.publicKey,
+//     vapidKeys.privateKey
+// );
+
+webpush.setVapidDetails(
+    "mailto:tanmaychavan1306@gmail.com",
+    process.env.PUBLIC_KEY,
+    process.env.PRIVATE_KEY    
+)
 
 
 // Initializing instance of firestore and express app
@@ -48,15 +49,22 @@ app.get('/', (req, res) => {
 
 // Routes to handle incoming requests
 app.get('/sendLogFile', (req, res) => {
-    console.log('Reached here...');
+    console.log('Sending log file...')
     res.sendFile(path.resolve(__dirname, "./log.txt"))
+})
+
+app.get('/notify', (req, res) => {
+    let payload = JSON.stringify({title: `My Meanings from server-8:15`})
+    webpush.sendNotification(subscription, payload)
+    .then(res => methods.log(`Notification sent from server on-8:15`))
+    .catch(err => methods.log(err))
 })
 
 app.listen(process.env.PORT, () => {
     console.log('Listening to port ', process.env.PORT);
 })
 
-
+/*
 
 // Schedule operation for morning(12:00) notification
 schedule.scheduleJob("25 23 * * *", () => {
@@ -90,8 +98,11 @@ schedule.scheduleJob("57 23 * * *", () => {
     .catch(err => methods.log(err))
 })
 
+*/
+
 // Logging and sending notification of first set-up time to console and in file.
 let setupMsg = `Set-up completed on time ${moment.tz('Asia/Kolkata').format().match(timePattern)}`
 webpush.sendNotification(subscription, JSON.stringify({title: setupMsg}))
 .then(res => methods.log(`Set-up completed on date ${moment.tz('Asia/Kolkata').format().match(datePattern)} and on time ${moment.tz('Asia/Kolkata').format().match(timePattern)}`))
 .catch(err => methods.log(err))
+
