@@ -56,8 +56,19 @@ app.get('/sendLogFile', (req, res) => {
 app.get('/notify', (req, res) => {
     let payload = JSON.stringify({title: `My Meanings from server-8:15`})
     webpush.sendNotification(subscription, payload)
-    .then(res => methods.log(`Notification sent from server on-8:15`))
-    .catch(err => methods.log(err))
+    .then(res => {
+        methods.log(`Notification sent from server on-8:15`)
+        res.json({
+            notified: 'Success'
+        })
+    })
+    .catch(err => {
+        methods.log(err)
+        res.json({
+            notified: 'Failed',
+            error: err
+        })
+    })
 })
 
 app.listen(process.env.PORT, () => {
