@@ -12,9 +12,6 @@ class Middleware{
                 Object.entries(data).map(entry => {
                     status.updateData([entry[0], entry[1]])
                 })
-                setTimeout(() => {
-                    console.log(status.dataCount);
-                }, 1500);
                 next()
             } catch (error) {
                 methods.log(error);

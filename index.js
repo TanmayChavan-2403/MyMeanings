@@ -43,19 +43,15 @@ app.get('/', async (req, res) => {
 
 // Routes to handle incoming requests
 app.get('/sendLogFile', (req, res) => {
-    console.log('Sending log file...')
     res.sendFile(path.resolve(__dirname, "./log.txt"))
 })
 
 app.get('/notify', middleWare.populateIfLess, async (req, res) => {
-
+    
+    // Getting fresh notification
     const notification = status.data.pop()
     status.updateStatus(1, 'sub')
-    res.json({
-        NotificationSent: notification[0] + ': ' + notification[1],
-        CurrentDataCount: status.dataCount,
-    })
-        
+
     let payload = JSON.stringify({
         title: `Today's morning dose.`,
         body: notification[0] + ': ' + notification[1],
@@ -65,7 +61,9 @@ app.get('/notify', middleWare.populateIfLess, async (req, res) => {
     .then(data => {
         methods.log(`Notification sent from server on-8:15`)
         res.json({
-            notified: 'Success'
+            notified: 'Success',
+            CurrentDataCount: status.dataCount,
+            NotificationSent: notification[0] + ':   ' + notification[1],
         })
     })
     .catch(err => {
