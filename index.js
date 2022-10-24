@@ -14,7 +14,6 @@ var datePattern = /\d{4}-\d{2}-\d{2}/;
 var timePattern = /\d{1,2}:\d{1,2}:\d{1,2}/;
 var dateTime = moment.tz("Asia/Kolkata").format();
 const subscription = JSON.parse(process.env.ANDROID_SUBCRIPTION_URL);
-const subscription2 =JSON.parse(process.env.DESKTOP_SUBSCRIPTION_URL);
 
 // Applying settings of web-push
 
