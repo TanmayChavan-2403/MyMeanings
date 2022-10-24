@@ -56,7 +56,7 @@ app.get('/notify', middleWare.populateIfLess, async (req, res) => {
         body: notification[0] + ': ' + notification[1],
         link: "https://my-meanings-server.onrender.com/sendLogFile"
     })
-    webpush.sendNotification(subscription2, payload)
+    webpush.sendNotification(subscription, payload)
     .then(data => {
         methods.log(`Notification sent from server on-8:15`)
         res.json({
