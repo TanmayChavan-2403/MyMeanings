@@ -12,17 +12,22 @@ const Middleware = require('./supplementary/middlewares')
 // Global variables
 var datePattern = /\d{4}-\d{2}-\d{2}/;
 var timePattern = /\d{1,2}:\d{1,2}:\d{1,2}/;
-var dateTime = moment.tz("Asia/Kolkata").format();
 const subscription = JSON.parse(process.env.ANDROID_SUBCRIPTION_URL);
 
 // Applying settings of web-push
 
-webpush.setVapidDetails(
-    "mailto:codebreakers1306@gmail.com",
-    process.env.PUBLIC_KEY,
-    process.env.PRIVATE_KEY    
-)
+const vapidKeys = webpush.generateVAPIDKeys();
 
+webpush.setVapidDetails(
+  'mailto:codebreakers1306@gmail.com',
+  vapidKeys.publicKey,
+  vapidKeys.privateKey
+);
+// webpush.setVapidDetails(
+//     "mailto:codebreakers1306@gmail.com",
+//     process.env.PUBLIC_KEY,
+//     process.env.PRIVATE_KEY    
+// )
 
 // Initializing instance of express app and Middleware
 const app = express();
