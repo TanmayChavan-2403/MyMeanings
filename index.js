@@ -15,17 +15,17 @@ var timePattern = /\d{1,2}:\d{1,2}:\d{1,2}/;
 
 // Applying settings of web-push
 const vapidKeys = webpush.generateVAPIDKeys();
-// webpush.setVapidDetails(
-//     'mailto:tanmaychavan1306@gmail.com',
-//     vapidKeys.publicKey,
-//     vapidKeys.privateKey
-// );
-
 webpush.setVapidDetails(
-    "mailto:codebreakers1306@gmail.com",
-    process.env.PUBLIC_KEY,
-    process.env.PRIVATE_KEY
-)
+    'mailto:tanmaychavan1306@gmail.com',
+    vapidKeys.publicKey,
+    vapidKeys.privateKey
+);
+
+// webpush.setVapidDetails(
+//     "mailto:codebreakers1306@gmail.com",
+//     process.env.PUBLIC_KEY,
+//     process.env.PRIVATE_KEY
+// )
 
 // Initializing instance of express app and Middleware
 const app = express();
