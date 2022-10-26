@@ -22,7 +22,7 @@ module.exports.fetchMeaning = async function (){
 
 module.exports.fetchSubscriptURL = function (){
     return new Promise( async(resolve, reject) => {
-        const snapshot = db.collection('subscriptions').doc('client1');
+        const snapshot = db.collection('subscriptions').doc('client2');
         const doc = await snapshot.get()
 
         if (!doc.exists){
