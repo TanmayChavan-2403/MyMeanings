@@ -17,7 +17,8 @@ const subscription = JSON.parse(process.env.ANDROID_SUBCRIPTION_URL);
 // Applying settings of web-push
 
 const vapidKeys = webpush.generateVAPIDKeys();
-
+const GCMKey = "AAAA1E_7Ov0:APA91bE18fQMt1DE5fODousRcEVPuPMxRRFjZNCB8j1yvSitja2KCC8npYtR0loGwPXEyz2jLfw6JnMmUJGKLCPWvFK6WgXZtrO3E8-rdAdVwI4HGkGpiFSpa1zMXV6uglaoiVRJmofF"
+webpush.setGCMAPIKey(GCMKey);
 webpush.setVapidDetails(
   'mailto:codebreakers1306@gmail.com',
   vapidKeys.publicKey,
