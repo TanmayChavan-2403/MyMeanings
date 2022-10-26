@@ -15,20 +15,19 @@ var timePattern = /\d{1,2}:\d{1,2}:\d{1,2}/;
 const subscription = JSON.parse(process.env.ANDROID_SUBCRIPTION_URL);
 
 // Applying settings of web-push
-
-// const vapidKeys = webpush.generateVAPIDKeys();
-// const GCMKey = "AAAA1E_7Ov0:APA91bE18fQMt1DE5fODousRcEVPuPMxRRFjZNCB8j1yvSitja2KCC8npYtR0loGwPXEyz2jLfw6JnMmUJGKLCPWvFK6WgXZtrO3E8-rdAdVwI4HGkGpiFSpa1zMXV6uglaoiVRJmofF"
-// webpush.setGCMAPIKey(GCMKey);
-// webpush.setVapidDetails(
-//   'mailto:codebreakers1306@gmail.com',
-//   vapidKeys.publicKey,
-//   vapidKeys.privateKey
-// );
+const vapidKeys = webpush.generateVAPIDKeys();
 webpush.setVapidDetails(
-    "mailto:codebreakers1306@gmail.com",
-    process.env.PUBLIC_KEY,
-    process.env.PRIVATE_KEY    
-)
+    'mailto:codebreakers1306@gmail.com',
+    "BM5U26IjXp-FPlrAfJ8QBNHfwLrYya1IiiqZHXT6_4ljrB8VsO-TLMetcOJPUoln8BVtdwNHrkgP-cvzaP6iLq4",
+    "586jY0eKkc4vdgVEz5n0-fLm946xVeXvAWGFIiCOtv8"
+);
+console.log(vapidKeys.publicKey)
+console.log(vapidKeys.privateKey)
+// webpush.setVapidDetails(
+//     "mailto:codebreakers1306@gmail.com",
+//     process.env.PUBLIC_KEY,
+//     process.env.PRIVATE_KEY    
+// )
 
 // Initializing instance of express app and Middleware
 const app = express();
@@ -85,7 +84,10 @@ app.listen(process.env.PORT, () => {
 })
 
 // Logging and sending notification of first set-up time to console and in file.
-let setupMsg = `Set-up completed on time ${moment.tz('Asia/Kolkata').format().match(timePattern)}`
-webpush.sendNotification(subscription, JSON.stringify({title: setupMsg}))
-.then(res => methods.log(`Set-up completed on date ${moment.tz('Asia/Kolkata').format().match(datePattern)} and on time ${moment.tz('Asia/Kolkata').format().match(timePattern)}`))
-.catch(err => methods.log(err))
+// let setupMsg = `Set-up completed on time ${moment.tz('Asia/Kolkata').format().match(timePattern)}`
+// webpush.sendNotification(subscription, JSON.stringify({title: setupMsg}))
+// .then(res => methods.log(`Set-up completed on date ${moment.tz('Asia/Kolkata').format().match(datePattern)} and on time ${moment.tz('Asia/Kolkata').format().match(timePattern)}`))
+// .catch(err => {
+//     methods.log(err);
+//     console.log(err)
+// })
