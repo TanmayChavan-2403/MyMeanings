@@ -9,7 +9,6 @@ const methods = require('./supplementary/helperFunctions');
 const Middleware = require('./supplementary/middlewares');
 let cors = require('cors');
 
-app.use(cors())
 
 // Global variables
 var datePattern = /\d{4}-\d{2}-\d{2}/;
@@ -31,6 +30,7 @@ webpush.setVapidDetails(
 
 // Initializing instance of express app and Middleware
 const app = express();
+app.use(cors());
 const middleWare = new Middleware();
 
 // Parsing incoming requests with json payloads
