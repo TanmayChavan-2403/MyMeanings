@@ -7,7 +7,9 @@ const moment = require('moment-timezone');
 const status = require("./supplementary/status");
 const methods = require('./supplementary/helperFunctions');
 const Middleware = require('./supplementary/middlewares');
+let cors = require('cors');
 
+app.use(cors())
 
 // Global variables
 var datePattern = /\d{4}-\d{2}-\d{2}/;
