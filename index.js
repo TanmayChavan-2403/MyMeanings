@@ -3,26 +3,26 @@ require('dotenv').config();
 const path = require('path');
 const express = require('express');
 const webpush = require('web-push');
-const moment = require('moment-timezone')
-const status = require("./supplementary/status")
-const methods = require('./supplementary/helperFunctions')
-const Middleware = require('./supplementary/middlewares')
+const moment = require('moment-timezone');
+const status = require("./supplementary/status");
+const methods = require('./supplementary/helperFunctions');
+const Middleware = require('./supplementary/middlewares');
 
 
 // Global variables
 var datePattern = /\d{4}-\d{2}-\d{2}/;
 var timePattern = /\d{1,2}:\d{1,2}:\d{1,2}/;
 const subscription = JSON.parse(process.env.ANDROID_SUBCRIPTION_URL);
+const subscription2 = JSON.parse(process.env.DESKTOP_SUBSCRIPTION_URL);
 
 // Applying settings of web-push
 const vapidKeys = webpush.generateVAPIDKeys();
 webpush.setVapidDetails(
-    'mailto:codebreakers1306@gmail.com',
-    "BM5U26IjXp-FPlrAfJ8QBNHfwLrYya1IiiqZHXT6_4ljrB8VsO-TLMetcOJPUoln8BVtdwNHrkgP-cvzaP6iLq4",
-    "586jY0eKkc4vdgVEz5n0-fLm946xVeXvAWGFIiCOtv8"
+    'mailto:tanmaychavan1306@gmail.com',
+    vapidKeys.publicKey,
+    vapidKeys.privateKey
 );
-console.log(vapidKeys.publicKey)
-console.log(vapidKeys.privateKey)
+
 // webpush.setVapidDetails(
 //     "mailto:codebreakers1306@gmail.com",
 //     process.env.PUBLIC_KEY,
@@ -41,9 +41,11 @@ app.get('/', async (req, res) => {
     res.json({
         hello: "Hey there! Handsome.",
         dataCount: status.dataCount,
-        data: status.data
+        data: status.data,
+        publicKey: vapidKeys.publicKey
     });
 });
+
 
 // Routes to handle incoming requests
 app.get('/sendLogFile', (req, res) => {
@@ -61,7 +63,7 @@ app.get('/notify', middleWare.populateIfLess, async (req, res) => {
         body: notification[0] + ': ' + notification[1],
         link: "https://my-meanings-server.onrender.com/sendLogFile"
     })
-    webpush.sendNotification(subscription, payload)
+    webpush.sendNotification(subscription2, payload)
     .then(data => {
         methods.log(`Notification sent from server on-8:15`)
         res.json({
