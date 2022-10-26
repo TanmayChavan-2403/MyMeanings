@@ -12,8 +12,6 @@ const Middleware = require('./supplementary/middlewares');
 // Global variables
 var datePattern = /\d{4}-\d{2}-\d{2}/;
 var timePattern = /\d{1,2}:\d{1,2}:\d{1,2}/;
-const subscription = JSON.parse(process.env.ANDROID_SUBCRIPTION_URL);
-const subscription2 = JSON.parse(process.env.DESKTOP_SUBSCRIPTION_URL);
 
 // Applying settings of web-push
 const vapidKeys = webpush.generateVAPIDKeys();
@@ -58,27 +56,35 @@ app.get('/notify', middleWare.populateIfLess, async (req, res) => {
     const notification = status.data.pop()
     status.updateStatus(1, 'sub')
 
-    let payload = JSON.stringify({
-        title: `Today's morning dose.`,
-        body: notification[0] + ': ' + notification[1],
-        link: "https://my-meanings-server.onrender.com/sendLogFile"
-    })
-    webpush.sendNotification(subscription, payload)
-    .then(data => {
-        methods.log(`Notification sent from server on-8:15`)
-        res.json({
-            notified: 'Success',
-            CurrentDataCount: status.dataCount,
-            NotificationSent: notification[0] + ':   ' + notification[1],
+    // Getting subscription URL from database
+    methods.fetchSubscriptURL()
+    .then(subscription => {
+        let payload = JSON.stringify({
+            title: `Today's morning dose.`,
+            body: notification[0] + ': ' + notification[1],
+            link: "https://my-meanings-server.onrender.com/sendLogFile"
+        })
+        webpush.sendNotification(subscription, payload)
+        .then(data => {
+            methods.log(`Notification sent from server on-8:15`)
+            res.json({
+                notified: 'Success',
+                CurrentDataCount: status.dataCount,
+                NotificationSent: notification[0] + ':   ' + notification[1],
+            })
+        })
+        .catch(err => {
+            methods.log(err)
+            res.json({
+                notified: 'Failed',
+                error: err
+            })
         })
     })
-    .catch(err => {
-        methods.log(err)
-        res.json({
-            notified: 'Failed',
-            error: err
-        })
-    })
+    .catch(err => console.log(err));
+    
+
+    
 })
 
 app.listen(process.env.PORT, () => {

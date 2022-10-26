@@ -12,11 +12,25 @@ const db = admin.firestore();
 module.exports.fetchMeaning = async function (){
     const docRef = db.collection('supplementary').doc('completed');
     const doc = await docRef.get();
+
     if (!doc.exists){
         return 'ERROR', 'Document does not exists'
     } else {
         return 'SUCCESS', doc.data();
     }
+}
+
+module.exports.fetchSubscriptURL = function (){
+    return new Promise( async(resolve, reject) => {
+        const snapshot = db.collection('subscriptions').doc('client1');
+        const doc = await snapshot.get()
+
+        if (!doc.exists){
+            reject('No such Document exists, please check path');
+        } else {
+            resolve(doc.data()[0])
+        }
+    })
 }
 
 module.exports.log = function(text){
