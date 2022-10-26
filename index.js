@@ -53,7 +53,7 @@ app.get('/sendLogFile', (req, res) => {
 })
 
 app.get('/notify', middleWare.populateIfLess, async (req, res) => {
-    
+    console.log(vapidKeys.publicKey, 'In notify section');
     // Getting fresh notification
     const notification = status.data.pop()
     status.updateStatus(1, 'sub')

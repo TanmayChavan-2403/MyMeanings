@@ -28,7 +28,7 @@ module.exports.fetchSubscriptURL = function (){
         if (!doc.exists){
             reject('No such Document exists, please check path');
         } else {
-            resolve(doc.data()[0])
+            resolve(JSON.parse(doc.data()[0]))
         }
     })
 }
