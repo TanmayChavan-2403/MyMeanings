@@ -6,6 +6,19 @@ import app, { messaging } from "./CONFIG.js"
 
 const db = getFirestore(app);
 
+export function deleteSubscription(){
+	return new Promise((resolve, reject) => {
+		const docRef = doc(db, 'subscriptions', 'client2');
+		const docRef2 = doc(db, 'subscriptions', 'status');
+		setDoc(docRef, {
+			0: null
+		}, {merge: true})
+		setDoc(docRef2, {
+			1: false
+		}, {merge: true})
+	})
+}
+
 export function getStatus(){
 	return new Promise(async(resolve, reject) => {
 		const docRef = doc(db, 'subscriptions', 'status')

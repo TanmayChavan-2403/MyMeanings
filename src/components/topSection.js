@@ -2,7 +2,7 @@ import styles from "../stylesheets/topSection.module.css";
 import { storeDataInDb } from "../db/firebase";
 import * as ReactDOM from 'react-dom';
 import React, { useState, useEffect } from 'react';
-import {storeSubscription, getStatus} from '../db/firebase.js';
+import {storeSubscription, getStatus, deleteSubscription} from '../db/firebase.js';
 
 
 const Navbar = (props) => {
@@ -40,19 +40,33 @@ export const SearchBar = (props) => {
     }, [])
 
     const udpateSubscriptionStatus = () => {
-        // Update the notification icon
-        setNotif(!notif);
+        if (notif){
+            navigator.serviceWorker.ready.then((reg) => {
+                reg.pushManager.getSubscription().then((subscription) => {
+                  subscription.unsubscribe().then((successful) => {
+                    deleteSubscription()
+                    pullDown('Unsubscribed Successfully')
+                  }).catch((e) => {
+                    pullDown('ERROR! while unsubscribing', e)
+                  })
+                })
+            });
+        }
 
         // update database
         // Checking if serviceWorker is supported by browser
-        if ('serviceWorker' in navigator){
-            subscribe()
+        if (!notif){
+            if ('serviceWorker' in navigator){
+                subscribe()
+            }
         }
+
+        // Update the notification icon
+        setNotif(!notif);
     }
 
     const subscribe = async () => {
         const publicVapidKey = "BJthRQ5myDgc7OSXzPCMftGw-n16F7zQBEN7EUD6XxcfTTvrLGWSIG7y_JxiWtVlCFua0S8MTB5rPziBqNx1qIo";
-
         // STEP 1 Registering service-worker.js file as service worker 
         // It returns serviceWorkerRegistration Interface of SW
         const register = await navigator.serviceWorker.register('./service-worker.js',{
@@ -61,7 +75,6 @@ export const SearchBar = (props) => {
         pullDown('Service Worker is registered successfully!')
         myConsole('Service Worker is registered successfully!');
 
-
         // STEP 2 Getting subscription of PUSH API
         const subscription = await register.pushManager.subscribe({
             userVisibleOnly: true,
@@ -69,13 +82,15 @@ export const SearchBar = (props) => {
         }); // Provides a subscription's URL endpoint and allows unsubscribing from a push service
         myConsole('Subscription URL generated successfully!',subscription);
 
-        // Sending to database for storing
+        // STEP 3 Sending to database for storing
         storeSubscription(JSON.stringify(subscription), !notif)
         .then(resp => {
+            console.log(resp);
             setTimeout(() => {
                 pullDown(resp)
             }, 1500)
         }).catch(err => {
+            console.log(err);
             setTimeout(() => {
                 pullDown(err)
             }, 1500)
