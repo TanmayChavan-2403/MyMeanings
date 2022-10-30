@@ -16,6 +16,7 @@ var timePattern = /\d{1,2}:\d{1,2}:\d{1,2}/;
 const subscription = JSON.parse(process.env.SUBSCRIPTION_URL)
 
 // Applying settings of web-push
+
 // const vapidKeys = webpush.generateVAPIDKeys();
 // webpush.setVapidDetails(
 //     'mailto:tanmaychavan1306@gmail.com',
