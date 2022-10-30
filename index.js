@@ -13,6 +13,7 @@ let cors = require('cors');
 // Global variables
 var datePattern = /\d{4}-\d{2}-\d{2}/;
 var timePattern = /\d{1,2}:\d{1,2}:\d{1,2}/;
+const subscription = JSON.parse(process.env.SUBSCRIPTION_URL)
 
 // Applying settings of web-push
 // const vapidKeys = webpush.generateVAPIDKeys();
@@ -42,7 +43,6 @@ app.get('/', async (req, res) => {
         hello: "Hey there! Handsome.",
         dataCount: status.dataCount,
         data: status.data,
-        publicKey: vapidKeys.publicKey
     });
 });
 
