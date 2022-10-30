@@ -15,18 +15,18 @@ var datePattern = /\d{4}-\d{2}-\d{2}/;
 var timePattern = /\d{1,2}:\d{1,2}:\d{1,2}/;
 
 // Applying settings of web-push
-const vapidKeys = webpush.generateVAPIDKeys();
-webpush.setVapidDetails(
-    'mailto:tanmaychavan1306@gmail.com',
-    vapidKeys.publicKey,
-    vapidKeys.privateKey
-);
-
+// const vapidKeys = webpush.generateVAPIDKeys();
 // webpush.setVapidDetails(
-//     "mailto:codebreakers1306@gmail.com",
-//     process.env.PUBLIC_KEY,
-//     process.env.PRIVATE_KEY
-// )
+//     'mailto:tanmaychavan1306@gmail.com',
+//     vapidKeys.publicKey,
+//     vapidKeys.privateKey
+// );
+
+webpush.setVapidDetails(
+    "mailto:codebreakers1306@gmail.com",
+    process.env.PUBLIC_KEY,
+    process.env.PRIVATE_KEY
+)
 
 // Initializing instance of express app and Middleware
 const app = express();
@@ -53,40 +53,36 @@ app.get('/sendLogFile', (req, res) => {
 })
 
 app.get('/notify', middleWare.populateIfLess, async (req, res) => {
-    methods.log(vapidKeys.publicKey);
     // Getting fresh notification
     const notification = status.data.pop()
     status.updateStatus(1, 'sub')
 
     // Getting subscription URL from database
-    methods.fetchSubscriptURL()
-    .then(subscription => {
-        let payload = JSON.stringify({
-            title: `Today's morning dose.`,
-            body: notification[0] + ': ' + notification[1],
-            link: "https://my-meanings-server.onrender.com/sendLogFile"
-        })
-        webpush.sendNotification(subscription, payload)
-        .then(data => {
-            methods.log(`Notification sent from server on-8:15`)
-            res.json({
-                notified: 'Success',
-                CurrentDataCount: status.dataCount,
-                NotificationSent: notification[0] + ':   ' + notification[1],
-            })
-        })
-        .catch(err => {
-            methods.log(err)
-            res.json({
-                notified: 'Failed',
-                error: err
-            })
+    // methods.fetchSubscriptURL()
+    // .then(subscription => {
+    let payload = JSON.stringify({
+        title: `Today's morning dose.`,
+        body: notification[0] + ': ' + notification[1],
+        link: "https://my-meanings-server.onrender.com/sendLogFile"
+    })
+    webpush.sendNotification(subscription, payload)
+    .then(data => {
+        methods.log(`Notification sent from server on-8:15`)
+        res.json({
+            notified: 'Success',
+            CurrentDataCount: status.dataCount,
+            NotificationSent: notification[0] + ':   ' + notification[1],
         })
     })
-    .catch(err => console.log(err));
-    
-
-    
+    .catch(err => {
+        methods.log(err)
+        res.json({
+            notified: 'Failed',
+            error: err
+        })
+    })
+    // })
+    // .catch(err => console.log(err));
 })
 
 app.listen(process.env.PORT, () => {
