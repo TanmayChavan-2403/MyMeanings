@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const path = require('path');
 const express = require('express');
 const webpush = require('web-push');
@@ -11,7 +13,7 @@ let cors = require('cors');
 // Global variables
 var datePattern = /\d{4}-\d{2}-\d{2}/;
 var timePattern = /\d{1,2}:\d{1,2}:\d{1,2}/;
-const subscription = JSON.parse({"endpoint":"https://fcm.googleapis.com/fcm/send/cJJOIp4RMCs:APA91bFlXYfyYboQbRUiKUSMx2rBrnqSdsN676at31V3yvfYHvvPyE9JT7MZ2dAGv0TrQO9UZ9oLqQKqidLMVNY-9JVAa2RhynopDzz6rBAkFtJPhfskyS0WpwTAr31bZN5jECCFkD6S","expirationTime":null,"keys":{"p256dh":"BL03Vcd-S-ZAWnMEXbyB00hqep8zY2_ZL2YIVbfozEZ59T4bnG8ANFcqrUWo3VAYmjUMSxr33En3ZHyhOwmwqIs","auth":"FnSeCTk6oKMfYQ2XMz3DBg"}})
+const subscription = JSON.parse(process.env.SUBSCRIPTION_URL)
 
 // Applying settings of web-push
 
@@ -24,8 +26,8 @@ const subscription = JSON.parse({"endpoint":"https://fcm.googleapis.com/fcm/send
 
 webpush.setVapidDetails(
     "mailto:codebreakers1306@gmail.com",
-    "BJthRQ5myDgc7OSXzPCMftGw-n16F7zQBEN7EUD6XxcfTTvrLGWSIG7y_JxiWtVlCFua0S8MTB5rPziBqNx1qIo",
-    "3KzvKasA2SoCxsp0iIG_o9B0Ozvl1XDwI63JRKNIWBM"
+    process.env.PUBLIC_KEY,
+    process.env.PRIVATE_KEY
 )
 
 // Initializing instance of express app and Middleware
@@ -84,8 +86,8 @@ app.get('/notify', middleWare.populateIfLess, async (req, res) => {
     // .catch(err => console.log(err));
 })
 
-app.listen(4000, () => {
-    console.log('Listening to port ', 4000);
+app.listen(process.env.PORT, () => {
+    console.log('Listening to port ', process.env.PORT);
 })
 
 // Logging and sending notification of first set-up time to console and in file.
