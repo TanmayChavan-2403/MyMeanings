@@ -62,13 +62,13 @@ app.get('/notify', middleWare.populateIfLess, async (req, res) => {
     // methods.fetchSubscriptURL()
     // .then(subscription => {
     let payload = JSON.stringify({
-        title: `Today's morning dose.`,
-        body: notification[0] + ': ' + notification[1],
+        title: '🔔 Todays word:- ' + notification[0],
+        body: notification[1],
         link: "https://my-meanings-server.onrender.com/sendLogFile"
     })
     webpush.sendNotification(subscription, payload)
     .then(data => {
-        methods.log(`Notification sent from server on-8:15`)
+        methods.log(`Notification sent from server successfully [` + moment.tz('Asia/Kolkata').format() + ']')
         res.json({
             notified: 'Success',
             CurrentDataCount: status.dataCount,

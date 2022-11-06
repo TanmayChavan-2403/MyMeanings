@@ -1,1 +1,2 @@
-Notification sent from server on-8:15
+Notification sent from server successfully [
+Notification sent from server successfully [2022-11-06T11:51:54+05:30]
