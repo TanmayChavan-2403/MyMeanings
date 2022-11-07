@@ -2,7 +2,7 @@ import styles from "../stylesheets/topSection.module.css";
 import { storeDataInDb } from "../db/firebase";
 import * as ReactDOM from 'react-dom';
 import React, { useState, useEffect } from 'react';
-import {storeSubscription, getStatus, deleteSubscription} from '../db/firebase.js';
+import {storeSubscription, getInfo, deleteSubscription} from '../db/firebase.js';
 
 
 const Navbar = (props) => {
@@ -34,8 +34,8 @@ export const SearchBar = (props) => {
     const [notif, setNotif] = useState(false)
 
     useEffect(() => {
-        getStatus()
-        .then(res => setNotif(res))
+        getInfo()
+        .then(res => setNotif(res['notificationStatus']))
         .catch(err => pullDown(err))
     }, [])
 

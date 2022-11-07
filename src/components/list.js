@@ -28,7 +28,6 @@ class List extends Component{
 	render(){
 
 		const key = this.state.key;
-
 		const removeAndAppend = (child) => {
 			const parent = document.getElementById(`${styles.listContainer}`)
 			child.remove();

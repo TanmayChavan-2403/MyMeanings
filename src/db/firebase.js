@@ -5,31 +5,27 @@ import { getMessaging, getToken } from "firebase/messaging";
 import app, { messaging } from "./CONFIG.js"
 
 const db = getFirestore(app);
+const SIDocRef = doc(db, 'subscriptions', "info")
 
 export function deleteSubscription(){
 	return new Promise((resolve, reject) => {
 		const docRef = doc(db, 'subscriptions', 'client2');
-		const docRef2 = doc(db, 'subscriptions', 'status');
+		const docRef2 = doc(db, 'subscriptions', 'info');
 		setDoc(docRef, {
 			0: null
 		}, {merge: true})
 		setDoc(docRef2, {
-			1: false
+			notificationStatus: false
 		}, {merge: true})
 	})
 }
 
-export function getStatus(){
+export function getInfo(){
 	return new Promise(async(resolve, reject) => {
-		const docRef = doc(db, 'subscriptions', 'status')
+		const docRef = doc(db, 'subscriptions', 'info')
 		const docSnap = await getDoc(docRef)
-
 	 	if (docSnap.exists()) {
-			if (window.screen.width < 700){
-				resolve(docSnap.data()[1])
-			} else {
-				resolve(docSnap.data()[0])
-			}
+			resolve(docSnap.data())
 	 	} else {
 			// doc.data() will be undefined in this case
 			reject('Something went wrong in [getStatus]');
@@ -37,28 +33,33 @@ export function getStatus(){
 	})
 }
 
-export async function storeSubscription(subscription, status, client='client2'){
-	if (window.screen.width < 700){
-		client = 'client2'
-	} else {
-		client = 'client1'
+export function updateInfo(storageType, type=0){
+	if (type == 0){
+		try{
+			setDoc(SIDocRef, {storageQuestion: true,storageType: storageType}, {merge: true})
+		} catch(err){
+			console.log('ERROR: updateInfo(firebase.js) [TYPE 0]', err)
+		}
+	} else if (type == 1){
+		try {
+			setDoc(SIDocRef, {isDataStoredInLocalStorage: true}, {merge: true})
+		} catch (error) {
+			console.log('ERROR: updateInfo(firebase.js) [TYPE 1]', error)
+		}
 	}
+}
+
+export async function storeSubscription(subscription, status, client='client2'){
 	return new Promise((resolve, reject) => {
 		const docRef = doc(db, 'subscriptions', client)
-		const docRef2 = doc(db, 'subscriptions', 'status')
 		try{
 			setDoc(docRef, {
 				0: subscription
 			})
-			if (window.screen.width < 700){
-				setDoc(docRef2, {
-					1: status
-				}, {merge: true})
-			} else {
-				setDoc(docRef2, {
-					0: status
-				}, {merge: true})
-			}
+			// Update notificationStatus in database
+			setDoc(SIDocRef, {
+				notificationStatus: status
+			}, {merge: true})
 			resolve('Subscription URL saved to database Successfully!')
 		} catch(err) {
 			reject('Failed to save URL')

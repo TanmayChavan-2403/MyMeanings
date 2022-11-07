@@ -98,16 +98,17 @@
     height: 10%;
     display: flex;
     max-height: 80px;
-    align-items: center;
+    align-items: flex-end;
     justify-content: space-between;
+    border-bottom: 1px solid #777777;
 }
 
 .searchBar{
     width: 30%;
     height: 70%;
     overflow: hidden;
-    border-radius: 50px;
-    background-color: #777777;
+    /* border-radius: 50px; */
+    /* background-color: #777777; */
 }
 
 #searchInpField{
@@ -117,8 +118,8 @@
     height: 100%;
     font-weight: 600;
     font-size: 1.05rem;
-    padding: 0rem 1rem;
     letter-spacing: 1px; 
+    padding: 0rem 0.3rem;
     background-color: inherit;
 }
 
