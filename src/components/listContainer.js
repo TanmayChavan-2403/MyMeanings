@@ -4,7 +4,7 @@ import { getCollection, getInfo, updateInfo } from "../db/firebase";
 import styles from '../stylesheets/bottomSection.module.css';
 import Fallback from './fallbackComp.js'
 import { ReturnFunctionHandlerContext } from './context';
-const List = React.lazy(() => import('./list2'))
+const List = React.lazy(() => import('./list'))
 
 const ListContainer = (props) => {
 	let [flag, updateFlag] = useState(false);
@@ -145,7 +145,7 @@ const ListContainer = (props) => {
 				.then( (resp) => {
 					updateLists(resp)
 					if (doWeHaveToUpdateInfo){
-						console.log('Updating isDataStoredInLocalStorage')
+						// update isDataStoredInLocalStorage value in firestore
 						updateInfo('', 1)
 					}
 				})
@@ -163,11 +163,10 @@ const ListContainer = (props) => {
 			getInfo().
 			then(resp => {
 				if (!resp['storageQuestion']){
-					console.log('REACHINGHERE....')
 					setStorageQuestionAsked(false);
 				} else if(resp['storageType'] !== "sessionStorage"){
 					console.log('REACHINGHERE 2....')
-					// setting it to false because use selected localStorage.
+					// setting it to false because user selected localStorage.
 					setStorageQuestionAsked(true);
 					// Check if the user have stored the data in localStorage before
 					if (!resp['isDataStoredInLocalStorage']){
@@ -175,14 +174,19 @@ const ListContainer = (props) => {
 						fetchList(true)
 					} else {
 						console.log('No need to do API call, fetching from localStorage');
-						props.updatePinnedList(JSON.parse(window.localStorage.getItem('pinned')))
-						props.updateUnpinnedList(JSON.parse(window.localStorage.getItem('unpinned')))
+						if (window.localStorage.length == 0){
+							fetchList()
+							setStorageQuestionAsked(false);
+						} else {
+							props.updatePinnedList(JSON.parse(window.localStorage.getItem('pinned')))
+							props.updateUnpinnedList(JSON.parse(window.localStorage.getItem('unpinned')))
+							setStorageQuestionAsked(true);
+						}
 						setPinnedSortedStatus(true)
 						setUnpinnedSortedStatus(true)
 					}
 					setQuestionAsked(true)
 				} else if(resp['storageType'] === 'sessionStorage'){
-					console.log('log 3')
 					fetchList()
 				}
 				setStorageType(resp['storageType'])

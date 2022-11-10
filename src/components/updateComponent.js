@@ -7,8 +7,10 @@ const UpdateComponent = OriginalComponent => {
 		mountUnmount = () => {
 			let container = document.getElementById("portals").children[0];
 			if (container.getAttribute("data-status") == "close"){
-				const input = container.getElementsByClassName(`${styles.inputContainer}`)[0].children[0]
-				console.log(input)
+				let input = container.getElementsByClassName(`${styles.inputContainer}`)[0]
+				if (input === undefined){
+					input = container.getElementsByClassName(`${styles.inputContainer}`)[1]
+				}
 				container.style.display = 'flex';
 				container.style.transform = "scale(1)";
 				container.setAttribute("data-status", "open");

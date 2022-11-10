@@ -12,7 +12,7 @@ const AddNewTask = (props) => {
 	const [folderNames, updateFolderNames] = useState([]);
 	const [folderName, updateFolderName ] = useState("mix");
 	const [isNewfolder, updateisNewFolder] = useState(false);
-	
+	const [tooltipState, setTooltipState] = useState({opacity: '0'})
 
 	useEffect(() => {
 		getFolderInfo()
@@ -81,6 +81,19 @@ const AddNewTask = (props) => {
 		}
 	}
 
+	function pasteTextInInputField(){
+		
+		navigator.permissions.query({ name: "clipboard-read" })
+		.then(result => {
+			navigator.clipboard.readText()
+			.then(clipText => {
+				updateMeaning(clipText);
+				setTooltipState({opacity: '0'})
+			});
+		})
+		.catch(err => console.log(err))
+	}
+
 	return ReactDOM.createPortal(
 		<>
 			<div id={styles.taskBgSupport} data-status="close">
@@ -88,9 +101,22 @@ const AddNewTask = (props) => {
 					<div className={styles.closeBtnContainer}>
 						<img onClick={props.mountUnmount} src="./icons/closeIcon.svg" />
 					</div>
-					<div className={styles.inputContainer}>
-						<input onChange={(e) => updateWord(e.target.value)} value={word} type="text" placeholder="word"/>
-						<input onChange={(e) => updateMeaning(e.target.value)} value={meaning} type="text" placeholder="meaning"/>
+					<div className={styles.globalInputContainer}>
+						<div className={styles.inputContainer1}>
+							<input onChange={(e) => updateWord(e.target.value)} value={word} type="text" placeholder="word"/>
+						</div>
+						<div className={styles.inputContainer2}>
+							<span onClick={pasteTextInInputField} style={tooltipState} className={styles.toolTip}>Paste here! 👇</span>
+							<input 
+								onBlur={(e) => setTooltipState({opacity: '0'})}
+								onClick={(e) => setTooltipState({opacity: '1'})}
+								onChange={(e) => {
+									updateMeaning(e.target.value);
+									e.target.value === "" ? setTooltipState({opacity: '1'}) : setTooltipState({opacity: '0'})
+								}}
+							value={meaning} type="text" placeholder="meaning"/>
+							<img className={styles.clearIcon} onClick={(e) => updateMeaning("")} src='./icons/crossMark.png' />
+						</div>
 					</div>
 					<div className={styles.settings}>
 						<div className={styles.pin} data-status="no">
