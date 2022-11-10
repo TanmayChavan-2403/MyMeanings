@@ -16,7 +16,6 @@ const Newtask = (props) => {
 		<>
 			<div className={styles.newTask}>
 				<button id={styles.newTaskBtn} onClick={props.mountUnmount}>
-				{/*<button id={styles.newTaskBtn} onClick={requestPermission}>*/}
 					<span style={{fontSize: "1.3rem", margin: "0px 4px"}}>+</span>
 					<p> New Task </p>
 				</button>

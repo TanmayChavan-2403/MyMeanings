@@ -35,7 +35,6 @@ const AddNewTask = (props) => {
 		}
 	}
 
-
 	function submit(e){
 		if (word.length !== 0 && meaning.length !== 0 && folderName.length !== 0){
 			storeDataInDb({word, meaning, pinned, folderName, isNewfolder})
@@ -90,8 +89,8 @@ const AddNewTask = (props) => {
 						<img onClick={props.mountUnmount} src="./icons/closeIcon.svg" />
 					</div>
 					<div className={styles.inputContainer}>
-						<input onChange={(e) => updateWord(e.target.value)} type="text" placeholder="word"/>
-						<input onChange={(e) => updateMeaning(e.target.value)} type="text" placeholder="meaning"/>
+						<input onChange={(e) => updateWord(e.target.value)} value={word} type="text" placeholder="word"/>
+						<input onChange={(e) => updateMeaning(e.target.value)} value={meaning} type="text" placeholder="meaning"/>
 					</div>
 					<div className={styles.settings}>
 						<div className={styles.pin} data-status="no">

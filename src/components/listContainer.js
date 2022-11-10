@@ -1,71 +1,85 @@
 // import List from './list';
 import React, { Suspense, useState, useEffect, useRef } from 'react';
-import styles from '../stylesheets/bottomSection.module.css';
 import { getCollection, getInfo, updateInfo } from "../db/firebase";
+import styles from '../stylesheets/bottomSection.module.css';
 import Fallback from './fallbackComp.js'
-const List = React.lazy(() => import('./list'))
+import { ReturnFunctionHandlerContext } from './context';
+const List = React.lazy(() => import('./list2'))
 
 const ListContainer = (props) => {
-	let [unPinned, updateUnpinnedList] = useState([])
-	let [pinned, updatePinnedList] = useState([])
-	let [listFetched, updateListStatus] = useState(false);
-	let [element, updateElement] = useState(null);
 	let [flag, updateFlag] = useState(false);
-	let [storageQuestionAsked, setStorageQuestionAsked] = useState(true)
-	let [storageType, setStorageType] = useState("sessionStorage");
+	let [element, updateElement] = useState(null);
+	let [listFetched, updateListStatus] = useState(false);
 	let [questionAsked, setQuestionAsked] = useState(null)
+	let [storageType, setStorageType] = useState("sessionStorage");
 	let [isPinnedArraySorted, setPinnedSortedStatus] = useState(false);
+	let [storageQuestionAsked, setStorageQuestionAsked] = useState(true)
 	let [isUnpinnedArraySorted, setUnpinnedSortedStatus] = useState(false);
+	
+	// It is used to store the incoming data until its sorted
+	let [tempPinnedList, setTempPinnedList] = useState([]);
+	let [tempUnpinnedList, setTempUnpinnedList] = useState([]);
 
 	const updateLists = (param, tagged=false) => {
-		let tempPinnedList = []
-		let tempUnpinnedList = []
+		
 		console.log('Updating list.');
-		if (tagged) {
-			// To empty the list before filling in the tagged list where all the meanings
-			// of same author will be displayed
-			updatePinnedList([]);
-			updateUnpinnedList([]);
-			for (const prop in param.data()){
-				if (param.data()[prop]["pinned"]) {
-					// updatePinnedList(oldElements => [...oldElements, {[prop]: param.data()[prop]}])
-					tempPinnedList.push({[prop]: param.data()[prop]})
+
+		// Iterating through the response and seperating the pinned and unpinned data
+		param.forEach( (data) => {
+			for (const prop in data.data()){
+				if (data.data()[prop]["pinned"]) {
+					// props.updatePinnedList(oldElements => [...oldElements, {[prop]: data.data()[prop]}])
+					setTempPinnedList(oldElements => [...oldElements, {[prop]: data.data()[prop]}])
+					// tempPinnedList.push({[prop]: data.data()[prop]})
 				} else {
-					// updateUnpinnedList(oldElements => [...oldElements, {[prop]: param.data()[prop]}])
-					tempUnpinnedList.push({[prop]: param.data()[prop]})
-				}	
-			}
-		} else {
-			// Iterating through the response and seperating the pinned and unpinned data
-			param.forEach( (data) => {
-				for (const prop in data.data()){
-					if (data.data()[prop]["pinned"]) {
-						// updatePinnedList(oldElements => [...oldElements, {[prop]: data.data()[prop]}])
-						tempPinnedList.push({[prop]: data.data()[prop]})
-					} else {
-						// updateUnpinnedList(oldElements => [...oldElements, {[prop]: data.data()[prop]}])
-						tempUnpinnedList.push({[prop]: data.data()[prop]})
-					}
+					// props.updateUnpinnedList(oldElements => [...oldElements, {[prop]: data.data()[prop]}])
+					setTempUnpinnedList(oldElements => [...oldElements, {[prop]: data.data()[prop]}])
+					// tempUnpinnedList.push({[prop]: data.data()[prop]})
 				}
-			})
-		}
-		updatePinnedList(prevItems => [...prevItems, ...tempPinnedList])
-		updateUnpinnedList(prevItems => [...prevItems, ...tempUnpinnedList])
+			}
+		})
+		// props.updatePinnedList(prevItems => [...prevItems, ...tempPinnedList])
+		// props.updateUnpinnedList(prevItems => [...prevItems, ...tempUnpinnedList])
 	}
 
 	const listTaggedAuthor = (tag) => {
-		console.log(`Listing tagged author's list ${tag}`);
-		getCollection("folders", tag)
-		.then(resp => {
-			if (resp.exists()){
-				// console.log(resp.data());
-				updateLists(resp, true)
-			} else {
-				console.log('ERROR!');
+		let pinnedList;
+		let unpinnedList;
+
+		// Checking where our data is stored, In sessionStorage or localStorage?
+		if (storageType == 'sessionStorage'){
+			pinnedList = JSON.parse(window.sessionStorage.getItem('pinned'));
+			unpinnedList = JSON.parse(window.sessionStorage.getItem('unpinned'));
+		} else {
+			pinnedList = JSON.parse(window.localStorage.getItem('pinned'));
+			unpinnedList = JSON.parse(window.localStorage.getItem('unpinned'));
+		}
+		let tempPinnedList = [];
+		let tempunPinnedList = [];
+
+		// Iterate over the pinned and unpinned array and extracting the data requested by the user.
+		for (const [__, obj] of Object.entries(pinnedList)){
+			let key = Object.keys(obj)[0]
+			let folder = obj[key].tag;
+			if (folder === tag.slice(0, 5)){
+				tempPinnedList.push(obj)
 			}
-			// updateLists(resp, true);
-		})
-		.catch(err => console.log(err))
+		}
+		for (const [__, obj] of Object.entries(unpinnedList)){
+			let key = Object.keys(obj)[0]
+			let folder = obj[key].tag;
+			if (folder === tag.slice(0, 5)){
+				tempunPinnedList.push(obj)
+			}
+		}
+
+		// Updating the pinned and unpinned states so that it will re-render the component updating the 
+		// data in the list.
+		props.updateUnpinnedList(tempunPinnedList)
+		props.updatePinnedList(tempPinnedList)
+
+		// Enabling the back button
+		props.updateReturnBtnStatue()
 	}
 
 	function toggle(menu){
@@ -96,7 +110,8 @@ const ListContainer = (props) => {
 
 	window.onclick = (e) => {
 		// const src = "https://myvocabspace.web.app/icons/three-dots.svg"
-		const src = "http://localhost:3000/icons/three-dots.svg"
+		// const src = "http://localhost:3000/icons/three-dots.svg"
+		const src = window.location.href + "icons/three-dots.svg"
 		if (e.target.src !== src && element){
 			toggle(element)
 			updateElement(null)
@@ -148,18 +163,20 @@ const ListContainer = (props) => {
 			getInfo().
 			then(resp => {
 				if (!resp['storageQuestion']){
-					setStorageQuestionAsked(true);
-				} else if(resp['storageType'] !== "sessionStorage"){
-					// setting it to false because use selected localStorage.
+					console.log('REACHINGHERE....')
 					setStorageQuestionAsked(false);
+				} else if(resp['storageType'] !== "sessionStorage"){
+					console.log('REACHINGHERE 2....')
+					// setting it to false because use selected localStorage.
+					setStorageQuestionAsked(true);
 					// Check if the user have stored the data in localStorage before
 					if (!resp['isDataStoredInLocalStorage']){
 						// Responsible for fetching data from database and updating states accordingly.
 						fetchList(true)
 					} else {
 						console.log('No need to do API call, fetching from localStorage');
-						updatePinnedList(JSON.parse(window.localStorage.getItem('pinned')))
-						updateUnpinnedList(JSON.parse(window.localStorage.getItem('unpinned')))
+						props.updatePinnedList(JSON.parse(window.localStorage.getItem('pinned')))
+						props.updateUnpinnedList(JSON.parse(window.localStorage.getItem('unpinned')))
 						setPinnedSortedStatus(true)
 						setUnpinnedSortedStatus(true)
 					}
@@ -174,37 +191,39 @@ const ListContainer = (props) => {
 		}
 
 		// Sorting the pinned array
-		if (pinned.length > 0 && !isPinnedArraySorted){
+		if (tempPinnedList.length > 0 && !isPinnedArraySorted){
 			console.log('sorting pinned array')
-			pinned.sort((a, b) => {
-				return Object.keys(a)[0].toLowerCase() > Object.keys(b)[0].toLocaleLowerCase()
+			tempPinnedList.sort((a, b) => {
+				return Object.keys(a)[0].toLowerCase() > Object.keys(b)[0].toLowerCase() ? 1 : -1;
 			})
 			if (storageType == 'sessionStorage'){
-				window.sessionStorage.setItem('pinned', JSON.stringify(pinned))
+				window.sessionStorage.setItem('pinned', JSON.stringify(tempPinnedList))
 				window.localStorage.removeItem('pinned') 
 			} else {
-				window.localStorage.setItem('pinned', JSON.stringify(pinned))
+				window.localStorage.setItem('pinned', JSON.stringify(tempPinnedList))
 			}
 			setPinnedSortedStatus(true)
+			props.updatePinnedList(prevItems => [...prevItems, ...tempPinnedList])
 		}
 
 		// Sorting unpinned array
-		if (unPinned.length > 0 && !isUnpinnedArraySorted){
+		if (tempUnpinnedList.length > 0 && !isUnpinnedArraySorted){
 			console.log('sorting unPinned array')
-			unPinned.sort((a, b) => {
-				return Object.keys(a)[0].toLowerCase() > Object.keys(b)[0].toLocaleLowerCase()
+			tempUnpinnedList.sort((a, b) => {
+				return Object.keys(a)[0].toLowerCase() > Object.keys(b)[0].toLowerCase() ? 1 : -1;
 			})
 			if (storageType == 'sessionStorage'){
-				window.sessionStorage.setItem('unpinned', JSON.stringify(unPinned))
+				window.sessionStorage.setItem('unpinned', JSON.stringify(tempUnpinnedList))
 				window.localStorage.removeItem('unpinned')
 			} else {
-				window.localStorage.setItem('unpinned', JSON.stringify(unPinned))
+				window.localStorage.setItem('unpinned', JSON.stringify(tempUnpinnedList))
 			}
 			setUnpinnedSortedStatus(true)
+			props.updateUnpinnedList(prevItems => [...prevItems, ...tempUnpinnedList])
 		}
 
 		console.log('Executed useEffect...')
-	}, [pinned, unPinned, storageQuestionAsked]);
+	}, [tempPinnedList, tempUnpinnedList, storageQuestionAsked]);
 
 	return(
 		<>
@@ -220,29 +239,28 @@ const ListContainer = (props) => {
 			
 				{
 					
-					pinned.map(list => {
+					props.pinned.map(list => {
 						return(
-								<List 
-									data={list}
-									checkForToggleClearance = {checkForToggleClearance}
-									listTaggedAuthor = {listTaggedAuthor}
-									highLight = {highLight}
-								/>
-							
+							<List
+								key = {Object.keys(list)[0]}
+								data={list}
+								checkForToggleClearance = {checkForToggleClearance}
+								listTaggedAuthor = {listTaggedAuthor}
+								highLight = {highLight}
+							/>
 						)
 					})
 				}
 				{
-					unPinned.map(list => {
+					props.unPinned.map(list => {
 						return(
-							<Suspense fallback={<Fallback />}>
 								<List 
+								key = {Object.keys(list)[0]}
 									data={list}
 									checkForToggleClearance = {checkForToggleClearance}
 									listTaggedAuthor = {listTaggedAuthor}
 									highLight = {highLight}
 								/>
-							</Suspense>
 						)
 					})
 				}
@@ -254,7 +272,7 @@ const ListContainer = (props) => {
 const StorageConsentContainer = props => {
 	
 	return(
-		<div className={styles.storageConsent}>
+		<div className={styles.storageConsent} key="storageConsent">
 			<div className={styles.closeDialogue}>
 				<img src="./icons/closeIcon.svg" className={styles.closeDialogueImage} />
 			</div>
@@ -284,3 +302,8 @@ const StorageConsentContainer = props => {
 }
 
 export default ListContainer;
+
+
+// 1) Pinned and unpinned props are being used in return and sorting function(in useEffect)
+// 2) updateUnpinnedList and updatePinnedList update functions are being used in ..
+// [updateLists, ListTaggedAuthor, useEffect] functions.

@@ -16,6 +16,7 @@ class List extends Component{
 	}
 
 	static getDerivedStateFromProps(props, state){
+		console.log(state.key, state.checked, props.data, Object.keys(props.data))
 		return {
 			key: Object.keys(props.data)[0]
 		}
@@ -28,6 +29,7 @@ class List extends Component{
 	render(){
 
 		const key = this.state.key;
+
 		const removeAndAppend = (child) => {
 			const parent = document.getElementById(`${styles.listContainer}`)
 			child.remove();
