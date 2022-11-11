@@ -100,12 +100,8 @@ export const storeDataInDb = (data) =>{
 
   // Check if user have create new folder
   if (isNewfolder) addNewFolder(folderName);
-  let docRef;
-  if (folderName == "mix"){
-  	docRef = doc(db, "mix", folderName);
-  } else {
-  	docRef = doc(db, "folders", folderName)
-  }
+  
+  let docRef = doc(db, "folders", folderName)
   return new Promise((resolve, reject) => {
 		try{
 		  setDoc(docRef, 
@@ -200,18 +196,12 @@ export const removeFromCompletedList = (data, key) => {
 }
 
 const updateWordStatus = (data, key, status) => {
-	let docRef;
-  	if (data[key]["docId"] === "mix"){
-		docRef = doc(db, "mix", "mix");
-  	} else {
-		docRef = doc(db, "folders", data[key]["docId"]);
-  	}
+	let docRef = doc(db, "folders", data[key]["docId"]);
   	setDoc(docRef, {
   		[key]: {
   			isComplete: status
   		}
   	}, {merge: true})
-
 }
 
 export const updatePinStatus = (data, key, action) => {
@@ -220,14 +210,8 @@ export const updatePinStatus = (data, key, action) => {
 	} else {
 		action = false
 	}
-	let docRef;
-	if (data[key]["docId"] === "mix"){
-		docRef = doc(db, "mix", "mix");
-  	} else {
-		docRef = doc(db, "folders", data[key]["docId"]);
-  	}
+	let docRef = doc(db, "folders", data[key]["docId"]);
 	return new Promise((resolve, reject) => {
-
 		try{
 			setDoc(docRef, {
 				[key] : {
@@ -241,38 +225,9 @@ export const updatePinStatus = (data, key, action) => {
 	})
 }
 
-// export const requestPermission = () => {
-// 	console.log('Requesting permission...');
-// 	Notification.requestPermission().then((permission) => {
-// 	    if (permission === 'granted') {
-// 	    	console.log('Notification permission granted.');
-// 	    }
-// 	})
-
-// 	// Get registration token. Initially this makes a network call, once retrieved
-// 	// subsequent calls to getToken will return from cache.
-// 	const messaging = getMessaging();
-// 	getToken(messaging, { vapidKey: 'BAXNz7PVOJ9CX-asU4B8RV1sx5a_2dgLXCOQEd8-IOBL2AcY1E6PgVYxDYz6Lw2mWA5hbI4bQnXeqQrNRI8ZLJI' })
-// 	.then((currentToken) => {
-// 	  if (currentToken) {
-// 	  	console.log(currentToken);
-// 	  } else {
-// 	    // Show permission request UI
-// 	    console.log('No registration token available. Request permission to generate one.');
-// 	  }
-// 	}).catch((err) => {
-// 	  console.log('An error occurred while retrieving token. ', err);
-// 	});
-// }
-
 export const deleteListFromDB = (key, data) => {
 	return new Promise( (resolve, reject) => {
-		let docRef
-		if (data[key]["tag"]){
-			docRef = doc(db, 'folders', data[key]['docId'])
-		} else {
-			docRef = doc(db, 'mix', data[key]['docId'])
-		}
+		let docRef = doc(db, 'folders', data[key]['docId'])
 		try{
 			updateDoc(docRef, {
 				[key]: deleteField()
@@ -282,5 +237,4 @@ export const deleteListFromDB = (key, data) => {
 			reject(err);
 		}
 	})
-
 }

@@ -12,8 +12,10 @@ const ListContainer = (props) => {
 	let [listFetched, updateListStatus] = useState(false);
 	let [questionAsked, setQuestionAsked] = useState(null)
 	let [storageType, setStorageType] = useState("sessionStorage");
-	let [isPinnedArraySorted, setPinnedSortedStatus] = useState(false);
 	let [storageQuestionAsked, setStorageQuestionAsked] = useState(true)
+	
+	// Sorted status of pinned and unpinned data.
+	let [isPinnedArraySorted, setPinnedSortedStatus] = useState(false);
 	let [isUnpinnedArraySorted, setUnpinnedSortedStatus] = useState(false);
 	
 	// It is used to store the incoming data until its sorted
@@ -137,7 +139,7 @@ const ListContainer = (props) => {
 
 	function fetchList(doWeHaveToUpdateInfo = false){
 		if (!listFetched){
-			console.log("Fetching...");
+			console.log("Fetching data from database...");
 			getCollection("folders")
 			.then( (resp) => {
 				updateLists(resp);
@@ -146,6 +148,7 @@ const ListContainer = (props) => {
 					updateLists(resp)
 					if (doWeHaveToUpdateInfo){
 						// update isDataStoredInLocalStorage value in firestore
+						// if the user have selected localStorage as the storage type.
 						updateInfo('', 1)
 					}
 				})
@@ -153,7 +156,7 @@ const ListContainer = (props) => {
 			})
 			.catch(err => console.log(err))
 		} else {
-			console.log("Already fetched");
+			console.log("Already fetched, not fetching again.");
 		}
 	}
 
@@ -163,25 +166,25 @@ const ListContainer = (props) => {
 			getInfo().
 			then(resp => {
 				if (!resp['storageQuestion']){
+					// Setting it false will show the container of asking question,
+					// where the user will select the storage type.
 					setStorageQuestionAsked(false);
 				} else if(resp['storageType'] !== "sessionStorage"){
-					console.log('REACHINGHERE 2....')
-					// setting it to false because user selected localStorage.
+					// Setting "storageQuestionAsked" state to true as the user have already
+					// selected the storageType
 					setStorageQuestionAsked(true);
+
 					// Check if the user have stored the data in localStorage before
-					if (!resp['isDataStoredInLocalStorage']){
-						// Responsible for fetching data from database and updating states accordingly.
+					if (!resp['isDataStoredInLocalStorage'] || window.localStorage.length === 0){
+						// will check if the data is stored in the localStorage, if not then 
+						// will fetch the data and update "isDataStoredInLocalStorage" field in the database
+						// simultaneously saving the data in localStorage.
+						console.log('Data not found in localStorage, fetching again!')
 						fetchList(true)
 					} else {
 						console.log('No need to do API call, fetching from localStorage');
-						if (window.localStorage.length == 0){
-							fetchList()
-							setStorageQuestionAsked(false);
-						} else {
-							props.updatePinnedList(JSON.parse(window.localStorage.getItem('pinned')))
-							props.updateUnpinnedList(JSON.parse(window.localStorage.getItem('unpinned')))
-							setStorageQuestionAsked(true);
-						}
+						props.updatePinnedList(JSON.parse(window.localStorage.getItem('pinned')))
+						props.updateUnpinnedList(JSON.parse(window.localStorage.getItem('unpinned')))
 						setPinnedSortedStatus(true)
 						setUnpinnedSortedStatus(true)
 					}
@@ -196,13 +199,13 @@ const ListContainer = (props) => {
 
 		// Sorting the pinned array
 		if (tempPinnedList.length > 0 && !isPinnedArraySorted){
-			console.log('sorting pinned array')
+			console.log('Sorting pinned array...')
 			tempPinnedList.sort((a, b) => {
 				return Object.keys(a)[0].toLowerCase() > Object.keys(b)[0].toLowerCase() ? 1 : -1;
 			})
 			if (storageType == 'sessionStorage'){
 				window.sessionStorage.setItem('pinned', JSON.stringify(tempPinnedList))
-				window.localStorage.removeItem('pinned') 
+				window.localStorage.removeItem('pinned') //Removing just in case we have stored it before.
 			} else {
 				window.localStorage.setItem('pinned', JSON.stringify(tempPinnedList))
 			}
@@ -218,7 +221,7 @@ const ListContainer = (props) => {
 			})
 			if (storageType == 'sessionStorage'){
 				window.sessionStorage.setItem('unpinned', JSON.stringify(tempUnpinnedList))
-				window.localStorage.removeItem('unpinned')
+				window.localStorage.removeItem('unpinned') //Removing just in case we have stored it before.
 			} else {
 				window.localStorage.setItem('unpinned', JSON.stringify(tempUnpinnedList))
 			}
@@ -311,3 +314,8 @@ export default ListContainer;
 // 1) Pinned and unpinned props are being used in return and sorting function(in useEffect)
 // 2) updateUnpinnedList and updatePinnedList update functions are being used in ..
 // [updateLists, ListTaggedAuthor, useEffect] functions.
+
+
+// TODO's
+// shift the handler modal code and the newTask to main.js
+// Handle "NewTask" shit.
