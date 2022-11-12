@@ -4,23 +4,6 @@ import styles from "../stylesheets/main.module.css";
 const UpdateComponent = OriginalComponent => {
 	class NewComponent extends React.Component {
 
-		mountUnmount = () => {
-			let container = document.getElementById("portals").children[0];
-			if (container.getAttribute("data-status") == "close"){
-				let input = container.getElementsByClassName(`${styles.inputContainer}`)[0]
-				if (input === undefined){
-					input = container.getElementsByClassName(`${styles.inputContainer}`)[1]
-				}
-				container.style.display = 'flex';
-				container.style.transform = "scale(1)";
-				container.setAttribute("data-status", "open");
-			} else{
-				container.style.display = 'none';
-				container.style.transform = "scale(0)";
-				container.setAttribute("data-status", "close");
-			}
-		}
-
 		pullDown = (text) => {
 		    let portal = document.getElementById(`portals`).children;
 		    let modal;

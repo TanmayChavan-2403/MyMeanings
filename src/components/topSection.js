@@ -221,25 +221,25 @@ export const SearchBar = (props) => {
                         <div className={styles.searchBar}>
                             <input onChange={(e) => updateListContainer(e)} type="text" placeholder="Search here..." value={searchText} id={styles.searchInpField} />
                         </div>
-                        <div style={{display: 'flex'}}>
-                            <div className={styles.icon}>
+                        <div style={{display: 'flex'}} className={styles.icons}>
+                            {/* <div className={styles.icon}> */}
                                 {
                                     shouldWeReturn ? 
-                                    <img src="./icons/backArrowBlue.png" onClick={goBack}/> : 
-                                    <img src="./icons/backArrowGrey.png" style={{cursor: 'default'}}/>
+                                    <img src="./icons/backArrowWhite.png" onClick={goBack}/> : 
+                                    <img src="./icons/backArrowGrey.png" style={{cursor: 'not-allowed'}}/>
                                     
                                 }
-                            </div>
-                            <div className={styles.icon}>
-                                <img src="./icons/addIcon1.png" />
-                            </div>
-                            <div className={styles.icon} onClick={udpateSubscriptionStatus}>
+                            {/* </div> */}
+                            {/* <div className={styles.icon}> */}
+                                <img src="./icons/addIcon.png" onClick={(e) => props.newStateStyles[1]({display: "flex", transform: "scale(1)"})} />
+                            {/* </div> */}
+                            {/* <div className={styles.icon} onClick={udpateSubscriptionStatus}> */}
                                 {
                                     notif ? 
-                                    <img src="./icons/notification-active.png"/> : 
-                                    <img src="./icons/notirication-notActive.png" />
+                                    <img src="./icons/notificationOn.png"/> : 
+                                    <img src="./icons/notificationOff.png" />
                                 }
-                            </div>
+                            {/* </div> */}
                         </div>
                     </div>
                 )
