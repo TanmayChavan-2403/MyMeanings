@@ -36,6 +36,7 @@ export const SearchBar = (props) => {
     const [searchText, setSearchText] = useState("")
     const [notificationStatus, setNotificationStatus] = useState(false)
     const [storagetype, setStorageType] = useState('localStorage')
+    const [error, setError] = useState(null)
 
     useEffect(() => {
         if (!notificationStatus){
@@ -45,9 +46,12 @@ export const SearchBar = (props) => {
                 setStorageType(res['storageType'])
                 setNotificationStatus(true)
             })
-            .catch(err => pullDown(err))
+            .catch(error => {
+                // PullDown Modal component and show message
+                props.updateModal('[51]Error while gettingInfo', true)
+                setError(error)
+            })
         }
-        
     }, [])
 
     const udpateSubscriptionStatus = () => {
@@ -56,9 +60,10 @@ export const SearchBar = (props) => {
                 reg.pushManager.getSubscription().then((subscription) => {
                   subscription.unsubscribe().then((successful) => {
                     deleteSubscription()
-                    pullDown('Unsubscribed Successfully')
-                  }).catch((e) => {
-                    pullDown('ERROR! while unsubscribing', e)
+                    props.updateModal('Unsubscribed ')
+                  }).catch((error) => {
+                    props.updateModal('[79]Error while unsubscribing', true)
+                    setError(error)
                   })
                 })
             });
@@ -83,7 +88,7 @@ export const SearchBar = (props) => {
         const register = await navigator.serviceWorker.register('./service-worker.js',{
             scope: "/"
         })
-        pullDown('Service Worker is registered successfully!')
+        props.updateModal('Service Worker is registered !')
         myConsole('Service Worker is registered successfully!');
 
         // STEP 2 Getting subscription of PUSH API
@@ -98,12 +103,12 @@ export const SearchBar = (props) => {
         .then(resp => {
             console.log(resp);
             setTimeout(() => {
-                pullDown(resp)
-            }, 1500)
-        }).catch(err => {
-            console.log(err);
+                props.updateModal(resp)
+        }, 1500)
+        }).catch(error => {
             setTimeout(() => {
-                pullDown(err)
+                props.updateModal('Failed to save URL in database', true)
+                setError(error)
             }, 1500)
         })
     }
@@ -129,22 +134,6 @@ export const SearchBar = (props) => {
       return outputArray;
     }
 
-    const pullDown = (text) => {
-        let portal = document.getElementById(`portals`).children;
-        let modal;
-        if (portal[1].id.includes("modal")){
-            modal = portal[1];
-        }
-        else{
-            modal = portal[0];
-        }
-        modal.children[2].children[0].innerText = text;
-        modal.style.top = "10px";
-        setTimeout(()=>{
-            modal.style.top = "-100px";
-        }, 3000)
-    }
-
     const goBack = () => {
         if (window.localStorage.length === 0){
             props.updatePinnedList(JSON.parse(window.sessionStorage.getItem('pinned')))
@@ -158,8 +147,6 @@ export const SearchBar = (props) => {
 
     const updateListContainer = (e) => {
         if (e.target.value === ""){
-            console.log('we got notthing, turning back :(')
-            setSearchText(e.target.value)
             if (storagetype == 'sessionStorage'){
                 props.updatePinnedList(JSON.parse(window.sessionStorage.getItem('pinned')))
                 props.updateUnpinnedList(JSON.parse(window.sessionStorage.getItem('unpinned')))
@@ -167,6 +154,7 @@ export const SearchBar = (props) => {
                 props.updatePinnedList(JSON.parse(window.localStorage.getItem('pinned')))
                 props.updateUnpinnedList(JSON.parse(window.localStorage.getItem('unpinned')))
             }
+            setSearchText("")
             return
         }
         // Updating the searchText which will reflect in search bar.
@@ -194,7 +182,6 @@ export const SearchBar = (props) => {
             JSON.parse(window.localStorage.getItem('pinned')).map(obj => {
                 let word = Object.keys(obj)[0].toLowerCase()
                 if (word.startsWith(e.target.value.toLowerCase())){
-                    console.log(word);
                     tempPinnedList.push(obj)
                 }
             })
@@ -202,7 +189,6 @@ export const SearchBar = (props) => {
             JSON.parse(window.localStorage.getItem('unpinned')).map(obj => {
                 let word = Object.keys(obj)[0].toLowerCase()
                 if (word.startsWith(e.target.value.toLowerCase())){
-                    console.log(word);
                     tempUnpinnedList.push(obj)
                 }
             })
@@ -210,6 +196,12 @@ export const SearchBar = (props) => {
         
         props.updatePinnedList(tempPinnedList)
         props.updateUnpinnedList(tempUnpinnedList)
+    }
+
+    const refresh = (e) => {
+        window.localStorage.clear()
+        window.sessionStorage.clear()
+        window.location.reload();
     }
 
     return(
@@ -222,24 +214,19 @@ export const SearchBar = (props) => {
                             <input onChange={(e) => updateListContainer(e)} type="text" placeholder="Search here..." value={searchText} id={styles.searchInpField} />
                         </div>
                         <div style={{display: 'flex'}} className={styles.icons}>
-                            {/* <div className={styles.icon}> */}
-                                {
-                                    shouldWeReturn ? 
-                                    <img src="./icons/backArrowWhite.png" onClick={goBack}/> : 
-                                    <img src="./icons/backArrowGrey.png" style={{cursor: 'not-allowed'}}/>
-                                    
-                                }
-                            {/* </div> */}
-                            {/* <div className={styles.icon}> */}
-                                <img src="./icons/addIcon.png" onClick={(e) => props.newStateStyles[1]({display: "flex", transform: "scale(1)"})} />
-                            {/* </div> */}
-                            {/* <div className={styles.icon} onClick={udpateSubscriptionStatus}> */}
-                                {
-                                    notif ? 
-                                    <img src="./icons/notificationOn.png"/> : 
-                                    <img src="./icons/notificationOff.png" />
-                                }
-                            {/* </div> */}
+                            <img src='./icons/refresh.png' onClick={refresh} />
+                            {
+                                shouldWeReturn ? 
+                                <img src="./icons/backArrowWhite.png" onClick={goBack}/> : 
+                                <img src="./icons/backArrowGrey.png" style={{cursor: 'not-allowed'}}/>
+                                
+                            }
+                            <img src="./icons/addIcon.png" onClick={(e) => props.newStateStyles[1]({display: "flex", transform: "scale(1)"})} />
+                            {
+                                notif ? 
+                                <img src="./icons/notificationOn.png"/> : 
+                                <img src="./icons/notificationOff.png" />
+                            }
                         </div>
                     </div>
                 )
@@ -257,13 +244,13 @@ export const Modal = (props) => {
 
     return ReactDOM.createPortal(
         <>
-            <div id={styles.modal}>
-                <div className={styles.colorBar}></div>
+            <div id={styles.modal} style={{top: props.modalTopPosition}}>
+                <div style={{backgroundColor: props.modalMsgType}} className={styles.colorBar}></div>
                 <div className={styles.logoSec}>
                     <img src="icon.png" />
                 </div>
                 <div className={styles.message}>
-                    <p>Uploaded successfully</p>
+                    <p>{props.modalDisplayText}</p>
                 </div>
                 <div onClick={closeModal} className={styles.closeButton}>
                     <img src="icons/close.svg"/>

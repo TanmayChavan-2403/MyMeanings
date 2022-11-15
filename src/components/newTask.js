@@ -1,7 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import ReactDOM from 'react-dom';
 import styles from "../stylesheets/main.module.css";
-import UpdateComponent from './updateComponent.js';
 import { storeDataInDb, getFolderInfo } from "../db/firebase.js";
 
 
@@ -43,14 +42,15 @@ const AddNewTask = (props) => {
 				updateWord("");
 				updateMeaning("")
 				updatePin(false)
-				
-				props.pullDownModal(resp);
-				props.mountUnmount();
-				
+				props.updateModal(resp);
+				props.newStateStyles[1]({display: "none", transform: "scale(0)"})
 			})
-			.catch(err => props.pullDownModal(err))
+			.catch(err => {
+				console.log('ERROR here')
+				props.updateModal(err, true)
+			})
 		} else {
-			props.pullDownModal("Please check all fields are filled properly");
+			props.updateModal("Please check all fields are filled properly", false, true);
 		}
 	}
 

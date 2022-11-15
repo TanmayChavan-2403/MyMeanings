@@ -97,7 +97,7 @@
     width: 100%;
     display: flex;
     max-height: 80px;
-    padding: 15px 0px;
+    padding: 15px 0px 5px 0px;
     align-items: flex-end;
     justify-content: space-between;
     border-bottom: 1px solid #777777;
@@ -167,7 +167,7 @@
 
 
 #modal{
-    top: -100px;
+    /* top: -100px; */
     right: 10px;
     width: 350px;
     height: 50px;
@@ -183,7 +183,6 @@
 .colorBar{
     width: 2.5%;
     height: 100%;
-    background-color: green;
 }
 
 .logoSec{

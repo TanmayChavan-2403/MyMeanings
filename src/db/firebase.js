@@ -53,16 +53,14 @@ export async function storeSubscription(subscription, status, client='client2'){
 	return new Promise((resolve, reject) => {
 		const docRef = doc(db, 'subscriptions', client)
 		try{
-			setDoc(docRef, {
-				0: subscription
-			})
+			setDoc(docRef, {0: subscription})
 			// Update notificationStatus in database
 			setDoc(SIDocRef, {
 				notificationStatus: status
 			}, {merge: true})
 			resolve('Subscription URL saved to database Successfully!')
 		} catch(err) {
-			reject('Failed to save URL')
+			reject(err)
 		}
 	})
 }
@@ -104,7 +102,7 @@ export const storeDataInDb = (data) =>{
   let docRef = doc(db, "folders", folderName)
   return new Promise((resolve, reject) => {
 		try{
-		  setDoc(docRef, 
+		  	setDoc(docRef, 
 			{ 
 			  [word]: {
 				isComplete: false,
@@ -114,9 +112,15 @@ export const storeDataInDb = (data) =>{
 				docId: folderName
 			  }
 			}, {merge: true});
-		  resolve('Data added to database');
+
+			setDoc(doc(db, 'supplementary',  'recentlyAdded'),
+				{
+					[word]: meaning
+				}, {merge: true}
+			)
+			resolve('Data added to database');
 		} catch(err){
-		  reject("FAILED!" + err)
+		  reject("Failed to add data to database")
 		}
   })
 }
@@ -146,7 +150,7 @@ const addNewFolder = (name) => {
 		{merge: true});
 	}
 	catch (err) {
-	  reject(err)
+	  reject('Got error while add new folder to DB ')
 	}
   })
 }
@@ -234,7 +238,7 @@ export const deleteListFromDB = (key, data) => {
 			})
 			resolve('Deleted successfully');
 		} catch(err){
-			reject(err);
+			reject('Failed to delete the provided data.');
 		}
 	})
 }

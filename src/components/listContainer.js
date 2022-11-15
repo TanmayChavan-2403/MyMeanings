@@ -2,8 +2,6 @@
 import React, { Suspense, useState, useEffect, useRef } from 'react';
 import { getCollection, getInfo, updateInfo } from "../db/firebase";
 import styles from '../stylesheets/bottomSection.module.css';
-import Fallback from './fallbackComp.js'
-import { ReturnFunctionHandlerContext } from './context';
 const List = React.lazy(() => import('./list'))
 
 const ListContainer = (props) => {
@@ -254,6 +252,7 @@ const ListContainer = (props) => {
 								checkForToggleClearance = {checkForToggleClearance}
 								listTaggedAuthor = {listTaggedAuthor}
 								highLight = {highLight}
+								updateModal={props.updateModal}
 							/>
 						)
 					})
@@ -267,6 +266,7 @@ const ListContainer = (props) => {
 									checkForToggleClearance = {checkForToggleClearance}
 									listTaggedAuthor = {listTaggedAuthor}
 									highLight = {highLight}
+									updateModal={props.updateModal}
 								/>
 						)
 					})
@@ -317,5 +317,7 @@ export default ListContainer;
 
 
 // TODO's
-// shift the handler modal code and the newTask to main.js
-// Handle "NewTask" shit.
+// 1) Remove normal sorting and group all the words/meanings starting with first letter
+//	  togeter
+// 2) Add right-side vertical bar extending from top to bottom.
+// 3) Improve delete functionality by also removing it from UI.

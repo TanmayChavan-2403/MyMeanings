@@ -16,19 +16,39 @@ const Body = (props) => {
     // States of NewTask component.
     let newStateStyles = useState({display: "none", transform: "scale(0)"})
 
+    // States of Modal Component
+    let [modalTopPosition, setModalTopPosition] = useState("-100px")
+    let [modalMsgType, setModalMsgType] = useState('green')
+    let [modalDisplayText, setModalDisplayText ] = useState("")
+
     function updateReturnBtnStatue(){
         setReturnBtnState(!returnBtnState)
     }
 
-    useEffect(() => {
-        console.log(newStateStyles);
-    })    
+    function updateModal(message, error = false, warning=false){
+        console.log(message)
+        setModalTopPosition("10px")
+        setModalDisplayText(message)
+        if (error){
+            setModalMsgType('red')
+        } else if (warning) {
+            setModalMsgType('yellow')
+        } else {
+            setModalMsgType('green')
+        }
+        setTimeout(()=>{
+            setModalTopPosition("-100px")
+        }, 3000)
+    }
 
     return(
         <ErrorBoundary>
             <div id={mainStyle.OuterWrapper}>
-                <AddNewTask newStateStyles={newStateStyles} />
-                <Modal />
+                <AddNewTask newStateStyles={newStateStyles} updateModal={updateModal} />
+                <Modal modalTopPosition={modalTopPosition}
+                      modalDisplayText={modalDisplayText}
+                      modalMsgType = {modalMsgType}
+                />
                 <Navbar />
                 <StatusLine />
                 <div id={mainStyle.InnerWrapper}>
@@ -40,6 +60,7 @@ const Body = (props) => {
                                 updateUnpinnedList = {updateUnpinnedList}
                                 updateReturnBtnStatue = {updateReturnBtnStatue}
                                 newStateStyles={newStateStyles}
+                                updateModal = {updateModal}
                         />
                     </ReturnStateContext.Provider>
 
@@ -49,6 +70,7 @@ const Body = (props) => {
                             pinned={pinned} unPinned = {unPinned}
                             updatePinnedList={updatePinnedList}
                             updateUnpinnedList = {updateUnpinnedList}
+                            updateModal={updateModal}
                         />
                     </Suspense>
 

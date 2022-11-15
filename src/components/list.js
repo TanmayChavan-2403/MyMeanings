@@ -1,5 +1,4 @@
 import React, {useState, useEffect, useRef} from "react"
-import UpdateComponent from './updateComponent.js';
 import styles from '../stylesheets/bottomSection.module.css';
 import { deleteListFromDB, addToCompletedList, removeFromCompletedList, updatePinStatus } from '../db/firebase.js';
 
@@ -27,8 +26,8 @@ const List = (props) => {
         // If the list is already checked then we have to uncheck and  update the DB
         if (checked){
             removeFromCompletedList(props.data, key)
-            .then(resp => props.pullDownModal(resp))
-            .catch(err => props.pullDownModal(err))
+            .then(resp => props.updateModal(resp))
+            .catch(error => props.updateModal(error, true))
         // If it is not checked then we have to-
         } else {
             // -Add it to completed list which will also update the "isCompleted" status of
@@ -42,13 +41,13 @@ const List = (props) => {
                 if (pinned){
                     updatePinStatus(props.data, key, 'unpin')
                     .then(ret => {
-                        props.pullDownModal(resp)
+                        props.updateModal(resp)
                         setPinned(!pinned)
                     })
-                    .catch(err => props.pullDownModal(err))
+                    .catch(error => props.updateModal(error, true))
                 }
             })
-            .catch(err => props.pullDownModal(err))
+            .catch(error => props.updateModal(error, true))
 
             // Remove the list from the curr position and append in the last position in the
             // same meaning list. [WHICH IS NOT ACTIVE AT THE MOMENT]
@@ -62,13 +61,13 @@ const List = (props) => {
         let child = e.target.parentElement.parentElement.parentElement.parentElement
         if (!pinned){
             updatePinStatus(props.data, key, 'pin')
-            .then(resp => props.pullDownModal(resp))
-            .catch(err => props.pullDownModal(err))
+            .then(resp => props.updateModal(resp))
+            .catch(error => props.updateModal(error, true))
             removeAndPush(child);
         } else {
             updatePinStatus(props.data, key, 'unpin')
-            .then(resp => props.pullDownModal(resp))
-            .catch(err => props.pullDownModal(err))
+            .then(resp => props.updateModal(resp))
+            .catch(error => props.updateModal(error, true))
             removeAndAppend(child);
         }
         
@@ -81,14 +80,14 @@ const List = (props) => {
         let list = e.target.parentElement.parentElement.parentElement.parentElement
         deleteListFromDB(key, props.data)
         .then(resp => {
-            props.pullDownModal(resp); // Pull down modal displaying success message.
+            props.updateModal(resp); // Pull down modal displaying success message.
             // list.remove(); // Remove from the website's UI[CAUSED BUG, SO JUST NOW REDUCING OPACITY]
             list.style.opacity = "30%" // To show that its no available.
             list.style.pointerEvents = 'none'
             list.style.cursor = 'not-allowed'     
             props.checkForToggleClearance(menu); // toggle the menu as we have successfully deleted
         })
-        .catch(err => props.pullDownModal(err))
+        .catch(error => props.updateModal(error, true))
     }
 
     return(
@@ -143,4 +142,4 @@ const List = (props) => {
     );
 }
 
-export default UpdateComponent(List);
+export default List;
