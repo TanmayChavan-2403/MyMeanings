@@ -33,6 +33,19 @@ module.exports.fetchSubscriptURL = function (){
     })
 }
 
+module.exports.fetchRecentlyAddedList = function(){
+    return new Promise( async (resolve, reject) => {
+        const docRec = db.collection('supplementary').doc('recentlyAdded');
+        const doc = await docRec.get()
+
+        if (!doc.exists){
+            reject('No such document exists')
+        } else {
+            resolve(doc.data())
+        }
+    })
+}
+
 module.exports.log = function(text){
     fs.appendFile('log.txt', text + '\n', (err) => {
         if (err){

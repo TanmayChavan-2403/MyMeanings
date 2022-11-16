@@ -1,4 +1,5 @@
 require('dotenv').config();
+const fs = require('fs')
 
 const path = require('path');
 const express = require('express');
@@ -33,6 +34,7 @@ webpush.setVapidDetails(
 // Initializing instance of express app and Middleware
 const app = express();
 app.use(cors());
+app.set('view engine', 'ejs');
 const middleWare = new Middleware();
 
 // Parsing incoming requests with json payloads
@@ -64,6 +66,7 @@ app.get('/notify', middleWare.populateIfLess, async (req, res) => {
     let payload = JSON.stringify({
         title: '🔔 Todays word:- ' + notification[0],
         body: notification[1],
+        flag: false,
         link: "https://my-meanings-server.onrender.com/sendLogFile"
     })
     webpush.sendNotification(subscription, payload)
@@ -82,19 +85,48 @@ app.get('/notify', middleWare.populateIfLess, async (req, res) => {
             error: err
         })
     })
-    // })
-    // .catch(err => console.log(err));
+})
+
+app.get('/summaryNotification', middleWare.populateIfLess, async (req, res) => {
+
+    let payload = JSON.stringify({
+        flag: true,
+        title: '🔔 Would you like to see what you have added today?',
+        link: "https://my-meanings-server.onrender.com/sendRecentlyAddedList",
+    })
+
+    webpush.sendNotification(subscription, payload)
+    .then(data => {
+        methods.log(`Notification sent from server successfully [` + moment.tz('Asia/Kolkata').format() + ']')
+        res.json({
+            notified: 'Success',
+        })
+    })
+    .catch(err => {
+        methods.log(err)
+        res.json({
+            notified: 'Failed',
+            error: err
+        })
+    })
+})
+
+app.get('/sendRecentlyAddedList', (req, res) =>{
+    let meanings = []
+    methods.fetchRecentlyAddedList()
+    .then(data => {
+        for(const property in data){
+            meanings.push([property, data[property]])
+        }
+        res.render('index', {meanings})
+    })
+    .catch(error => {
+        console.log(error)
+        methods.log(error)
+    })
+    // res.render('index', viewsData)
 })
 
 app.listen(process.env.PORT, () => {
     console.log('Listening to port ', process.env.PORT);
 })
-
-// Logging and sending notification of first set-up time to console and in file.
-// let setupMsg = `Set-up completed on time ${moment.tz('Asia/Kolkata').format().match(timePattern)}`
-// webpush.sendNotification(subscription, JSON.stringify({title: setupMsg}))
-// .then(res => methods.log(`Set-up completed on date ${moment.tz('Asia/Kolkata').format().match(datePattern)} and on time ${moment.tz('Asia/Kolkata').format().match(timePattern)}`))
-// .catch(err => {
-//     methods.log(err);
-//     console.log(err)
-// })
