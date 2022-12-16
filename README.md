@@ -20,7 +20,7 @@ Javascript, HTML, CSS, Python, Reactjs, MySql, Mongodb, Svelte, Scrapy, Tkinter,
 
 
 ## 🔗 Links
-[![portfolio](https://img.shields.io/badge/my_portfolio-000?style=for-the-badge&logo=ko-fi&logoColor=white)](https://portfolio-59977.web.app/)
+[![portfolio](https://img.shields.io/badge/my_portfolio-000?style=for-the-badge&logo=ko-fi&logoColor=white)](https://tanmaychavan2403.web.app/)
 [![linkedin](https://img.shields.io/badge/linkedin-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/tanmay-chavan-3b46b021b)
 [![telegram](https://img.shields.io/badge/telegram-0892d0?style=for-the-badge&logo=telegram&logoColor=0892d0)](https://t.me/Natsu_Dragneel_01)
 
