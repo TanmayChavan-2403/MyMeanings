@@ -51,7 +51,7 @@ export function updateInfo(storageType, type=0){
 
 export async function storeSubscription(subscription, status, client='client2'){
 	return new Promise((resolve, reject) => {
-		const docRef = doc(db, 'subscriptions', client)
+		const docRef = doc(db, 'subscriptions', client) // PATH
 		try{
 			setDoc(docRef, {0: subscription})
 			// Update notificationStatus in database

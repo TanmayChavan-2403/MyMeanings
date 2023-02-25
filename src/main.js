@@ -1,4 +1,4 @@
-import React, { Suspense, useState, useEffect } from "react";
+import React, { Suspense, useState } from "react";
 import mainStyle from "./stylesheets/main.module.css"
 import Navbar, {StatusLine} from "./components/topSection";
 import { SearchBar,Modal } from "./components/topSection";
