@@ -14,6 +14,7 @@ class ErrorBoundary extends Component{
 	}
 
 	conponentDidCatch(error, errorInfo){
+		console.log('ERRORRRR!!');
 		console.log(error, errorInfo)
 	}
 

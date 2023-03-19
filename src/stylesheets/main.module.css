@@ -2,6 +2,13 @@ html {
     scroll-behavior: smooth;
 }
 
+:root{
+    --black: #242424;
+    --blue: #6AB8FF;
+    --textColor: white;
+    --grey: rgb(50, 50, 50);
+}
+
 input,
 textarea,
 button,
@@ -24,7 +31,7 @@ a {
     flex-wrap: wrap;
     justify-content: center;
     align-content: flex-start;
-    background-color: #242424;
+    background-color: var(--black);
 }
 
 #InnerWrapper{

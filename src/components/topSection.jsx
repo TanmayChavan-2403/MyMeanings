@@ -1,7 +1,6 @@
 import {storeSubscription, getInfo, deleteSubscription} from '../db/firebase.js';
 import styles from "../stylesheets/topSection.module.css";
 import React, { useState, useEffect } from 'react';
-import { storeDataInDb } from "../db/firebase";
 import { ReturnStateContext } from './context';
 import * as ReactDOM from 'react-dom';
 
@@ -33,7 +32,7 @@ export const StatusLine = (props) => {
 
 export const SearchBar = (props) => {
     const [notif, setNotif] = useState(false)
-    const [searchText, setSearchText] = useState("")
+    
     const [notificationStatus, setNotificationStatus] = useState(false)
     const [storagetype, setStorageType] = useState('localStorage')
     const [error, setError] = useState(null)
@@ -146,61 +145,10 @@ export const SearchBar = (props) => {
     }
 
     const updateListContainer = (e) => {
-        if (e.target.value === ""){
-            if (storagetype == 'sessionStorage'){
-                props.updatePinnedList(JSON.parse(window.sessionStorage.getItem('pinned')))
-                props.updateUnpinnedList(JSON.parse(window.sessionStorage.getItem('unpinned')))
-            } else {
-                props.updatePinnedList(JSON.parse(window.localStorage.getItem('pinned')))
-                props.updateUnpinnedList(JSON.parse(window.localStorage.getItem('unpinned')))
-            }
-            setSearchText("")
-            return
-        }
-        // Updating the searchText which will reflect in search bar.
-        setSearchText(e.target.value)
-
-        let tempPinnedList = []
-        let tempUnpinnedList = []
-        if (storagetype == 'sessionStorage'){
-            JSON.parse(window.sessionStorage.getItem('pinned')).map(obj => {
-                let word = Object.keys(obj)[0].toLowerCase()
-                if (word.startsWith(e.target.value.toLowerCase())){
-                    console.log(word);
-                    tempPinnedList.push(obj)
-                }
-            })
-
-            JSON.parse(window.sessionStorage.getItem('unpinned')).map(obj => {
-                let word = Object.keys(obj)[0].toLowerCase()
-                if (word.startsWith(e.target.value.toLowerCase())){
-                    console.log(word);
-                    tempUnpinnedList.push(obj)
-                }
-            })
-        } else {
-            JSON.parse(window.localStorage.getItem('pinned')).map(obj => {
-                let word = Object.keys(obj)[0].toLowerCase()
-                if (word.startsWith(e.target.value.toLowerCase())){
-                    tempPinnedList.push(obj)
-                }
-            })
-
-            JSON.parse(window.localStorage.getItem('unpinned')).map(obj => {
-                let word = Object.keys(obj)[0].toLowerCase()
-                if (word.startsWith(e.target.value.toLowerCase())){
-                    tempUnpinnedList.push(obj)
-                }
-            })
-        }
-        
-        props.updatePinnedList(tempPinnedList)
-        props.updateUnpinnedList(tempUnpinnedList)
+      props.setSearchText(prevText => (prevText + e.target.value))
     }
 
     const refresh = (e) => {
-        window.localStorage.clear()
-        window.sessionStorage.clear()
         window.location.reload();
     }
 
@@ -211,7 +159,7 @@ export const SearchBar = (props) => {
                 return(
                     <div id={styles.sec3}>
                         <div className={styles.searchBar}>
-                            <input onChange={(e) => updateListContainer(e)} type="text" placeholder="Search here..." value={searchText} id={styles.searchInpField} />
+                            <input onChange={(e) => updateListContainer(e)} type="text" placeholder="Search here..." value={props.searchText} id={styles.searchInpField} />
                         </div>
                         <div style={{display: 'flex'}} className={styles.icons}>
                             <img src='./icons/refresh.png' onClick={refresh} />

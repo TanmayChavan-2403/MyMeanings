@@ -15,4 +15,18 @@ const Fallback = props => {
 	)
 }
 
+export const ServerError = (props) =>{
+	let errStyles = {
+		width: '100vw',
+		height: "100vh",
+		color: 'white',
+		backgroundColor: 'black',
+	}
+	return(
+		<div style={errStyles}>
+			<h1> {props.message} </h1>
+		</div>
+	)
+}
+
 export default Fallback;

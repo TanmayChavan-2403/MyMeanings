@@ -2,16 +2,18 @@ import React, { Suspense, useState } from "react";
 import mainStyle from "./stylesheets/main.module.css"
 import Navbar, {StatusLine} from "./components/topSection";
 import { SearchBar,Modal } from "./components/topSection";
-import AddNewTask from "./components/newTask.js";
-import Fallback from './components/fallbackComp.js'
-import ErrorBoundary from './components/ErrorBoundary.js';
-import { ReturnStateContext } from './components/context.js'
-const ListContainer = React.lazy(() => import("./components/listContainer.js"))
+import AddNewTask from "./components/newTask";
+import Fallback from './components/fallbackComp'
+import { ReturnStateContext } from './components/context';
+import Profile from "./components/profile";
+const ListContainer = React.lazy(() => import("./components/listContainer"))
 
 const Body = (props) => {
     const [returnBtnState, setReturnBtnState] = useState(false)
 	let [pinned, updatePinnedList] = useState([])
 	let [unPinned, updateUnpinnedList] = useState([])
+
+    const [searchText, setSearchText] = useState("")
 
     // States of NewTask component.
     let newStateStyles = useState({display: "none", transform: "scale(0)"})
@@ -42,25 +44,28 @@ const Body = (props) => {
     }
 
     return(
-        <ErrorBoundary>
             <div id={mainStyle.OuterWrapper}>
                 <AddNewTask newStateStyles={newStateStyles} updateModal={updateModal} />
                 <Modal modalTopPosition={modalTopPosition}
                       modalDisplayText={modalDisplayText}
                       modalMsgType = {modalMsgType}
                 />
+                <Profile />
                 <Navbar />
                 <StatusLine />
                 <div id={mainStyle.InnerWrapper}>
 
                     <ReturnStateContext.Provider value={returnBtnState}>
                         <SearchBar
-                                pinned={pinned} u={unPinned}
-                                updatePinnedList ={updatePinnedList}nPinned
+                                pinned={pinned} 
+                                unPinned={unPinned}
+                                updatePinnedList ={updatePinnedList}
                                 updateUnpinnedList = {updateUnpinnedList}
                                 updateReturnBtnStatue = {updateReturnBtnStatue}
                                 newStateStyles={newStateStyles}
                                 updateModal = {updateModal}
+                                setSearchText = {setSearchText}
+                                searchText = {searchText}
                         />
                     </ReturnStateContext.Provider>
 
@@ -71,13 +76,13 @@ const Body = (props) => {
                             updatePinnedList={updatePinnedList}
                             updateUnpinnedList = {updateUnpinnedList}
                             updateModal={updateModal}
+                            searchText= {searchText}
                         />
                     </Suspense>
 
                     {/* <Newtask newStateStyles={newStateStyles} /> */}
                 </div>
             </div>
-        </ErrorBoundary>
     )
 }
 export default Body;

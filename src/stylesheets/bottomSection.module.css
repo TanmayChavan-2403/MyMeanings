@@ -222,9 +222,40 @@
 	display: inline-block;
 }
 
+#loadMore{
+	color: white;
+	display: flex;
+	justify-content: center;
+}
 
+#loadMore p{
+	cursor: pointer;
+	width: fit-content;
+}
 
+#loadMore img{
+	width: 24px;
+	margin: 0px 3px;
+	cursor: pointer;
+}
 
+#searchListContainer{
+	width: 100%;
+	height: 80%;
+	left: 0%;
+	z-index: 2;
+	display: flex;
+	position: absolute;
+	justify-content: center;
+	background-color: var(--black);
+}
+
+#SLWrapper{
+	width: 95%;
+	height: 100%;
+	border: 1px dashed white;
+	background-color: var(--black);
+}
 
 
 
