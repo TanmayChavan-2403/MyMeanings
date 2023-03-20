@@ -1,8 +1,9 @@
+import {storeSubscription, getInfo, deleteSubscription} from '../db/firebase.js';
 import styles from "../stylesheets/topSection.module.css";
-import { storeDataInDb } from "../db/firebase";
-import * as ReactDOM from 'react-dom';
 import React, { useState, useEffect } from 'react';
-import {storeSubscription, getStatus} from '../db/firebase.js';
+import { storeDataInDb } from "../db/firebase";
+import { ReturnStateContext } from './context';
+import * as ReactDOM from 'react-dom';
 
 
 const Navbar = (props) => {
@@ -32,35 +33,63 @@ export const StatusLine = (props) => {
 
 export const SearchBar = (props) => {
     const [notif, setNotif] = useState(false)
+    const [searchText, setSearchText] = useState("")
+    const [notificationStatus, setNotificationStatus] = useState(false)
+    const [storagetype, setStorageType] = useState('localStorage')
+    const [error, setError] = useState(null)
 
     useEffect(() => {
-        getStatus()
-        .then(res => setNotif(res))
-        .catch(err => pullDown(err))
+        if (!notificationStatus){
+            getInfo()
+            .then(res => {
+                setNotif(res['notificationStatus'])
+                setStorageType(res['storageType'])
+                setNotificationStatus(true)
+            })
+            .catch(error => {
+                // PullDown Modal component and show message
+                props.updateModal('[51]Error while gettingInfo', true)
+                setError(error)
+            })
+        }
     }, [])
 
     const udpateSubscriptionStatus = () => {
-        // Update the notification icon
-        setNotif(!notif);
+        if (notif){
+            navigator.serviceWorker.ready.then((reg) => {
+                reg.pushManager.getSubscription().then((subscription) => {
+                  subscription.unsubscribe().then((successful) => {
+                    deleteSubscription()
+                    props.updateModal('Unsubscribed ')
+                  }).catch((error) => {
+                    props.updateModal('[79]Error while unsubscribing', true)
+                    setError(error)
+                  })
+                })
+            });
+        }
 
         // update database
         // Checking if serviceWorker is supported by browser
-        if ('serviceWorker' in navigator){
-            subscribe()
+        if (!notif){
+            if ('serviceWorker' in navigator){
+                subscribe()
+            }
         }
+
+        // Update the notification icon
+        setNotif(!notif);
     }
 
     const subscribe = async () => {
         const publicVapidKey = "BJthRQ5myDgc7OSXzPCMftGw-n16F7zQBEN7EUD6XxcfTTvrLGWSIG7y_JxiWtVlCFua0S8MTB5rPziBqNx1qIo";
-
         // STEP 1 Registering service-worker.js file as service worker 
         // It returns serviceWorkerRegistration Interface of SW
         const register = await navigator.serviceWorker.register('./service-worker.js',{
             scope: "/"
         })
-        pullDown('Service Worker is registered successfully!')
+        props.updateModal('Service Worker is registered !')
         myConsole('Service Worker is registered successfully!');
-
 
         // STEP 2 Getting subscription of PUSH API
         const subscription = await register.pushManager.subscribe({
@@ -69,15 +98,17 @@ export const SearchBar = (props) => {
         }); // Provides a subscription's URL endpoint and allows unsubscribing from a push service
         myConsole('Subscription URL generated successfully!',subscription);
 
-        // Sending to database for storing
+        // STEP 3 Sending to database for storing
         storeSubscription(JSON.stringify(subscription), !notif)
         .then(resp => {
+            console.log(resp);
             setTimeout(() => {
-                pullDown(resp)
-            }, 1500)
-        }).catch(err => {
+                props.updateModal(resp)
+        }, 1500)
+        }).catch(error => {
             setTimeout(() => {
-                pullDown(err)
+                props.updateModal('Failed to save URL in database', true)
+                setError(error)
             }, 1500)
         })
     }
@@ -103,37 +134,104 @@ export const SearchBar = (props) => {
       return outputArray;
     }
 
-    const pullDown = (text) => {
-        let portal = document.getElementById(`portals`).children;
-        let modal;
-        if (portal[1].id.includes("modal")){
-            modal = portal[1];
+    const goBack = () => {
+        if (window.localStorage.length === 0){
+            props.updatePinnedList(JSON.parse(window.sessionStorage.getItem('pinned')))
+            props.updateUnpinnedList(JSON.parse(window.sessionStorage.getItem('unpinned')))
+        } else {
+            props.updatePinnedList(JSON.parse(window.localStorage.getItem('pinned')))
+            props.updateUnpinnedList(JSON.parse(window.localStorage.getItem('unpinned')))
         }
-        else{
-            modal = portal[0];
+        props.updateReturnBtnStatue()
+    }
+
+    const updateListContainer = (e) => {
+        if (e.target.value === ""){
+            if (storagetype == 'sessionStorage'){
+                props.updatePinnedList(JSON.parse(window.sessionStorage.getItem('pinned')))
+                props.updateUnpinnedList(JSON.parse(window.sessionStorage.getItem('unpinned')))
+            } else {
+                props.updatePinnedList(JSON.parse(window.localStorage.getItem('pinned')))
+                props.updateUnpinnedList(JSON.parse(window.localStorage.getItem('unpinned')))
+            }
+            setSearchText("")
+            return
         }
-        modal.children[2].children[0].innerText = text;
-        modal.style.top = "10px";
-        setTimeout(()=>{
-            modal.style.top = "-100px";
-        }, 3000)
+        // Updating the searchText which will reflect in search bar.
+        setSearchText(e.target.value)
+
+        let tempPinnedList = []
+        let tempUnpinnedList = []
+        if (storagetype == 'sessionStorage'){
+            JSON.parse(window.sessionStorage.getItem('pinned')).map(obj => {
+                let word = Object.keys(obj)[0].toLowerCase()
+                if (word.startsWith(e.target.value.toLowerCase())){
+                    console.log(word);
+                    tempPinnedList.push(obj)
+                }
+            })
+
+            JSON.parse(window.sessionStorage.getItem('unpinned')).map(obj => {
+                let word = Object.keys(obj)[0].toLowerCase()
+                if (word.startsWith(e.target.value.toLowerCase())){
+                    console.log(word);
+                    tempUnpinnedList.push(obj)
+                }
+            })
+        } else {
+            JSON.parse(window.localStorage.getItem('pinned')).map(obj => {
+                let word = Object.keys(obj)[0].toLowerCase()
+                if (word.startsWith(e.target.value.toLowerCase())){
+                    tempPinnedList.push(obj)
+                }
+            })
+
+            JSON.parse(window.localStorage.getItem('unpinned')).map(obj => {
+                let word = Object.keys(obj)[0].toLowerCase()
+                if (word.startsWith(e.target.value.toLowerCase())){
+                    tempUnpinnedList.push(obj)
+                }
+            })
+        }
+        
+        props.updatePinnedList(tempPinnedList)
+        props.updateUnpinnedList(tempUnpinnedList)
+    }
+
+    const refresh = (e) => {
+        window.localStorage.clear()
+        window.sessionStorage.clear()
+        window.location.reload();
     }
 
     return(
-        <>
-            <div id={styles.sec3}>
-                <div className={styles.searchBar}>
-                    <input type="text" placeholder="Search here..." id={styles.searchInpField} />
-                </div>
-                <div className={styles.notification} onClick={udpateSubscriptionStatus}>
-                    {
-                        notif ? 
-                        <img src="./icons/notification-active.png"/> : 
-                        <img src="./icons/notirication-notActive.png" />
-                    }
-                </div>
-            </div>
-        </>
+        // Provider is in main.js file
+        <ReturnStateContext.Consumer> 
+            {(shouldWeReturn) => {
+                return(
+                    <div id={styles.sec3}>
+                        <div className={styles.searchBar}>
+                            <input onChange={(e) => updateListContainer(e)} type="text" placeholder="Search here..." value={searchText} id={styles.searchInpField} />
+                        </div>
+                        <div style={{display: 'flex'}} className={styles.icons}>
+                            <img src='./icons/refresh.png' onClick={refresh} />
+                            {
+                                shouldWeReturn ? 
+                                <img src="./icons/backArrowWhite.png" onClick={goBack}/> : 
+                                <img src="./icons/backArrowGrey.png" style={{cursor: 'not-allowed'}}/>
+                                
+                            }
+                            <img src="./icons/addIcon.png" onClick={(e) => props.newStateStyles[1]({display: "flex", transform: "scale(1)"})} />
+                            {
+                                notif ? 
+                                <img src="./icons/notificationOn.png"/> : 
+                                <img src="./icons/notificationOff.png" />
+                            }
+                        </div>
+                    </div>
+                )
+            }}
+        </ReturnStateContext.Consumer>
     )
 }
 
@@ -146,13 +244,13 @@ export const Modal = (props) => {
 
     return ReactDOM.createPortal(
         <>
-            <div id={styles.modal}>
-                <div className={styles.colorBar}></div>
+            <div id={styles.modal} style={{top: props.modalTopPosition}}>
+                <div style={{backgroundColor: props.modalMsgType}} className={styles.colorBar}></div>
                 <div className={styles.logoSec}>
                     <img src="icon.png" />
                 </div>
                 <div className={styles.message}>
-                    <p>Uploaded successfully</p>
+                    <p>{props.modalDisplayText}</p>
                 </div>
                 <div onClick={closeModal} className={styles.closeButton}>
                     <img src="icons/close.svg"/>

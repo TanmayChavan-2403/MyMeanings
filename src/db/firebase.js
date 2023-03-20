@@ -5,18 +5,27 @@ import { getMessaging, getToken } from "firebase/messaging";
 import app, { messaging } from "./CONFIG.js"
 
 const db = getFirestore(app);
+const SIDocRef = doc(db, 'subscriptions', "info")
 
-export function getStatus(){
+export function deleteSubscription(){
+	return new Promise((resolve, reject) => {
+		const docRef = doc(db, 'subscriptions', 'client2');
+		const docRef2 = doc(db, 'subscriptions', 'info');
+		setDoc(docRef, {
+			0: null
+		}, {merge: true})
+		setDoc(docRef2, {
+			notificationStatus: false
+		}, {merge: true})
+	})
+}
+
+export function getInfo(){
 	return new Promise(async(resolve, reject) => {
-		const docRef = doc(db, 'subscriptions', 'status')
+		const docRef = doc(db, 'subscriptions', 'info')
 		const docSnap = await getDoc(docRef)
-
 	 	if (docSnap.exists()) {
-			if (window.screen.width < 700){
-				resolve(docSnap.data()[1])
-			} else {
-				resolve(docSnap.data()[0])
-			}
+			resolve(docSnap.data())
 	 	} else {
 			// doc.data() will be undefined in this case
 			reject('Something went wrong in [getStatus]');
@@ -24,31 +33,34 @@ export function getStatus(){
 	})
 }
 
-export async function storeSubscription(subscription, status, client='client2'){
-	if (window.screen.width < 700){
-		client = 'client2'
-	} else {
-		client = 'client1'
+export function updateInfo(storageType, type=0){
+	if (type == 0){
+		try{
+			setDoc(SIDocRef, {storageQuestion: true,storageType: storageType}, {merge: true})
+		} catch(err){
+			console.log('ERROR: updateInfo(firebase.js) [TYPE 0]', err)
+		}
+	} else if (type == 1){
+		try {
+			setDoc(SIDocRef, {isDataStoredInLocalStorage: true}, {merge: true})
+		} catch (error) {
+			console.log('ERROR: updateInfo(firebase.js) [TYPE 1]', error)
+		}
 	}
+}
+
+export async function storeSubscription(subscription, status, client='client2'){
 	return new Promise((resolve, reject) => {
 		const docRef = doc(db, 'subscriptions', client)
-		const docRef2 = doc(db, 'subscriptions', 'status')
 		try{
-			setDoc(docRef, {
-				0: subscription
-			})
-			if (window.screen.width < 700){
-				setDoc(docRef2, {
-					1: status
-				}, {merge: true})
-			} else {
-				setDoc(docRef2, {
-					0: status
-				}, {merge: true})
-			}
+			setDoc(docRef, {0: subscription})
+			// Update notificationStatus in database
+			setDoc(SIDocRef, {
+				notificationStatus: status
+			}, {merge: true})
 			resolve('Subscription URL saved to database Successfully!')
 		} catch(err) {
-			reject('Failed to save URL')
+			reject(err)
 		}
 	})
 }
@@ -86,15 +98,11 @@ export const storeDataInDb = (data) =>{
 
   // Check if user have create new folder
   if (isNewfolder) addNewFolder(folderName);
-  let docRef;
-  if (folderName == "mix"){
-  	docRef = doc(db, "mix", folderName);
-  } else {
-  	docRef = doc(db, "folders", folderName)
-  }
+  
+  let docRef = doc(db, "folders", folderName)
   return new Promise((resolve, reject) => {
 		try{
-		  setDoc(docRef, 
+		  	setDoc(docRef, 
 			{ 
 			  [word]: {
 				isComplete: false,
@@ -104,9 +112,15 @@ export const storeDataInDb = (data) =>{
 				docId: folderName
 			  }
 			}, {merge: true});
-		  resolve('Data added to database');
+
+			setDoc(doc(db, 'supplementary',  'recentlyAdded'),
+				{
+					[word]: meaning
+				}, {merge: true}
+			)
+			resolve('Data added to database');
 		} catch(err){
-		  reject("FAILED!" + err)
+		  reject("Failed to add data to database")
 		}
   })
 }
@@ -136,7 +150,7 @@ const addNewFolder = (name) => {
 		{merge: true});
 	}
 	catch (err) {
-	  reject(err)
+	  reject('Got error while add new folder to DB ')
 	}
   })
 }
@@ -186,18 +200,12 @@ export const removeFromCompletedList = (data, key) => {
 }
 
 const updateWordStatus = (data, key, status) => {
-	let docRef;
-  	if (data[key]["docId"] === "mix"){
-		docRef = doc(db, "mix", "mix");
-  	} else {
-		docRef = doc(db, "folders", data[key]["docId"]);
-  	}
+	let docRef = doc(db, "folders", data[key]["docId"]);
   	setDoc(docRef, {
   		[key]: {
   			isComplete: status
   		}
   	}, {merge: true})
-
 }
 
 export const updatePinStatus = (data, key, action) => {
@@ -206,14 +214,8 @@ export const updatePinStatus = (data, key, action) => {
 	} else {
 		action = false
 	}
-	let docRef;
-	if (data[key]["docId"] === "mix"){
-		docRef = doc(db, "mix", "mix");
-  	} else {
-		docRef = doc(db, "folders", data[key]["docId"]);
-  	}
+	let docRef = doc(db, "folders", data[key]["docId"]);
 	return new Promise((resolve, reject) => {
-
 		try{
 			setDoc(docRef, {
 				[key] : {
@@ -227,46 +229,16 @@ export const updatePinStatus = (data, key, action) => {
 	})
 }
 
-export const requestPermission = () => {
-	console.log('Requesting permission...');
-	Notification.requestPermission().then((permission) => {
-	    if (permission === 'granted') {
-	    	console.log('Notification permission granted.');
-	    }
-	})
-
-	// Get registration token. Initially this makes a network call, once retrieved
-	// subsequent calls to getToken will return from cache.
-	const messaging = getMessaging();
-	getToken(messaging, { vapidKey: 'BAXNz7PVOJ9CX-asU4B8RV1sx5a_2dgLXCOQEd8-IOBL2AcY1E6PgVYxDYz6Lw2mWA5hbI4bQnXeqQrNRI8ZLJI' })
-	.then((currentToken) => {
-	  if (currentToken) {
-	  	console.log(currentToken);
-	  } else {
-	    // Show permission request UI
-	    console.log('No registration token available. Request permission to generate one.');
-	  }
-	}).catch((err) => {
-	  console.log('An error occurred while retrieving token. ', err);
-	});
-}
-
 export const deleteListFromDB = (key, data) => {
 	return new Promise( (resolve, reject) => {
-		let docRef
-		if (data[key]["tag"]){
-			docRef = doc(db, 'folders', data[key]['docId'])
-		} else {
-			docRef = doc(db, 'mix', data[key]['docId'])
-		}
+		let docRef = doc(db, 'folders', data[key]['docId'])
 		try{
 			updateDoc(docRef, {
 				[key]: deleteField()
 			})
 			resolve('Deleted successfully');
 		} catch(err){
-			reject(err);
+			reject('Failed to delete the provided data.');
 		}
 	})
-
 }
