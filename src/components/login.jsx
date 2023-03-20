@@ -99,6 +99,9 @@ class Login extends Component{
             <>
                 <div id='loginOuterWrapper' style={this.state.properties}>
                     <div id='loginInnerWrapper'>
+                        <div id="welcome-page-container">
+                                
+                        </div>
                         <div id='loginContainer'>
                             <div id='heading'>
                                 <h1> {this.state.heading} </h1>
@@ -108,11 +111,20 @@ class Login extends Component{
                                 <input onChange={(e) => this.updateState('password', e)} placeholder='Password'></input>
                                 <input onChange={(e) => this.updateState('confirmPassword',e)} placeholder='Confirm Password'></input>
                             </div>
+                            <div id='additional-options'>
+                                <div id='keep-signedin' class='ao'>
+                                    <div id='checkbox'></div>
+                                    <p> Keep me signed in </p>
+                                </div>
+                                <div id='registrationlink'  class='ao'>
+                                    <p>Already a member ?</p>
+                                </div>
+                            </div>
                             <div id='buttons'>
                                 <button onClick={this.submit}>
-                                    Submit
+                                    SUBMIT
                                 </button>
-                                <p onClick={(e) => this.register('register')}>Not registered? then click here to register</p>
+                                {/*<p onClick={(e) => this.register('register')}>Not registered? then click here to register</p>*/}
                             </div>
                         </div>
                     </div>

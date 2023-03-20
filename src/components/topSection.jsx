@@ -145,7 +145,31 @@ export const SearchBar = (props) => {
     }
 
     const updateListContainer = (e) => {
-      props.setSearchText(prevText => (prevText + e.target.value))
+        // Updating the value in the input section's value
+        props.setSearchText(e.target.value);
+        if (e.target.value == ""){
+            props.setSearchResult([]);
+        } else {
+            let payload = {
+                word: e.target.value,
+                id: "6415d631ed97f5d33459bd65"
+            }
+            fetch("http://localhost:4000/find",{ 
+                method: "POST",
+                headers:{
+                    'Content-type': 'application/json'
+                },
+                credentials: "include",
+                body: JSON.stringify(payload)
+            })
+            .then(resp => resp.json())
+            .then(response => {
+                props.setSearchResult(response.data);
+            })
+            .catch(err => props.updateModal(err.message));    
+        }
+        
+
     }
 
     const refresh = (e) => {

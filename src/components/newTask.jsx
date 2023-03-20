@@ -36,19 +36,35 @@ const AddNewTask = (props) => {
 
 	function submit(e){
 		if (word.length !== 0 && meaning.length !== 0 && folderName.length !== 0){
-			storeDataInDb({word, meaning, pinned, folderName, isNewfolder})
-			.then(resp => {
+			// Preparing payload according to the data extracted by the backend.
+			let payload = {
+				word,
+				tagName: folderName,
+				folderName: 'English',
+				meaning,
+				pin: pinned,
+				complete: false
+			}
+			fetch("http://localhost:4000/addData",{ 
+	            method: "POST",
+	            headers:{
+	                'Content-type': 'application/json'
+	            },
+	            credentials: "include",
+	            body: JSON.stringify(payload)
+	        })
+	        .then(resp => resp.json())
+	        .then(response => {
 				// RESETTING the default values of the input field
-				updateWord("");
+	        	updateWord("");
 				updateMeaning("")
 				updatePin(false)
-				props.updateModal(resp);
+				// Displaying message using modal.
+	        	props.updateModal(response.message)
+	        	// Hiding the addNewtask container
 				props.newStateStyles[1]({display: "none", transform: "scale(0)"})
-			})
-			.catch(err => {
-				console.log('ERROR here')
-				props.updateModal(err, true)
-			})
+	        })
+	        .catch(err => props.updateModal(err.message));
 		} else {
 			props.updateModal("Please check all fields are filled properly", false, true);
 		}

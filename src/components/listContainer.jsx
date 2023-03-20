@@ -1,6 +1,5 @@
 // import List from './list';
-import React, { Suspense, useState, useEffect, useStableEffect, useRef } from 'react';
-import { getCollection, getInfo, updateInfo } from "../db/firebase";
+import React, { useState, useEffect } from 'react';
 import styles from '../stylesheets/bottomSection.module.css';
 const List = React.lazy(() => import('./list'))
 
@@ -9,17 +8,6 @@ const ListContainer = (props) => {
 	let [element, updateElement] = useState(null);
 	let [page, nextPage] = useState(1);
 	let [endOfData, setEndOfData] = useState(false);
-
-	// Sorted status of pinned and unpinned data.
-	let [isPinnedArraySorted, setPinnedSortedStatus] = useState(false);
-	let [isUnpinnedArraySorted, setUnpinnedSortedStatus] = useState(false);
-	
-	// It is used to store the incoming data until its sorted
-	let [tempPinnedList, setTempPinnedList] = useState([]);
-	let [tempUnpinnedList, setTempUnpinnedList] = useState([]);
-
-	const updateLists = (param, tagged=false) => {
-	}
 
 	const listTaggedAuthor = (tag) => {
 	}
@@ -92,7 +80,7 @@ const ListContainer = (props) => {
 		})
 		.then(res => res.json())
 		.then( async (data) => { //Returns object which contains status, resultCount and response fields
-			if (data.resultCount == 0){
+			if (data.resultCount === 0){
 				setEndOfData(true);
 			} else {
 				let resp = await filterData(data.response);
@@ -110,10 +98,29 @@ const ListContainer = (props) => {
 
 	return(
 		<>
-			{props.searchText.length == 0 ? null :
+			{props.searchText.length === 0 ? null :
 			<div id={styles.searchListContainer}>
 				<div id={styles.SLWrapper}>
-					
+					{
+						props.searchResult.length === 0 ?
+							<div id={styles.emptyContainer}>
+								<img src="./emptyResult.png" alt='No results found image'/>
+								<h1>No data found ☹</h1>
+							</div> 
+						:
+						props.searchResult.map(list => {
+							return(
+								<List
+									key = {list['_id']}
+									data={list}
+									checkForToggleClearance = {checkForToggleClearance}
+									listTaggedAuthor = {listTaggedAuthor}
+									highLight = {highLight}
+									updateModal={props.updateModal}
+								/>
+							)
+						})
+					}
 				</div>
 			</div>
 			}

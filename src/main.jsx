@@ -13,7 +13,9 @@ const Body = (props) => {
 	let [pinned, updatePinnedList] = useState([])
 	let [unPinned, updateUnpinnedList] = useState([])
 
+
     const [searchText, setSearchText] = useState("")
+    const [searchResult, setSearchResult] = useState([])
 
     // States of NewTask component.
     let newStateStyles = useState({display: "none", transform: "scale(0)"})
@@ -66,6 +68,7 @@ const Body = (props) => {
                                 updateModal = {updateModal}
                                 setSearchText = {setSearchText}
                                 searchText = {searchText}
+                                setSearchResult={setSearchResult}
                         />
                     </ReturnStateContext.Provider>
 
@@ -76,6 +79,7 @@ const Body = (props) => {
                             updatePinnedList={updatePinnedList}
                             updateUnpinnedList = {updateUnpinnedList}
                             updateModal={updateModal}
+                            searchResult = {searchResult}
                             searchText= {searchText}
                         />
                     </Suspense>
