@@ -1,3 +1,5 @@
+import '../stylesheets/fallBackComp.css'
+
 const Fallback = props => {
 
 	const STYLES = {
@@ -16,15 +18,19 @@ const Fallback = props => {
 }
 
 export const ServerError = (props) =>{
-	let errStyles = {
-		width: '100vw',
-		height: "100vh",
-		color: 'white',
-		backgroundColor: 'black',
-	}
 	return(
-		<div style={errStyles}>
-			<h1> {props.message} </h1>
+		<div id='error-container'>
+			<div id='message'>
+				<h1 id='oops'> OOPS! </h1>
+				<div id='message-overlay'>
+					<p id='error-message'>500 - OUR SERVER IS ON A BREAK</p>
+				</div>
+			</div>
+			<div id='home-button'>
+				<a href='https://myvocabspace.web.app/'>
+					<button id='button'> Go to <strong id='s'> HOME </strong> page </button>	
+				</a>
+			</div>
 		</div>
 	)
 }

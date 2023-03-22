@@ -17,6 +17,7 @@
 	display: flex;
 	transition: 2s;
 	min-height: 55px;
+	color: var(--text);
 	/* align-items: center; */
 	justify-content: space-between;
 	font-size: clamp(1rem, 1.2vw, 2vw);
@@ -49,7 +50,7 @@
 .meaning{
 	width: 77%;
 	padding: 0px 10px;
-	color: white;
+	color: var(--text);
 	display: flex;
 	/* align-items: center; */
 	min-height: inherit;
@@ -73,6 +74,7 @@
 }	
 
 .tagName{
+	color: var(--black);
 	cursor: pointer;
 	font-weight: 700;
 	padding: 2px 12px;
@@ -247,7 +249,7 @@
 	display: flex;
 	position: absolute;
 	justify-content: center;
-	background-color: var(--black);
+	background-color: var(--bg);
 }
 
 #SLWrapper{
@@ -255,7 +257,7 @@
 	height: 100%;
 	overflow: scroll;
 	padding: 0px 20px;
-	background-color: var(--black);
+	background-color: var(--bg);
 }
 
 #emptyContainer{

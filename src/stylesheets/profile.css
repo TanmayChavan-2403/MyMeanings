@@ -1,12 +1,13 @@
+
 #profileOuterWrapper{
     top: 0%;
     width: 100%;
     height: 100%;
     z-index: 10;
-    display: none;  /*flex */
+    display: flex;  /*flex */
     position: absolute;
     justify-content: center;
-    background-color: rgba(255, 255, 255, 0.1);
+/*    background-color: rgba(255, 255, 255, 0.1);*/
 }
 
 #profileInnerWrapper{
@@ -16,8 +17,7 @@
     flex-wrap: wrap;
     max-width: 2000px;
     justify-content: center;
-    border: 1px solid black;
-    background-color: var(--black);
+    background-color: var(--bg);
 }
 
 #profile_banner{
@@ -31,25 +31,23 @@
 #profileContainer{
     width: 85%;
     height: 80%;
-    border: 1px solid white;
 }
 
 #username{
     width: 80%;
     height: 100%;
     display: flex;
-    color: var(--black);
+    color: var(--bg);
     font-size: 2.5rem;
     align-items: center;
 }
 
-
-
 #avatar_container_wrapper{
     width: 100%;
     height: 16%;
+    display: flex;
     position: relative;
-    border: 1px dashed white;
+    justify-content: space-between;
 }
 
 #avatar_container{
@@ -57,14 +55,44 @@
     width: 160px;
     height: 160px;
     position: absolute;
-    border: 1px dashed pink;
+}
+
+#tabs-container{
+    width: 92%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+#tabs{
+    width: 65%;
+    gap: 15px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+/*    justify-content: space-around;*/
+}
+
+.tab{
+    width: 15%;
+    height: 55%;
+    display: flex;
+    cursor: pointer;
+    transition: 0.3s;
+    color: var(--text);
+    align-items: center;
+    justify-content: center;
+}
+
+.tab:hover{
+    border: 1px solid var(--grey);
 }
 
 #closeButton{
     width: 7%;
     height: 100%;
     float: right;
-    color: red;
+    color: #da373c;
     font-size: 2rem;
     display: flex;
     align-items: center;
@@ -81,7 +109,7 @@
     border-radius: 50%;
     overflow: hidden;
     background-color: white;
-    border: 10px solid var(--black);
+    border: 10px solid var(--bg);
 }
 
 #avatar_image{
@@ -93,5 +121,276 @@
 #content{
     width: 100%;
     height: 84%;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* Account container  */
+.sb{
+    width: 100%;
+    height: 100%;
+    display: flex;
+}
+
+#account-container{
+    gap: 20px;
+    padding: 15px;
+    display: flex;
+    flex-wrap: wrap;
+    position: relative;
+    justify-content: center;
+    align-content: flex-start;
+}
+
+.field, .Spfield{
+    width: 75%;
+    height: 13%;
+    display: flex;
+    color: var(--text);
+}
+
+.key{
+    width: 20%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.value{
+    width: 80%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px dashed white;
+}
+
+.Spfield{
+    margin-top: 25px;
+    justify-content: space-between;
+}
+
+#deleteAcc, #logout{
+    width: 30%; 
+    height: 80%;
+    color: white;
+    font-weight: 400;
+    cursor: pointer;
+}
+
+#deleteAcc{
+    border: none;
+    background-color: #da373c;
+}
+
+#logout{
+    transition: 0.3s;
+    border: 1px solid #da373c;
+    background-color: transparent;
+}
+
+#password{
+    width: 40%;
+    height: 80%;
+    border: none;
+    cursor: pointer;
+    color: var(--text);
+    background-color: var(--grey);
+}
+
+#logout:hover{
+    background-color: #da373c;
+}
+
+#password-container{
+    top: 30%;
+    left: 50%;
+    width: 50%;
+    height: 30%;
+    display: flex;
+    position: absolute;
+    align-items: center;
     border: 2px dashed white;
+    justify-content: space-evenly;
+    background-color: var(--bg);
+    transform: translate(-50%, -50%);
+}
+
+#password-container button{
+    border: none;
+    padding: 10px 20px;
+    background-color: var(--blue);
+}
+
+#password-container input{
+    outline: none;
+    border: none;
+    padding: 10px 20px;
+}
+
+#conf-close-button{
+    color: #da373c;
+    font-size: 2rem;
+    cursor: pointer;
+}
+
+#confirmContanier-container{
+    top: 0%;
+    left: 0%;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    position: absolute;
+    justify-content: center;
+    background-color: rgba(0,0,0,0.5);
+}
+
+#confirmContanier{
+    width: 50%;
+    height: 50%;
+    position: relative;
+    background-color: var(--bg);
+}
+
+#cw-heading{
+    width: 100%;
+    height: 15%;
+    display: flex;
+    font-weight: 300;
+    padding: 0px 15px;
+    color: var(--text);
+    font-size: 1.52rem;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.cw-xmark{
+    color: #da373c;
+    font-size: 2rem;
+    cursor: pointer;
+}
+
+#cw-info{
+    width: 100%;
+    height: 70%;
+    padding: 15px;
+    text-align: justify;
+    text-justify: inter-word;
+    color: var(--text);
+}
+
+#cw-button{
+    width: 100%;
+    height: 15%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#delete-account{
+    border: none;
+    color: white;
+    font-weight: 500;
+    padding: 10px 20px;
+    letter-spacing: 3px;
+    background-color: #da373c;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* Friends container  */
+
+#friends-container{
+    color: var(--text); 
+    flex-flow: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.new-feature{
+    padding: 3px 10px;
+    border: 2px solid var(--text);
+}
+
+.new-feature h2{
+    font-size: 2rem;
+    font-weight: 200;
+}
+
+
+.nf2{
+    border-top: none;
+}
+
+#working-img-container{
+    width: 100%;
+    height: 60%;
+}
+
+#working-img-container img{
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+
+
+
+
+
+
+
+/* Folders section */
+
+#folders-container{
+    color: var(--text); 
+    flex-flow: column;
+    align-items: center;
+    justify-content: center;
+}
+
+
+
+
+
+
+
+/* Folders section */
+#statistics-container{
+    color: var(--text); 
+    flex-flow: column;
+    align-items: center;
+    justify-content: center;
 }

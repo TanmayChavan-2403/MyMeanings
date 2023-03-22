@@ -21,9 +21,9 @@ const Body = (props) => {
     let newStateStyles = useState({display: "none", transform: "scale(0)"})
 
     // States of Modal Component
-    let [modalTopPosition, setModalTopPosition] = useState("-100px")
-    let [modalMsgType, setModalMsgType] = useState('green')
-    let [modalDisplayText, setModalDisplayText ] = useState("")
+    let [modalTopPosition, setModalTopPosition] = useState("-100px");
+    let [modalMsgType, setModalMsgType] = useState('green');
+    let [modalDisplayText, setModalDisplayText ] = useState("");
 
     function updateReturnBtnStatue(){
         setReturnBtnState(!returnBtnState)
@@ -52,7 +52,6 @@ const Body = (props) => {
                       modalDisplayText={modalDisplayText}
                       modalMsgType = {modalMsgType}
                 />
-                <Profile />
                 <Navbar />
                 <StatusLine />
                 <div id={mainStyle.InnerWrapper}>

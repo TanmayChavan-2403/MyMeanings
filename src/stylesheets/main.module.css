@@ -2,13 +2,6 @@ html {
     scroll-behavior: smooth;
 }
 
-:root{
-    --black: #242424;
-    --blue: #6AB8FF;
-    --textColor: white;
-    --grey: rgb(50, 50, 50);
-}
-
 input,
 textarea,
 button,
@@ -29,9 +22,10 @@ a {
     height: 100vh;
     display: flex;
     flex-wrap: wrap;
+    color: var(--text);
     justify-content: center;
     align-content: flex-start;
-    background-color: var(--black);
+    background-color: var(--bg);
 }
 
 #InnerWrapper{
@@ -84,6 +78,7 @@ a {
     /* display: none; */
     position: absolute;
     align-items: center;
+    color: var(--text);
     /* transform: scale(0); */
     transition: 2 ease-in;
     justify-content: center;
@@ -134,8 +129,8 @@ a {
     height: 40px;
     border: none;
     outline: none;
-    color: white;
     padding: 0px 8px;
+    color: var(--text);
     background-color: #242424;
 }
 
@@ -148,6 +143,7 @@ a {
 .toolTip{
     left: 50%;
     z-index: 2;
+    color: var(--bg);
     cursor: pointer;
     padding: 3px 10px;
     position: absolute;
@@ -177,7 +173,6 @@ a {
 .folderName{
     width: 100%;
     height: 99%;
-    color: white;
     display: flex;
     padding: 0.8rem;
     cursor: pointer;
@@ -217,7 +212,6 @@ a {
 .folderList ul li{
     width: 100%;
     height: 30%;
-    color: white;
     display: flex;
     cursor: pointer;
     padding: 0px 15px;
@@ -230,7 +224,6 @@ a {
     height: 100%;
     border: none;
     outline: none;
-    color: white;
     background-color: inherit;
 }
 
@@ -256,7 +249,6 @@ a {
 
 .pin p{
     display: flex;
-    color: white;
     margin: 0px 5px;
     padding: 0px 5px;
     width: fit-content;
@@ -299,7 +291,6 @@ a {
 #submit{
     height: 100%;
     border: none;
-    color: white;
     cursor: pointer;
     font-weight: 700;
     padding: 0px 1.2rem;

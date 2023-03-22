@@ -2,6 +2,7 @@ import React, {useState, useEffect} from 'react';
 import ReactDOM from 'react-dom';
 import styles from "../stylesheets/main.module.css";
 import { storeDataInDb, getFolderInfo } from "../db/firebase.js";
+import { useNavigate } from 'react-router-dom';
 
 
 const AddNewTask = (props) => {
@@ -12,6 +13,7 @@ const AddNewTask = (props) => {
 	const [folderName, updateFolderName ] = useState("mix");
 	const [isNewfolder, updateisNewFolder] = useState(false);
 	const [tooltipState, setTooltipState] = useState({opacity: '0'})
+	const navigate = useNavigate();	
 
 	useEffect(() => {
 		getFolderInfo()
@@ -53,7 +55,13 @@ const AddNewTask = (props) => {
 	            credentials: "include",
 	            body: JSON.stringify(payload)
 	        })
-	        .then(resp => resp.json())
+	        .then(resp => {
+	        	if (resp.status == 401){
+	        		navigate('/login');
+	        	} else{
+	        		return resp.json();
+	        	}
+	        })
 	        .then(response => {
 				// RESETTING the default values of the input field
 	        	updateWord("");
@@ -64,7 +72,10 @@ const AddNewTask = (props) => {
 	        	// Hiding the addNewtask container
 				props.newStateStyles[1]({display: "none", transform: "scale(0)"})
 	        })
-	        .catch(err => props.updateModal(err.message));
+	        .catch(err => {
+	        	console.log(err.status)
+	        	props.updateModal(err.message)
+	        });
 		} else {
 			props.updateModal("Please check all fields are filled properly", false, true);
 		}

@@ -93,7 +93,7 @@ const ListContainer = (props) => {
 
 	// useStableEffect(() => {
 	useEffect(() => {
-		fetchData(1);
+		// fetchData(1);
 	}, []);
 
 	return(

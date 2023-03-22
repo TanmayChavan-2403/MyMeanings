@@ -9,13 +9,16 @@ class Login extends Component{
         this.state = {
             username: '',
             password: '',
+            email: '',
             confirmPassword:'',
-            register: false,
             heading: 'LOGIN',
             properties: {
                 display: 'flex',
                 pointerEvents:'all'
-            }
+            },
+            confirmLoginField: {height: "0px", padding: '0px'},
+            login: true,
+            question: "Not a member ?"
         }
         this.submit = this.submit.bind(this);
     }
@@ -26,11 +29,46 @@ class Login extends Component{
         })
     }
 
-    register(){
-        this.setState({
-            heading: 'LOGIN',
-            register: true
-        })
+    changeOptions(){
+        if (this.state.login){
+            let transitions = ["ROGIN", "REGIN", "REGIS", "REGIST","REGISTE", "REGISTER","REGISTER NOW!"];
+            let time = 400;
+            for(let i = 0; i < transitions.length; i++){
+                if (i == 6){
+                    time = 450;
+                }
+                setTimeout(() => {
+                    this.setState({
+                        heading: transitions[i]
+                    })
+
+                }, i* time);
+            }
+            this.setState({
+                confirmLoginField: {height: "44px", padding: '12px'},
+                question: "Already a member ?",
+                login: !this.state.login
+            })
+        } else {
+            let transitions = [" _ ", " __ ", " ___ ", " ____ ", " ____ "," _____ ", "LOGIN"];
+            let time = 350;
+            for(let i = 0; i < transitions.length; i++){
+                if (i == 6){
+                    time = 450;
+                }
+                setTimeout(() => {
+                    this.setState({
+                        heading: transitions[i]
+                    })
+
+                }, i* time);
+            }
+            this.setState({
+                confirmLoginField: {height: "0px", padding: '0px'},
+                question: "Not a member ?",
+                login: !this.state.login
+            })
+        }
     }
 
     closeContainer(){
@@ -46,23 +84,23 @@ class Login extends Component{
         if (this.state.username.trim().length == 0){
             alert("Please enter proper username");
             return;
-        } else if (this.state.password != this.state.confirmPassword){
+        } else if (!this.state.login && this.state.password != this.state.confirmPassword){
             alert("Confirm Password does not match with password");
             return;
         }
-        if (this.state.register){
+        if (!this.state.login){
             fetch('http://localhost:4000/register', {
                 method: "POST",
+                credentials: "include",
                 headers:{
                     'Access-Control-Allow-Origin': "http://localhost:4000/",
                     'Content-type': 'application/json'
                 },
-                body: JSON.stringify({username: this.state.username, password: this.state.password})
+                body: JSON.stringify({username: this.state.username, password: this.state.password, email: this.state.email})
             })
             .then(resp => resp.json())
             .then(data => {
-                console.log(data.access_token);
-                this.closeContainer();
+                this.props.navigate('/');
             })
             .catch(error => console.log(error));
         } 
@@ -84,6 +122,7 @@ class Login extends Component{
                         window.sessionStorage.setItem('pinCount',data.payload.pinCount);
                         window.sessionStorage.setItem('username',data.payload.username);
                         window.sessionStorage.setItem('defaultFolder',data.payload.defaultFolder);
+                        window.sessionStorage.setItem('email',data.payload.email);
                         this.props.navigate('/');
                     }, 1000)
                 } else {
@@ -100,31 +139,36 @@ class Login extends Component{
                 <div id='loginOuterWrapper' style={this.state.properties}>
                     <div id='loginInnerWrapper'>
                         <div id="welcome-page-container">
-                                
+                            {/*<img src="gridBackground.png" alt='Grid background' />*/}
+                            <h1> Welcome Back! </h1>    
+                            <p>We’re happy to see you again.</p>
                         </div>
                         <div id='loginContainer'>
-                            <div id='heading'>
-                                <h1> {this.state.heading} </h1>
-                            </div>
-                            <div id='input-fields'>
-                                <input onChange={(e) => this.updateState('username', e)} placeholder='Username'></input>
-                                <input onChange={(e) => this.updateState('password', e)} placeholder='Password'></input>
-                                <input onChange={(e) => this.updateState('confirmPassword',e)} placeholder='Confirm Password'></input>
-                            </div>
-                            <div id='additional-options'>
-                                <div id='keep-signedin' class='ao'>
-                                    <div id='checkbox'></div>
-                                    <p> Keep me signed in </p>
+                            <div id='login-container-wrapper'>
+                                <div id='heading'>
+                                    <h1> {this.state.heading} </h1>
                                 </div>
-                                <div id='registrationlink'  class='ao'>
-                                    <p>Already a member ?</p>
+                                <div id='input-fields'>
+                                    <input onChange={(e) => this.updateState('username', e)} placeholder='Username'></input>
+                                    <input onChange={(e) => this.updateState('password', e)} placeholder='Password'></input>
+                                    <input style={this.state.confirmLoginField} onChange={(e) => this.updateState('confirmPassword',e)} placeholder='Confirm Password'></input>
+                                    <input style={this.state.confirmLoginField} onChange={(e) => this.updateState('email',e)} placeholder='Email'></input>
                                 </div>
-                            </div>
-                            <div id='buttons'>
-                                <button onClick={this.submit}>
-                                    SUBMIT
-                                </button>
-                                {/*<p onClick={(e) => this.register('register')}>Not registered? then click here to register</p>*/}
+                                <div id='additional-options'>
+                                    <div id='keep-signedin' class='ao'>
+                                        <div id='checkbox'></div>
+                                        <p> Keep me signed in </p>
+                                    </div>
+                                    <div id='registrationlink'  class='ao'>
+                                        <p onClick={(e) => this.changeOptions('register')}> {this.state.question} </p>
+                                    </div>
+                                </div>
+                                <div id='buttons'>
+                                    <button onClick={this.submit}>
+                                        SUBMIT
+                                    </button>
+                                    
+                                </div>
                             </div>
                         </div>
                     </div>

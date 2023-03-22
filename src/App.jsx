@@ -3,6 +3,7 @@ import React, { Component } from 'react'
 import {Routes, Route, useNavigate} from 'react-router-dom';
 import Fallback, {ServerError} from './components/fallbackComp'
 import Login from "./components/login";
+import Profile from "./components/profile";
 
 class App extends Component{
     constructor(props){
@@ -50,6 +51,7 @@ class App extends Component{
                 <Routes>
                     <Route path="/" element={<Body />}  />
                     <Route path="login" element={<Login />} />
+                    <Route path="profile" element={<Profile />} />
                 </Routes>
             )
         }

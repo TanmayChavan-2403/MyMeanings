@@ -1,6 +1,7 @@
 import {storeSubscription, getInfo, deleteSubscription} from '../db/firebase.js';
 import styles from "../stylesheets/topSection.module.css";
 import React, { useState, useEffect } from 'react';
+import {Link } from 'react-router-dom'
 import { ReturnStateContext } from './context';
 import * as ReactDOM from 'react-dom';
 
@@ -10,6 +11,13 @@ const Navbar = (props) => {
         <>
             <div id={styles.navbar}>
                 <img src="logo.svg"></img>
+                <div id={styles.profileContainer}>
+                    <Link to='/profile'>
+                        <div id={styles.profile}>
+                            <img id='avatar_image' src='./avatar.png' alt='Avatar'></img>
+                        </div>
+                    </Link>
+                </div>
             </div>
         </>
     )
@@ -133,17 +141,6 @@ export const SearchBar = (props) => {
       return outputArray;
     }
 
-    const goBack = () => {
-        if (window.localStorage.length === 0){
-            props.updatePinnedList(JSON.parse(window.sessionStorage.getItem('pinned')))
-            props.updateUnpinnedList(JSON.parse(window.sessionStorage.getItem('unpinned')))
-        } else {
-            props.updatePinnedList(JSON.parse(window.localStorage.getItem('pinned')))
-            props.updateUnpinnedList(JSON.parse(window.localStorage.getItem('unpinned')))
-        }
-        props.updateReturnBtnStatue()
-    }
-
     const updateListContainer = (e) => {
         // Updating the value in the input section's value
         props.setSearchText(e.target.value);
@@ -172,10 +169,6 @@ export const SearchBar = (props) => {
 
     }
 
-    const refresh = (e) => {
-        window.location.reload();
-    }
-
     return(
         // Provider is in main.js file
         <ReturnStateContext.Consumer> 
@@ -186,13 +179,6 @@ export const SearchBar = (props) => {
                             <input onChange={(e) => updateListContainer(e)} type="text" placeholder="Search here..." value={props.searchText} id={styles.searchInpField} />
                         </div>
                         <div style={{display: 'flex'}} className={styles.icons}>
-                            <img src='./icons/refresh.png' onClick={refresh} />
-                            {
-                                shouldWeReturn ? 
-                                <img src="./icons/backArrowWhite.png" onClick={goBack}/> : 
-                                <img src="./icons/backArrowGrey.png" style={{cursor: 'not-allowed'}}/>
-                                
-                            }
                             <img src="./icons/addIcon.png" onClick={(e) => props.newStateStyles[1]({display: "flex", transform: "scale(1)"})} />
                             {
                                 notif ? 
