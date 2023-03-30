@@ -7,18 +7,18 @@ import app, { messaging } from "./CONFIG.js"
 const db = getFirestore(app);
 const SIDocRef = doc(db, 'subscriptions', "info")
 
-export function deleteSubscription(){
-	return new Promise((resolve, reject) => {
-		const docRef = doc(db, 'subscriptions', 'client2');
-		const docRef2 = doc(db, 'subscriptions', 'info');
-		setDoc(docRef, {
-			0: null
-		}, {merge: true})
-		setDoc(docRef2, {
-			notificationStatus: false
-		}, {merge: true})
-	})
-}
+// export function deleteSubscription(){
+// 	return new Promise((resolve, reject) => {
+// 		const docRef = doc(db, 'subscriptions', 'client2');
+// 		const docRef2 = doc(db, 'subscriptions', 'info');
+// 		setDoc(docRef, {
+// 			0: null
+// 		}, {merge: true})
+// 		setDoc(docRef2, {
+// 			notificationStatus: false
+// 		}, {merge: true})
+// 	})
+// }
 
 export function getInfo(){
 	return new Promise(async(resolve, reject) => {
@@ -51,7 +51,7 @@ export function updateInfo(storageType, type=0){
 
 export async function storeSubscription(subscription, status, client='client2'){
 	return new Promise((resolve, reject) => {
-		const docRef = doc(db, 'subscriptions', client)
+		const docRef = doc(db, 'subscriptions', client) // PATH
 		try{
 			setDoc(docRef, {0: subscription})
 			// Update notificationStatus in database

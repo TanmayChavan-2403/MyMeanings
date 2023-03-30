@@ -8,6 +8,7 @@
     width: 100%;
     height: 11%;
     display: flex;
+    position: relative;
     /*max-height: 75px;*/
     align-items: center;
     justify-content: center;
@@ -16,6 +17,21 @@
 
 #navbar img{
     height: 100%;
+}
+
+#profileContainer{
+    width: 60px;
+    height: 60px;
+    right: 2%;
+    position: absolute;
+}
+
+#profile{
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+    overflow: hidden;
+    border-radius: 50%;
 }
 
 
@@ -104,7 +120,7 @@
 }
 
 .searchBar{
-    width: 30%;
+    width: 50%;
     height: 70%;
     overflow: hidden;
     /* border-radius: 50px; */
@@ -142,9 +158,51 @@
     object-fit: contain;
 }
 
+#currentFolder{
+    display: flex;
+    position: relative;
+    flex-wrap: wrap;
+    min-height: 100%;
+    padding: 0px 10px;
+    color: var(--text);
+    align-items: center;
+    transition: 0.5s;
+    border: 1px solid white;
+}
 
+#currentFolder i{
+    cursor: pointer;
+    transition: 0.3s;
+}
 
+#folderName{
+    width: 70px;
+    cursor: pointer;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
 
+#dropDown{
+    left: 0%;
+    top: 100%;
+    width: 100%;
+    z-index: 100;
+    transition: 0.5s;
+    overflow: hidden;
+    position: absolute;
+    background-color: var(--bg);
+    border: 1px solid var(--text);
+}
+
+#dropDown p{
+    cursor: pointer;
+    padding: 5px 10px;
+    line-height: 15px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
 
 
 

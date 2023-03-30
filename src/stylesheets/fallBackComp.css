@@ -1,0 +1,78 @@
+#error-container{
+	width: 100vw;
+	height: 100vh;
+	display: flex;
+	color: var(--text);
+	flex-wrap: wrap;
+	align-content: center;
+	justify-content: center;
+	background-color: var(--bg);
+}
+
+#message{
+	width: 80%;
+/*	height: 40%;*/
+	height: fit-content;
+	position: relative;
+}
+
+#oops{
+	user-select: none;
+	/*font-size: 15rem;*/
+	font-weight: 100;
+	letter-spacing: 10px;
+	text-align: center;
+	font-size: clamp(5rem, 18vw, 20rem);
+	font-family: 'Montserrat', sans-serif;
+
+}
+
+#message-overlay{
+	left: 48%;
+	bottom: 11%;
+/*	font-size: 1rem;*/
+	padding: 10px;
+	white-space: nowrap;
+	width: fit-content;
+	position: absolute;
+	text-align: center;
+/*	background-color: black;*/
+	background-color: #242424;
+	transform: translateX(-50%);
+}
+
+#error-message{
+	font-size: 2rem;
+	font-size: clamp(1rem, 2.5vw, 20rem);
+	font-family: 'Montserrat', sans-serif;
+}
+
+#home-button{
+	width: 80%;
+	height: 10%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+#button{
+	color: white;
+	border: none;
+	cursor: pointer;
+	font-weight: 300;
+	font-size: 1.2rem;
+	padding: 10px 25px;
+	background-color: #156ec0;
+	font-family: 'Montserrat', sans-serif;
+}
+
+#s{
+	font-weight: 500;
+}
+
+@media screen and (max-width: 650px) {
+	#message-overlay{
+		bottom: 0%;
+		padding: 5px;
+	}
+}
