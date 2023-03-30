@@ -26,11 +26,11 @@ export const ServerError = (props) =>{
 					<p id='error-message'>500 - OUR SERVER IS ON A BREAK</p>
 				</div>
 			</div>
-			<div id='home-button'>
+{/*			<div id='home-button'>
 				<a href='https://myvocabspace.web.app/'>
 					<button id='button'> Go to <strong id='s'> HOME </strong> page </button>	
 				</a>
-			</div>
+			</div>*/}
 		</div>
 	)
 }

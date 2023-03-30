@@ -1,9 +1,10 @@
 import Body from "./main";
 import React, { Component } from 'react'
-import {Routes, Route, useNavigate} from 'react-router-dom';
+import {Routes, Route, useNavigate, Router} from 'react-router-dom';
 import Fallback, {ServerError} from './components/fallbackComp'
 import Login from "./components/login";
 import Profile from "./components/profile";
+import Preloader from './components/preloader';
 
 class App extends Component{
     constructor(props){
@@ -11,6 +12,7 @@ class App extends Component{
         this.state ={
             error: null,
             flag: false,
+            authenticate: true
         }
     }
 
@@ -26,14 +28,18 @@ class App extends Component{
             if (resp.status == 401){
                 this.props.navigate('login');
             }
+            setTimeout(() => {
+                this.setState({
+                    authenticate: false
+                })
+            }, 3000)
         })
         .catch(error => {
-
             if (error.message.includes('NetworkError')){
                 this.setState({
                     error: "Server is down, please try again after sometime",
                     flag: true
-                });          
+                });
             } else {
                 console.log(error);
             }
@@ -45,6 +51,10 @@ class App extends Component{
             return (
                 <ServerError message={this.state.error}/>
             );
+        } else if(this.state.authenticate){
+            return(
+                <Preloader />
+            )
         }
         else {
             return(

@@ -123,6 +123,9 @@ class Login extends Component{
                         window.sessionStorage.setItem('username',data.payload.username);
                         window.sessionStorage.setItem('defaultFolder',data.payload.defaultFolder);
                         window.sessionStorage.setItem('email',data.payload.email);
+                        window.sessionStorage.setItem('folders', JSON.stringify(data.payload.folders));
+                        window.sessionStorage.setItem('categories', JSON.stringify(data.payload.categories));
+                        window.sessionStorage.setItem('notificationTurnedOn', data.payload.notificationTurnedOn)
                         this.props.navigate('/');
                     }, 1000)
                 } else {
@@ -150,7 +153,7 @@ class Login extends Component{
                                 </div>
                                 <div id='input-fields'>
                                     <input onChange={(e) => this.updateState('username', e)} placeholder='Username'></input>
-                                    <input onChange={(e) => this.updateState('password', e)} placeholder='Password'></input>
+                                    <input onChange={(e) => this.updateState('password', e)} placeholder='Password' type='password'></input>
                                     <input style={this.state.confirmLoginField} onChange={(e) => this.updateState('confirmPassword',e)} placeholder='Confirm Password'></input>
                                     <input style={this.state.confirmLoginField} onChange={(e) => this.updateState('email',e)} placeholder='Email'></input>
                                 </div>

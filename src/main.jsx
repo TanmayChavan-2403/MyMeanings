@@ -12,7 +12,7 @@ const Body = (props) => {
     const [returnBtnState, setReturnBtnState] = useState(false)
 	let [pinned, updatePinnedList] = useState([])
 	let [unPinned, updateUnpinnedList] = useState([])
-
+    let [defaultFolderName, changeDefaultFolder] = useState(sessionStorage.getItem('defaultFolder'));
 
     const [searchText, setSearchText] = useState("")
     const [searchResult, setSearchResult] = useState([])
@@ -68,6 +68,8 @@ const Body = (props) => {
                                 setSearchText = {setSearchText}
                                 searchText = {searchText}
                                 setSearchResult={setSearchResult}
+                                defaultFolderName={defaultFolderName}
+                                changeDefaultFolder={changeDefaultFolder}
                         />
                     </ReturnStateContext.Provider>
 
@@ -80,6 +82,7 @@ const Body = (props) => {
                             updateModal={updateModal}
                             searchResult = {searchResult}
                             searchText= {searchText}
+                            defaultFolderName={defaultFolderName}
                         />
                     </Suspense>
 

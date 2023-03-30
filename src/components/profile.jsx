@@ -102,7 +102,11 @@ function Account(props){
         fetch('http://localhost:4000/logout', {
             credentials: "include"
         })
-        .then(rec => {window.location.reload()})
+        .then(rec => {
+            sessionStorage.clear();
+            window.location.reload();
+
+        })
         .catch(err => console.log(err));
     }
 

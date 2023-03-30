@@ -9,40 +9,65 @@ const AddNewTask = (props) => {
 	const [word, updateWord] = useState("");
 	const [pinned, updatePin] = useState(false);
 	const [meaning, updateMeaning] = useState("");
-	const [folderNames, updateFolderNames] = useState([]);
-	const [folderName, updateFolderName ] = useState("mix");
+	
+	// Folder drop down states
+	const [droppedContainer, updateDroppedContainerName] = useState('');
+	const [activeDropDown, updateActiveDropDown] = useState({height: "200px"});
+	const [deactiveDropdown, updateDeactiveDropdown] = useState({height: "0px"})
+
+	const [categoryName, udpateCategoryName] = useState('mix');
+	const [folderName, updateFolderName] = useState(window.sessionStorage.getItem('defaultFolder'));
+
+	const [folderNames, updateFolderNames] = useState(JSON.parse(window.sessionStorage.getItem('folders')) || []);
+	const [categoryNames, updateCategoryNames] = useState(JSON.parse(window.sessionStorage.getItem('categories')) || []);
+
 	const [isNewfolder, updateisNewFolder] = useState(false);
 	const [tooltipState, setTooltipState] = useState({opacity: '0'})
-	const navigate = useNavigate();	
+	const navigate = useNavigate();
 
 	useEffect(() => {
-		getFolderInfo()
-		.then(data => updateFolderNames(data.names))
-		.catch(err => console.log(err))
-	}, [])
+		if (categoryName === ""){
+			udpateCategoryName('mix');
+		} else if (folderName === ""){
+			updateFolderName(window.sessionStorage.getItem('defaultFolder'))
+		}
+		// getFolderInfo()
+		// .then(data => updateFolderNames(data.names))
+		// .catch(err => console.log(err))
+	}, [categoryName, folderName])
 
-	function toggleFolderList(e){
-		let list  = document.getElementsByClassName(`${styles.folderList}`)[0];
-		let image = document.getElementsByClassName(`${styles.arrowIcon}`)[0];
-		let state = list.getAttribute("data-state");
-		if (state == "close"){
-			image.style.transform = "rotate(180deg)";
-			list.style.height = "200px";
-			list.setAttribute("data-state", "open")	
+	function toggleDropdowns(name){
+		if (name ===  droppedContainer){
+			updateDroppedContainerName('');	
 		} else {
-			list.style.height = "0px";
-			image.style.transform = "rotate(0deg)";
-			list.setAttribute("data-state", "close")
+			updateDroppedContainerName(name);
 		}
 	}
 
+	const presentInRecord = (type) =>{
+		let arr = JSON.parse(sessionStorage.getItem(type));
+		for(let i = 0; i < arr.length; i++){
+			if (type === 'folders'){
+				if (folderName === arr[i]){
+					return true;
+				}
+			} else {
+				if (categoryName === arr[i]){
+					return true;
+				}
+			}
+		}
+		console.log(type + 'not present update databaes');
+		return false
+	}
+
 	function submit(e){
-		if (word.length !== 0 && meaning.length !== 0 && folderName.length !== 0){
+		if (word.length !== 0 && meaning.length !== 0 && categoryName.length !== 0){
 			// Preparing payload according to the data extracted by the backend.
 			let payload = {
 				word,
-				tagName: folderName,
-				folderName: 'English',
+				tagName: categoryName,
+				folderName: folderName,
 				meaning,
 				pin: pinned,
 				complete: false
@@ -71,6 +96,12 @@ const AddNewTask = (props) => {
 	        	props.updateModal(response.message)
 	        	// Hiding the addNewtask container
 				props.newStateStyles[1]({display: "none", transform: "scale(0)"})
+				if (!presentInRecord('folders')){
+					updateSupplementaryDetails("folders");
+				}
+				if (!presentInRecord('categories')){
+					updateSupplementaryDetails('categories');
+				}
 	        })
 	        .catch(err => {
 	        	console.log(err.status)
@@ -81,30 +112,35 @@ const AddNewTask = (props) => {
 		}
 	}
 
+	const updateSupplementaryDetails = (field) => {
+		let payload = {
+			field,
+			newValue: field === "folders" ? folderName : categoryName
+		}
+		fetch("http://localhost:4000/udpateSuppDetails",{
+			method: "POST",
+	            headers:{
+	                'Content-type': 'application/json'
+	            },
+	            credentials: "include",
+	            body: JSON.stringify(payload)
+		})
+		.then(response => response.json())
+		.then(resp => console.log(resp))
+		.catch(err => console.log(err));
+	}
+
 	document.onkeypress = (e) => {
 		if (e.charCode == 13){
 			submit();
 		}
 	}
 
-	function selectFolder(e=undefined, name=undefined){
-		if (name === "From Image"){
-			updateFolderName(e.target.previousSibling.value);
-			updateisNewFolder(true);
-			toggleFolderList();
-		}
-		else if (e && (e.code == "NumpadEnter" || e.code == "Enter")){
-			if (e.target.value.length !== 0){
-				console.log('Clicked 1');
-				updateFolderName(e.target.value);
-				updateisNewFolder(true);
-				toggleFolderList();
-			}
-		} else if(!e){
-			console.log(name);
+	function selectFolder(type, name){
+		if (type === 'category'){
+			udpateCategoryName(name);
+		} else {
 			updateFolderName(name);
-			updateisNewFolder(false);
-			toggleFolderList();	
 		}
 	}
 
@@ -160,20 +196,44 @@ const AddNewTask = (props) => {
 							}
 						</div>
 					</div>
+
+
 					<div className={styles.folderSelection}>
-						<div onClick={toggleFolderList} className={styles.folderName}>
-							<p styles={{pointerEvents: "none"}}> {folderName}</p>
+						<div onClick={() => toggleDropdowns('category')} className={styles.folderName}>
+							<p styles={{pointerEvents: "none"}}> {categoryName} </p>
 							<img className={styles.arrowIcon} src="./icons/downArrow.png" />
 						</div>
-						<div data-state="close" className={styles.folderList}>
+						<div data-state="close" style={droppedContainer === 'category' ? activeDropDown : deactiveDropdown} className={styles.folderList}>
 							<ul>
 								<li>
-								<input onKeyPress={selectFolder} placeholder="Create New [Type & hit enter]" />
+									<input onChange={(e) => udpateCategoryName(e.target.value)} placeholder="Create New [Type & hit enter]" />
+									<img onClick={(e) => selectFolder(e, "From Image")} id = {styles.enter}src="./icons/enterBlack.svg"></img>
+								</li>
+								{categoryNames.map(folder => {
+									return(
+										<li key={folder} onClick={() => selectFolder("category", folder)}>{folder}</li>
+									)
+								})}
+							</ul>
+						</div>
+					</div>
+
+
+
+					<div className={styles.folderSelection}>
+						<div onClick={() => toggleDropdowns('folder')} className={styles.folderName}>
+							<p styles={{pointerEvents: "none"}}> {folderName} </p>
+							<img className={styles.arrowIcon} src="./icons/downArrow.png" />
+						</div>
+						<div data-state="close" style={droppedContainer === 'folder' ? activeDropDown : deactiveDropdown} className={styles.folderList}>
+							<ul>
+								<li>
+								<input onChange={(e) => updateFolderName(e.target.value)} placeholder="Create New [Type & hit enter]" />
 								<img onClick={(e) => selectFolder(e, "From Image")} id = {styles.enter}src="./icons/enterBlack.svg"></img>
 								</li>
 								{folderNames.map(folder => {
 									return(
-										<li key={folder} onClick={() => selectFolder("", folder)}>{folder}</li>
+										<li key={folder} onClick={() => selectFolder("folder", folder)}>{folder}</li>
 									)
 								})}
 							</ul>
@@ -192,3 +252,7 @@ const AddNewTask = (props) => {
 }
 
 export default AddNewTask;
+
+
+
+// Movie, Sarah Naughton, Derek Landy, Greg Weismen, Jeffery Archer, John Grisham, David Baldacci

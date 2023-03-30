@@ -1,6 +1,7 @@
 // import List from './list';
 import React, { useState, useEffect } from 'react';
 import styles from '../stylesheets/bottomSection.module.css';
+import { useNavigate } from 'react-router-dom';
 const List = React.lazy(() => import('./list'))
 
 const ListContainer = (props) => {
@@ -8,6 +9,7 @@ const ListContainer = (props) => {
 	let [element, updateElement] = useState(null);
 	let [page, nextPage] = useState(1);
 	let [endOfData, setEndOfData] = useState(false);
+	let navigate = useNavigate();
 
 	const listTaggedAuthor = (tag) => {
 	}
@@ -70,16 +72,32 @@ const ListContainer = (props) => {
 
 	function loadMore(){
 		fetchData(page + 1);
-		nextPage(prevPage => (prevPage + 1));
+		// nextPage(prevPage => (prevPage + 1));
+	}
+
+	function fail() {
+		return new Promise((resolve, reject) => {
+			reject(new Error("Something went wrong"));
+		});
 	}
 
 	function fetchData(payload){
-		fetch(`http://localhost:4000/getList?page=${payload}&limit=20`, {
+		nextPage(payload);
+		// let defaultFolder = sessionStorage.getItem('defaultFolder');
+		fetch(`http://localhost:4000/getList?page=${payload}&limit=20&defaultFolder=${props.defaultFolderName}`, {
 			method: "GET",
 			credentials: "include"
 		})
-		.then(res => res.json())
+		.then(res => {
+			if (res.status == 401){
+				navigate('/login');
+				return fail();
+			} else {
+				return res.json();
+			}
+		})
 		.then( async (data) => { //Returns object which contains status, resultCount and response fields
+						
 			if (data.resultCount === 0){
 				setEndOfData(true);
 			} else {
@@ -91,10 +109,11 @@ const ListContainer = (props) => {
 		.catch(err => console.log(err));
 	}
 
-	// useStableEffect(() => {
 	useEffect(() => {
-		// fetchData(1);
-	}, []);
+		fetchData(0);
+		props.updatePinnedList([]);
+		props.updateUnpinnedList([]);
+	}, [props.defaultFolderName]);
 
 	return(
 		<>
