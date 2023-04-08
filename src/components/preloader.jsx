@@ -1,5 +1,3 @@
-import React, { Component } from 'react';
-
 function Preloader(){
 	const styles = {
 		width: '100vw',

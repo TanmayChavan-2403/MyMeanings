@@ -1,7 +1,7 @@
 import Body from "./main";
 import React, { Component } from 'react'
-import {Routes, Route, useNavigate, Router} from 'react-router-dom';
-import Fallback, {ServerError} from './components/fallbackComp'
+import {Routes, Route, useNavigate} from 'react-router-dom';
+import  {ServerError} from './components/fallbackComp'
 import Login from "./components/login";
 import Profile from "./components/profile";
 import Preloader from './components/preloader';
@@ -26,7 +26,7 @@ class App extends Component{
         })
         .then(resp => {
             console.log(resp, resp.status)
-            if (resp.status == 401){
+            if (resp.status === 401){
                 this.props.navigate('login');
             }
             setTimeout(() => {

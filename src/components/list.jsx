@@ -1,11 +1,11 @@
-import React, {useState, useEffect, useRef} from "react"
+import React, {useState, useRef} from "react"
 import styles from '../stylesheets/bottomSection.module.css';
-import { deleteListFromDB, addToCompletedList, removeFromCompletedList, updatePinStatus } from '../db/firebase.js';
 
 
 const List = (props) => {
     let [checked, setChecked] = useState(props.data["isComplete"])
-    let [key, setKey] = useState(props.data["_id"]);
+    // let [key, setKey] = useState(props.data["_id"]);
+    const key = props.data["_id"]
     let [pinned, setPinned] = useState(props.data["isPinned"])
     const menu = useRef()
 
@@ -32,7 +32,6 @@ const List = (props) => {
 
             // IN THE END update the "checked" state of this component so that it can be reflected in the UI.
         */
-        let child = e.target.parentElement.parentElement.parentElement.parentElement
         let payload;
         if (pinned){
             payload = { // Creating payload and sending it to "updateDatabase" function.
@@ -127,7 +126,7 @@ const List = (props) => {
                 <div onClick={check} className={styles.radioBtn}>
                     {
                         checked ? 
-                        <img src="./icons/checkmark.svg"/> : ""
+                        <img src="./icons/checkmark.svg" alt="check" /> : ""
                     }
                 </div>
             </div>
@@ -142,7 +141,7 @@ const List = (props) => {
             <div className={styles.pin}>
                 {
                     pinned ?
-                    <img src="./icons/pin2.svg" /> : ""
+                    <img alt = "pin" src="./icons/pin2.svg" /> : ""
                 }
             </div>
             <div className={styles.tag}>
@@ -159,16 +158,16 @@ const List = (props) => {
                     <ul>
                         <li onClick={pin}
                             style={{ borderBottom: "1px solid white" }}>
-                            <img src="./icons/pin.svg"/>
+                            <img alt = "pin" src="./icons/pin.svg"/>
                             {pinned ? "Unpin" : "Pin"}
                         </li>
                         <li onClick={deleteList} >
-                            <img src="./icons/deleteIcon.svg" />
+                            <img alt = "delete" src="./icons/deleteIcon.svg" />
                             Delete 
                         </li>
                     </ul>
                 </div>
-                <img onClick={() => props.checkForToggleClearance(menu)} src="./icons/three-dots.svg" />
+                <img alt = "..." onClick={() => props.checkForToggleClearance(menu)} src="./icons/three-dots.svg" />
             </div>
         </div>
     );

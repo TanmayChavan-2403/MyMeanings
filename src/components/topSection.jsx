@@ -1,4 +1,3 @@
-import {storeSubscription, getInfo, deleteSubscription} from '../db/firebase.js';
 import styles from "../stylesheets/topSection.module.css";
 import React, { useState, useEffect } from 'react';
 import { ReturnStateContext } from './context';
@@ -9,7 +8,7 @@ const Navbar = (props) => {
     return(
         <>
             <div id={styles.navbar}>
-                <img src="logo.svg"></img>
+                <img src="logo.svg" alt="Logo"></img>
                 <div id={styles.profileContainer}>
                     <Link to='/profile'>
                         <div id={styles.profile}>
@@ -38,43 +37,14 @@ export const StatusLine = (props) => {
 }
 
 export const SearchBar = (props) => {
-    const [notif, setNotif] = useState(sessionStorage.getItem('notificationTurnedOn'));
+    const notif = sessionStorage.getItem('notificationTurnedOn');
     const navigate = useNavigate();
-    const [error, setError] = useState(null);
     const [dropDownHeight, updateDropDownHeight] = useState({height: '0%'});
     const [arrowDegree, updateArrowDegree] = useState({transform: 'rotate(0deg)'});
-    const [folders, updateFolders] = useState(JSON.parse(sessionStorage.getItem('folders')));
-    const [notificationStatus, setNotificationStatus] = useState(sessionStorage.getItem('notificationTurnedOn'));
-    const [storagetype, setStorageType] = useState('localStorage');
+    const folders = JSON.parse(sessionStorage.getItem('folders'));
 
     useEffect(() => {
     }, [])
-
-    const udpateSubscriptionStatus = () => {
-        if (notif){
-            navigator.serviceWorker.ready.then((reg) => {
-                reg.pushManager.getSubscription().then((subscription) => {
-                  subscription.unsubscribe().then((successful) => {
-                    props.updateModal('Unsubscribed ')
-                  }).catch((error) => {
-                    props.updateModal('[79]Error while unsubscribing', true)
-                    setError(error)
-                  })
-                })
-            });
-        }
-
-        // update database
-        // Checking if serviceWorker is supported by browser
-        if (!notif){
-            if ('serviceWorker' in navigator){
-                subscribe()
-            }
-        }
-
-        // Update the notification icon
-        setNotif(!notif);
-    }
 
     async function generateSubURL(register, e){
         const publicVapidKey = "BJthRQ5myDgc7OSXzPCMftGw-n16F7zQBEN7EUD6XxcfTTvrLGWSIG7y_JxiWtVlCFua0S8MTB5rPziBqNx1qIo";
@@ -166,6 +136,7 @@ export const SearchBar = (props) => {
     function urlBase64ToUint8Array(base64String) {
       const padding = "=".repeat((4 - base64String.length % 4) % 4);
       const base64 = (base64String + padding)
+        // eslint-disable-next-line
         .replace(/\-/g, "+")
         .replace(/_/g, "/");
 
@@ -181,7 +152,7 @@ export const SearchBar = (props) => {
     const updateListContainer = (e) => {
         // Updating the value in the input section's value
         props.setSearchText(e.target.value);
-        if (e.target.value == ""){
+        if (e.target.value === ""){
             props.setSearchResult([]);
         } else {
             let payload = {
@@ -209,7 +180,7 @@ export const SearchBar = (props) => {
         if (!toggle){
             props.changeDefaultFolder(name);
         }
-        if (dropDownHeight.height == '0%'){
+        if (dropDownHeight.height === '0%'){
             updateDropDownHeight({height: 'fit-content'});
             updateArrowDegree({transform: 'rotate(180deg)'});
         } else {
@@ -241,11 +212,11 @@ export const SearchBar = (props) => {
                                     }
                                 </div>
                             </div>
-                            <img src="./icons/addIcon.png" onClick={(e) => props.newStateStyles[1]({display: "flex", transform: "scale(1)"})} />
+                            <img alt="+" src="./icons/addIcon.png" onClick={(e) => props.newStateStyles[1]({display: "flex", transform: "scale(1)"})} />
                             {
                                 notif !== "false" ? 
-                                <img src="./icons/notificationOn.png"  onClick={subscribe}/> :
-                                <img src="./icons/notificationOff.png" onClick={subscribe} />
+                                <img alt="on" src="./icons/notificationOn.png"  onClick={subscribe}/> :
+                                <img alt="on" src="./icons/notificationOff.png" onClick={subscribe} />
                             }
                         </div>
                     </div>
@@ -284,13 +255,13 @@ export const Modal = (props) => {
             <div id={styles.modal} style={{top: props.modalTopPosition}}>
                 <div style={{backgroundColor: props.modalMsgType}} className={styles.colorBar}></div>
                 <div className={styles.logoSec}>
-                    <img src="icon.png" />
+                    <img src="icon.png" alt="logo" />
                 </div>
                 <div className={styles.message}>
                     <p>{props.modalDisplayText}</p>
                 </div>
                 <div onClick={closeModal} className={styles.closeButton}>
-                    <img src="icons/close.svg"/>
+                    <img src="icons/close.svg" alt="close"/>
                 </div>
             </div>
         </>

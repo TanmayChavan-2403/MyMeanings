@@ -34,7 +34,7 @@ class Login extends Component{
             let transitions = ["ROGIN", "REGIN", "REGIS", "REGIST","REGISTE", "REGISTER","REGISTER NOW!"];
             let time = 400;
             for(let i = 0; i < transitions.length; i++){
-                if (i == 6){
+                if (i === 6){
                     time = 450;
                 }
                 setTimeout(() => {
@@ -53,7 +53,7 @@ class Login extends Component{
             let transitions = [" _ ", " __ ", " ___ ", " ____ ", " ____ "," _____ ", "LOGIN"];
             let time = 350;
             for(let i = 0; i < transitions.length; i++){
-                if (i == 6){
+                if (i === 6){
                     time = 450;
                 }
                 setTimeout(() => {
@@ -81,10 +81,10 @@ class Login extends Component{
     }
 
     submit(){
-        if (this.state.username.trim().length == 0){
+        if (this.state.username.trim().length === 0){
             alert("Please enter proper username");
             return;
-        } else if (!this.state.login && this.state.password != this.state.confirmPassword){
+        } else if (!this.state.login && this.state.password !== this.state.confirmPassword){
             alert("Confirm Password does not match with password");
             return;
         }

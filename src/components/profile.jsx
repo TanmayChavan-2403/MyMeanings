@@ -104,9 +104,9 @@ function Account(props){
     const [droppedContainer, updateDroppedContainerName] = useState('');
     const [categoryName, udpateCategoryName] = useState(sessionStorage.getItem('notificationFolder'));
 
-    const [activeDropDown, updateActiveDropDown] = useState({height: "200px"});
-    const [deactiveDropdown, updateDeactiveDropdown] = useState({height: "0px"})
-    const [categoryNames, updateCategoryNames] = useState(JSON.parse(window.sessionStorage.getItem('categories')) || []);
+    const activeDropDown = {height: "200px"};
+    const deactiveDropdown = {height: "0px"};
+    const categoryNames = JSON.parse(window.sessionStorage.getItem('categories')) || [];
 
     const navigate = useNavigate();
 
@@ -208,7 +208,7 @@ function Account(props){
                 </div>
                 <div class='field'>
                     {
-                        window.sessionStorage.getItem('notificationFolder') == "EMPTY" ?
+                        window.sessionStorage.getItem('notificationFolder') === "EMPTY" ?
                         <> 
                             <div class='key' ><strong>Notification Folder</strong></div>
                             <button class='value' disabled> Subscribe to notification </button>
@@ -219,7 +219,7 @@ function Account(props){
                             <div className={`${styles.folderSelection} value`}>
                                 <div onClick={() => toggleDropdowns('category')} className={`${styles.folderName} dropdown`}>
                                     <p styles={{pointerEvents: "none"}}> {categoryName} </p>
-                                    <img className={styles.arrowIcon} src="./icons/downArrow.png" />
+                                    <img className={styles.arrowIcon} src="./icons/downArrow.png" alt="arrow" />
                                 </div>
                                 <div data-state="close" style={droppedContainer === 'category' ? activeDropDown : deactiveDropdown} className={styles.folderList}>
                                     <ul>

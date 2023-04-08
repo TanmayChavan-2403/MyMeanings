@@ -5,7 +5,6 @@ import { SearchBar,Modal } from "./components/topSection";
 import AddNewTask from "./components/newTask";
 import Fallback from './components/fallbackComp'
 import { ReturnStateContext } from './components/context';
-import Profile from "./components/profile";
 const ListContainer = React.lazy(() => import("./components/listContainer"))
 
 const Body = (props) => {
