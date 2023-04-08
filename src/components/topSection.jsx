@@ -2,7 +2,7 @@ import {storeSubscription, getInfo, deleteSubscription} from '../db/firebase.js'
 import styles from "../stylesheets/topSection.module.css";
 import React, { useState, useEffect } from 'react';
 import { ReturnStateContext } from './context';
-import {Link } from 'react-router-dom';
+import {Link, useNavigate } from 'react-router-dom';
 import * as ReactDOM from 'react-dom';
 
 const Navbar = (props) => {
@@ -39,6 +39,7 @@ export const StatusLine = (props) => {
 
 export const SearchBar = (props) => {
     const [notif, setNotif] = useState(sessionStorage.getItem('notificationTurnedOn'));
+    const navigate = useNavigate();
     const [error, setError] = useState(null);
     const [dropDownHeight, updateDropDownHeight] = useState({height: '0%'});
     const [arrowDegree, updateArrowDegree] = useState({transform: 'rotate(0deg)'});
@@ -75,46 +76,85 @@ export const SearchBar = (props) => {
         setNotif(!notif);
     }
 
-    const subscribe = async () => {
+    async function generateSubURL(register, e){
         const publicVapidKey = "BJthRQ5myDgc7OSXzPCMftGw-n16F7zQBEN7EUD6XxcfTTvrLGWSIG7y_JxiWtVlCFua0S8MTB5rPziBqNx1qIo";
+        console.log(e);
+        if (e.target.state === "activated"){
+            const subscription = await register.pushManager.subscribe({
+                userVisibleOnly: true,
+                applicationServerKey: urlBase64ToUint8Array(publicVapidKey)
+            }); // Provides a subscription's URL endpoint and allows unsubscribing from a push service        
+
+            myConsole('Subscription URL generated successfully!');
+            // STEP 3 Sending to database for storing
+            const payload = {
+                subscriptionURL: subscription,
+                notif: true
+            }
+            fetch("http://localhost:4000/subscribe",{
+                method: "POST",
+                credentials: 'include',
+                headers:{
+                    'Content-type': "application/json"
+                },
+                body: JSON.stringify(payload)
+            })
+            .then(res => {
+                switch(res.status){
+                    case 200:
+                        props.updateModal("Notification service started successfully!");
+                        break;
+                    case 401:
+                        navigate('/login');
+                        break;
+                    case 400:
+                        props.updateModal("This user is already subscribed to notification", true);
+                        break;
+                    default:
+                        props.updateModal("Probably, Something went wrong", false, true);
+                        break;
+                }
+            })
+            .catch(err => {
+                props.updateModal(err, true);
+                console.log(err)
+            });
+        }
+    }
+
+    const subscribe = async () => {
         // STEP 1 Registering service-worker.js file as service worker 
         // It returns serviceWorkerRegistration Interface of SW
         const register = await navigator.serviceWorker.register('./service-worker.js',{
             scope: "/"
         })
-        props.updateModal('Service Worker is registered !')
-        myConsole('Service Worker is registered successfully!');
 
-        // STEP 2 Getting subscription of PUSH API
-        const subscription = await register.pushManager.subscribe({
-            userVisibleOnly: true,
-            applicationServerKey: urlBase64ToUint8Array(publicVapidKey)
-        }); // Provides a subscription's URL endpoint and allows unsubscribing from a push service
-        myConsole('Subscription URL generated successfully!',subscription);
+        let serviceWorker;
+        if (register.installing){
+            serviceWorker = register.installing;
+        } else if(register.waiting){
+            serviceWorker = register.waiting;
+        } else if (register.active){
+            serviceWorker = register.active;
+        }
 
-        // STEP 3 Sending to database for storing
-        fetch("http://localhost:4500/subscribe",{
-            method: "POST",
-            headers:{
-                'Content-type': "application/json"
-            },
-            body: JSON.stringify({subscriptionURL: subscription})
-        }).then(res => res.json())
-        .then(resp => console.log(resp))
-        .catch(err => console.error(err));
+        myConsole('Service Worker is registered successfully!', serviceWorker);
+        // Check the state of service worker and then retrieving subscription
+        if (serviceWorker){
+            // If the state of service worker is already active then we will retrieve the subscription URL
+            // STEP 2 Getting subscription of PUSH API
+            if (serviceWorker.state === "activated"){
+                generateSubURL(register);
+            } else {
+                // Else we subscribe to the state change of service worker, i.e whenever the state is changed from waiting/installing to active.
+                // we will retrieve the subscription URL.
+                console.log("Waiting for state to change;");
+                serviceWorker.addEventListener("statechange", (e) => generateSubURL(register, e));
+            }
 
-        // storeSubscription(JSON.stringify(subscription), !notif)
-        // .then(resp => {
-        //     console.log(resp);
-        //     setTimeout(() => {
-        //         props.updateModal(resp)
-        // }, 1500)
-        // }).catch(error => {
-        //     setTimeout(() => {
-        //         props.updateModal('Failed to save URL in database', true)
-        //         setError(error)
-        //     }, 1500)
-        // })
+        } else {
+            props.updateModal('Failed to register service worker', true);
+        }
     }
 
     const myConsole = (text, ext=undefined) => {
@@ -204,7 +244,7 @@ export const SearchBar = (props) => {
                             <img src="./icons/addIcon.png" onClick={(e) => props.newStateStyles[1]({display: "flex", transform: "scale(1)"})} />
                             {
                                 notif !== "false" ? 
-                                <img src="./icons/notificationOn.png"/> :
+                                <img src="./icons/notificationOn.png"  onClick={subscribe}/> :
                                 <img src="./icons/notificationOff.png" onClick={subscribe} />
                             }
                         </div>
@@ -214,6 +254,23 @@ export const SearchBar = (props) => {
         </ReturnStateContext.Consumer>
     )
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 export const Modal = (props) => {
 

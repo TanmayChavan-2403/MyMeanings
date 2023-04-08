@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
-// import styles from '../stylesheets/profile.module.css';
-
+import React, { Component, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import styles from "../stylesheets/main.module.css";
 import '../stylesheets/profile.css'
 
 class Profile extends Component{
@@ -11,7 +11,11 @@ class Profile extends Component{
             activeStyle: {backgroundColor: 'var(--grey)'},
             deactiveStyle: {backgroundColor: 'transparent'},
             cnfContainer: false,
-            confirmContanier: false
+            confirmContanier: false,
+            folderNames: JSON.parse(window.sessionStorage.getItem('folders')) || [],
+            droppedContainer: "",
+            activeDropDown: {height: "200px"},
+            deactiveDropdown: {height: "0px"}
         }
         this.showCnfContainer = this.showCnfContainer.bind(this);
         this.toggleConfirmationWindow = this.toggleConfirmationWindow.bind(this);
@@ -97,6 +101,14 @@ class Profile extends Component{
 
 
 function Account(props){
+    const [droppedContainer, updateDroppedContainerName] = useState('');
+    const [categoryName, udpateCategoryName] = useState(sessionStorage.getItem('notificationFolder'));
+
+    const [activeDropDown, updateActiveDropDown] = useState({height: "200px"});
+    const [deactiveDropdown, updateDeactiveDropdown] = useState({height: "0px"})
+    const [categoryNames, updateCategoryNames] = useState(JSON.parse(window.sessionStorage.getItem('categories')) || []);
+
+    const navigate = useNavigate();
 
     const logout = () => {
         fetch('http://localhost:4000/logout', {
@@ -108,6 +120,54 @@ function Account(props){
 
         })
         .catch(err => console.log(err));
+    }
+
+    function toggleDropdowns(name){
+        if (name ===  droppedContainer){
+            updateDroppedContainerName('');
+        } else {
+            updateDroppedContainerName(name);
+        }
+    }
+
+    function selectFolder(name){
+        udpateCategoryName(name);
+        toggleDropdowns(name);
+    }
+
+    function updateNotificationFolder(){
+        if (categoryName === sessionStorage.getItem('notificationFolder')){
+            alert("You have already set this folder");
+        } else {
+            fetch(`${process.env.REACT_APP_ALPHA_SERVER}/updateNotificationFolder`, {
+                method: "POST",
+                credentials: "include",
+                headers:{
+                    'Content-type': 'application/json'
+                },
+                body: JSON.stringify({categoryName})
+
+            })
+            .then(resp => {
+                console.log(resp.status);
+                switch(resp.status){
+                    case 200:
+                        alert("New category updated successfully!");
+                        break;
+                    case 500:
+                        alert("Something went wrong!");
+                        break;
+                    case 401:
+                        navigate('/login');
+                        break;
+                    default:
+                        console.log(resp);
+                        break;
+                }
+            })
+            .catch(err => console.log(err));
+            alert("YOur new folder will be set as " + categoryName);
+        }
     }
 
     return(
@@ -145,6 +205,39 @@ function Account(props){
                 <div class='field'>
                     <div class='key'><strong>Default Folder</strong></div>
                     <div class='value'>{window.sessionStorage.getItem('defaultFolder')}</div>
+                </div>
+                <div class='field'>
+                    {
+                        window.sessionStorage.getItem('notificationFolder') == "EMPTY" ?
+                        <> 
+                            <div class='key' ><strong>Notification Folder</strong></div>
+                            <button class='value' disabled> Subscribe to notification </button>
+                        </>    
+                        :
+                        <>
+                            <div class='key' ><strong>Notification Folder</strong></div>
+                            <div className={`${styles.folderSelection} value`}>
+                                <div onClick={() => toggleDropdowns('category')} className={`${styles.folderName} dropdown`}>
+                                    <p styles={{pointerEvents: "none"}}> {categoryName} </p>
+                                    <img className={styles.arrowIcon} src="./icons/downArrow.png" />
+                                </div>
+                                <div data-state="close" style={droppedContainer === 'category' ? activeDropDown : deactiveDropdown} className={styles.folderList}>
+                                    <ul>
+                                        {categoryNames.map(folder => {
+                                            return(
+                                                <li key={folder} onClick={() => selectFolder(folder)}>{folder}</li>
+                                            )
+                                        })}
+                                    </ul>
+                                </div>
+                                <button className="updateFolderListButton" onClick={updateNotificationFolder}>
+                                    Update
+                                </button>
+                            </div>
+
+                        </>
+                    }
+                    
                 </div>
                 <div class='Spfield'>
                     <button onClick={props.toggleCnfWindow} id='deleteAcc'> <i class="fa-solid fa-trash"></i> Delete Account </button>

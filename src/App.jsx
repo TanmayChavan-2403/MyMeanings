@@ -25,6 +25,7 @@ class App extends Component{
             }
         })
         .then(resp => {
+            console.log(resp, resp.status)
             if (resp.status == 401){
                 this.props.navigate('login');
             }
@@ -35,7 +36,7 @@ class App extends Component{
             }, 3000)
         })
         .catch(error => {
-            if (error.message.includes('NetworkError')){
+            if (error.message.includes('NetworkError') || error.message === "Failed to fetch"){
                 this.setState({
                     error: "Server is down, please try again after sometime",
                     flag: true

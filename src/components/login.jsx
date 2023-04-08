@@ -125,7 +125,8 @@ class Login extends Component{
                         window.sessionStorage.setItem('email',data.payload.email);
                         window.sessionStorage.setItem('folders', JSON.stringify(data.payload.folders));
                         window.sessionStorage.setItem('categories', JSON.stringify(data.payload.categories));
-                        window.sessionStorage.setItem('notificationTurnedOn', data.payload.notificationTurnedOn)
+                        window.sessionStorage.setItem('notificationTurnedOn', data.payload.notificationTurnedOn);
+                        window.sessionStorage.setItem('notificationFolder', data.payload.notificationFolder);
                         this.props.navigate('/');
                     }, 1000)
                 } else {

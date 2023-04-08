@@ -13,5 +13,12 @@ self.addEventListener("push", e => {
     body: data.body,
     icon: "https://i.imgur.com/Qdx8HcQ.png",
     badge:"https://i.imgur.com/Qdx8HcQ.png",
+    data: {
+      color: "black"
+    }
   });
 });
+
+
+
+
