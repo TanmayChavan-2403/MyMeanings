@@ -61,7 +61,7 @@ export const SearchBar = (props) => {
                 subscriptionURL: subscription,
                 notif: true
             }
-            fetch("http://localhost:4000/subscribe",{
+            fetch(`${process.env.REACT_APP_ALPHA_SERVER}/subscribe`,{
                 method: "POST",
                 credentials: 'include',
                 headers:{
@@ -158,7 +158,7 @@ export const SearchBar = (props) => {
             let payload = {
                 word: e.target.value,
             }
-            fetch("http://localhost:4000/find",{ 
+            fetch(`${process.env.REACT_APP_ALPHA_SERVER}/find`,{ 
                 method: "POST",
                 headers:{
                     'Content-type': 'application/json'

@@ -84,7 +84,7 @@ const ListContainer = (props) => {
 	function fetchData(payload){
 		nextPage(payload);
 		// let defaultFolder = sessionStorage.getItem('defaultFolder');
-		fetch(`http://localhost:4000/getList?page=${payload}&limit=20&defaultFolder=${props.defaultFolderName}`, {
+		fetch(`${process.env.REACT_APP_ALPHA_SERVER}/getList?page=${payload}&limit=20&defaultFolder=${props.defaultFolderName}`, {
 			method: "GET",
 			credentials: "include"
 		})

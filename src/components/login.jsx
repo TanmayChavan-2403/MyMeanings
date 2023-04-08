@@ -89,7 +89,7 @@ class Login extends Component{
             return;
         }
         if (!this.state.login){
-            fetch('http://localhost:4000/register', {
+            fetch(`${process.env.REACT_APP_ALPHA_SERVER}/register`, {
                 method: "POST",
                 credentials: "include",
                 headers:{
@@ -105,7 +105,7 @@ class Login extends Component{
             .catch(error => console.log(error));
         } 
         else {
-            fetch('http://localhost:4000/login', {
+            fetch(`${process.env.REACT_APP_ALPHA_SERVER}/login`, {
                 method: 'POST',
                 credentials: "include",
                 headers:{

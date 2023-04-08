@@ -70,7 +70,7 @@ const AddNewTask = (props) => {
 				pin: pinned,
 				complete: false
 			}
-			fetch("http://localhost:4000/addData",{ 
+			fetch(`${process.env.REACT_APP_ALPHA_SERVER}/addData`,{ 
 	            method: "POST",
 	            headers:{
 	                'Content-type': 'application/json'
@@ -115,7 +115,7 @@ const AddNewTask = (props) => {
 			field,
 			newValue: field === "folders" ? folderName : categoryName
 		}
-		fetch("http://localhost:4000/udpateSuppDetails",{
+		fetch(`${process.env.REACT_APP_ALPHA_SERVER}/udpateSuppDetails`,{
 			method: "POST",
 	            headers:{
 	                'Content-type': 'application/json'

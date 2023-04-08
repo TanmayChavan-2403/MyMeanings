@@ -111,7 +111,7 @@ function Account(props){
     const navigate = useNavigate();
 
     const logout = () => {
-        fetch('http://localhost:4000/logout', {
+        fetch(`${process.env.REACT_APP_ALPHA_SERVER}/logout`, {
             credentials: "include"
         })
         .then(rec => {
