@@ -15,8 +15,16 @@ class ErrorBoundary extends Component{
 	}
 
 	componentDidCatch(error, errorInfo){
+		fetch(`${process.env.REACT_APP_ALPHA_SERVER}/logout`, {
+            credentials: "include"
+        })
+        .then(rec => {
+            sessionStorage.clear();
+            window.location.reload();
+        })
+        .catch(err => console.log(err));
     	sessionStorage.clear();
-    	window.location.reload(true);
+    	// window.location.reload(true);
 	}
 
 	render(){
