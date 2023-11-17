@@ -83,7 +83,7 @@ const List = (props) => {
     }
 
     const updateDatbase = (payload) => {
-        fetch("http://localhost:4000/updateField",{ 
+        fetch(`${process.env.REACT_APP_SERVERURL}/updateField`,{ 
             method: "POST",
             headers:{
                 'Content-type': 'application/json'
@@ -102,7 +102,7 @@ const List = (props) => {
             key,
             word: props.data["word"]
         }
-        fetch("http://localhost:4000/deleteData",{ 
+        fetch(`${process.env.REACT_APP_SERVERURL}/deleteData`,{ 
             method: "DELETE",
             headers:{
                 'Content-type': 'application/json'

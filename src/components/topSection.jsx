@@ -1,3 +1,4 @@
+
 import {storeSubscription, getInfo, deleteSubscription} from '../db/firebase.js';
 import styles from "../stylesheets/topSection.module.css";
 import React, { useState, useEffect } from 'react';
@@ -147,7 +148,7 @@ export const SearchBar = (props) => {
             let payload = {
                 word: e.target.value,
             }
-            fetch("http://localhost:4000/find",{ 
+            fetch(`${process.env.REACT_APP_SERVERURL}/find`,{ 
                 method: "POST",
                 headers:{
                     'Content-type': 'application/json'

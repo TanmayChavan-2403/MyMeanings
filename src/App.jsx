@@ -17,7 +17,7 @@ class App extends Component{
     }
 
     componentDidMount(){
-        fetch('http://localhost:4000/firstVisit', {
+        fetch(`${process.env.REACT_APP_SERVERURL}/firstVisit`, {
             method: 'GET',
             credentials: "include",
             headers:{

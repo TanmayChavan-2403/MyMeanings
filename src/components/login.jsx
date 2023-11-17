@@ -10,6 +10,7 @@ class Login extends Component{
             username: '',
             password: '',
             email: '',
+            
             confirmPassword:'',
             heading: 'LOGIN',
             properties: {
@@ -89,11 +90,11 @@ class Login extends Component{
             return;
         }
         if (!this.state.login){
-            fetch('http://localhost:4000/register', {
+            fetch(`${process.env.REACT_APP_SERVERURL}/register`, {
                 method: "POST",
                 credentials: "include",
                 headers:{
-                    'Access-Control-Allow-Origin': "http://localhost:4000/",
+                    'Access-Control-Allow-Origin': `${process.env.REACT_APP_SERVERURL}:4000/`,
                     'Content-type': 'application/json'
                 },
                 body: JSON.stringify({username: this.state.username, password: this.state.password, email: this.state.email})
@@ -105,7 +106,7 @@ class Login extends Component{
             .catch(error => console.log(error));
         } 
         else {
-            fetch('http://localhost:4000/login', {
+            fetch(`${process.env.REACT_APP_SERVERURL}/login`, {
                 method: 'POST',
                 credentials: "include",
                 headers:{
