@@ -1,7 +1,5 @@
 import React, {useState, useEffect, useRef} from "react"
 import styles from '../stylesheets/bottomSection.module.css';
-import { deleteListFromDB, addToCompletedList, removeFromCompletedList, updatePinStatus } from '../db/firebase.js';
-
 
 const List = (props) => {
     let [checked, setChecked] = useState(props.data["isComplete"])

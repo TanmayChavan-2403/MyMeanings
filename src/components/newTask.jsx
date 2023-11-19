@@ -1,7 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import ReactDOM from 'react-dom';
 import styles from "../stylesheets/main.module.css";
-import { storeDataInDb, getFolderInfo } from "../db/firebase.js";
 import { useNavigate } from 'react-router-dom';
 
 

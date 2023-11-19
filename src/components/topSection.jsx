@@ -1,5 +1,3 @@
-
-import {storeSubscription, getInfo, deleteSubscription} from '../db/firebase.js';
 import styles from "../stylesheets/topSection.module.css";
 import React, { useState, useEffect } from 'react';
 import { ReturnStateContext } from './context';
