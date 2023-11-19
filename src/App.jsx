@@ -17,6 +17,7 @@ class App extends Component{
     }
 
     componentDidMount(){
+        console.log("App.jsx mounted..")
         fetch(`${process.env.REACT_APP_SERVERURL}/firstVisit`, {
             method: 'GET',
             credentials: "include",
@@ -25,6 +26,7 @@ class App extends Component{
             }
         })
         .then(resp => {
+            console.log(resp)
             if (resp.status == 401){
                 this.props.navigate('login');
             }
@@ -35,6 +37,7 @@ class App extends Component{
             }, 3000)
         })
         .catch(error => {
+            console.log("Some error occured", error)
             if (error.message.includes('NetworkError')){
                 this.setState({
                     error: "Server is down, please try again after sometime",

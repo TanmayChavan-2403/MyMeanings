@@ -16,7 +16,9 @@ class ErrorBoundary extends Component{
 
 	componentDidCatch(error, errorInfo){
     	sessionStorage.clear();
-    	window.location.reload(true);
+		window.location.replace(window.location.href + 'login')
+    	// window.location.reload(true);
+		console.log("Trying to fix error...")
 	}
 
 	render(){
