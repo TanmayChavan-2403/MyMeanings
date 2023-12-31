@@ -1,9 +1,0 @@
-Notification sent from server successfully [
-Notification sent from server successfully [2022-11-06T11:51:54+05:30]
-Notification sent from server successfully [2022-11-16T21:28:38+05:30]
-Notification sent from server successfully [2022-11-16T21:29:14+05:30]
-Notification sent from server successfully [2022-11-16T21:30:47+05:30]
-Notification sent from server successfully [2022-11-16T21:32:48+05:30]
-Notification sent from server successfully [2022-11-16T21:33:32+05:30]
-Notification sent from server successfully [2022-11-16T21:34:29+05:30]
-Notification sent from server successfully [2022-11-16T21:35:02+05:30]

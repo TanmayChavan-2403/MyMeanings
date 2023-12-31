@@ -2,28 +2,13 @@ require('dotenv').config();
 const fs = require('fs')
 
 const path = require('path');
-const express = require('express');
+const Express = require('express');
 const webpush = require('web-push');
 const moment = require('moment-timezone');
-const status = require("./supplementary/status");
-const methods = require('./supplementary/helperFunctions');
-const Middleware = require('./supplementary/middlewares');
+const helpers = require('./helperfunctions')
 let cors = require('cors');
 
-
-// Global variables
-var datePattern = /\d{4}-\d{2}-\d{2}/;
-var timePattern = /\d{1,2}:\d{1,2}:\d{1,2}/;
-const subscription = JSON.parse(process.env.SUBSCRIPTION_URL)
-
-// Applying settings of web-push
-
-// const vapidKeys = webpush.generateVAPIDKeys();
-// webpush.setVapidDetails(
-//     'mailto:tanmaychavan1306@gmail.com',
-//     vapidKeys.publicKey,
-//     vapidKeys.privateKey
-// );
+const app = Express()
 
 webpush.setVapidDetails(
     "mailto:codebreakers1306@gmail.com",
@@ -31,102 +16,67 @@ webpush.setVapidDetails(
     process.env.PRIVATE_KEY
 )
 
-// Initializing instance of express app and Middleware
-const app = express();
-app.use(cors());
-app.set('view engine', 'ejs');
-const middleWare = new Middleware();
-
-// Parsing incoming requests with json payloads
-app.use(express.json());
-
-app.get('/', async (req, res) => {
-    // Check if the dataCount is in range(4)
-    res.json({
-        hello: "Hey there! Handsome.",
-        dataCount: status.dataCount,
-        data: status.data,
-    });
-});
-
-
-// Routes to handle incoming requests
-app.get('/sendLogFile', (req, res) => {
-    res.sendFile(path.resolve(__dirname, "./log.txt"))
-})
-
-app.get('/notify', middleWare.populateIfLess, async (req, res) => {
-    // Getting fresh notification
-    const notification = status.data.pop()
-    status.updateStatus(1, 'sub')
-
+app.get('/notify', async (req, res) => {
     // Getting subscription URL from database
-    // methods.fetchSubscriptURL()
-    // .then(subscription => {
-    let payload = JSON.stringify({
-        title: '🔔 Todays word:- ' + notification[0],
-        body: notification[1],
-        flag: false,
-        link: "https://my-meanings-server.onrender.com/sendLogFile"
-    })
-    webpush.sendNotification(subscription, payload)
-    .then(data => {
-        methods.log(`Notification sent from server successfully [` + moment.tz('Asia/Kolkata').format() + ']')
-        res.json({
-            notified: 'Success',
-            CurrentDataCount: status.dataCount,
-            NotificationSent: notification[0] + ':   ' + notification[1],
+    helpers.fetchSubscription(req.query.id)
+    .then((subscription) => {
+        let payload = JSON.stringify({
+            title: '🔔 Todays word:- ' + "Test meaning",
+            body: "Test body",
+            flag: false,
+            link: "https://my-meanings-server.onrender.com/sendLogFile"
+        })
+    
+        webpush.sendNotification(subscription, payload)
+        .then(data => {
+            res.json({
+                notified: 'Success',
+                CurrentDataCount: 0,
+                NotificationSent: "Word" + ':   ' + "and its meaning",
+            })
+        })
+        .catch(err => {
+            console.log(err)
+            res.json({
+                notified: 'Failed',
+                error: err
+            })
         })
     })
     .catch(err => {
-        methods.log(err)
-        res.json({
-            notified: 'Failed',
-            error: err
-        })
+        console.log(err);
     })
 })
 
-app.get('/summaryNotification', middleWare.populateIfLess, async (req, res) => {
-
-    let payload = JSON.stringify({
-        flag: true,
-        title: '🔔 Would you like to see what you have added today?',
-        link: "https://my-meanings-server.onrender.com/sendRecentlyAddedList",
-    })
-
-    webpush.sendNotification(subscription, payload)
-    .then(data => {
-        methods.log(`Notification sent from server successfully [` + moment.tz('Asia/Kolkata').format() + ']')
-        res.json({
-            notified: 'Success',
-        })
-    })
-    .catch(err => {
-        methods.log(err)
-        res.json({
-            notified: 'Failed',
-            error: err
-        })
-    })
-})
-
-app.get('/sendRecentlyAddedList', (req, res) =>{
-    let meanings = []
-    methods.fetchRecentlyAddedList()
-    .then(data => {
-        for(const property in data){
-            meanings.push([property, data[property]])
+app.get("/addSchedule", (req, res) => {
+    const userId = '6415d631ed97f5d33459bd65'
+    const name = 'morning'
+    const id =  helpers.generateId(userId.substring(userId.length - 4), name)
+    console.log('Id generated is ', id)
+    const payload = {
+        job: {
+            id: id,
+            title: "Job creation testing!",
+            url: process.env.CRONJOBENDPOINT,
+            requestTimeout: 5,
+            schedule: {
+                timezone: "Indian/Maldives",
+                expiresAt: 0,
+                hours: 
+            }
         }
-        res.render('index', {meanings})
-    })
-    .catch(error => {
-        console.log(error)
-        methods.log(error)
-    })
-    // res.render('index', viewsData)
-})
+    }
 
-app.listen(process.env.PORT, () => {
-    console.log('Listening to port ', process.env.PORT);
+    fetch(process.env.CRONJOBENDPOINT, {
+        method: PUT,
+        headers: {
+            'Authorization': process.env.CRONJOBAUTHKEY,
+            'Content-Type': 'application/json'
+        },
+        body: json.stringify(payload)
+    })
+}) 
+
+app.listen(process.env.PORT || 4000, () => {
+    console.log(`Listening on port ${process.env.PORT || 4000}`)
 })
