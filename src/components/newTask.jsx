@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 const AddNewTask = (props) => {
 	const [word, updateWord] = useState("");
 	const [pinned, updatePin] = useState(false);
+	const [notify, updateNotify] = useState(true)
 	const [meaning, updateMeaning] = useState("");
 	
 	// Folder drop down states
@@ -69,7 +70,8 @@ const AddNewTask = (props) => {
 				folderName: folderName,
 				meaning,
 				pin: pinned,
-				complete: false
+				complete: false,
+				notify
 			}
 			fetch(`${process.env.REACT_APP_SERVERURL}/addData`,{ 
 	            method: "POST",

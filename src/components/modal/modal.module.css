@@ -1,0 +1,52 @@
+#modal{
+    /* top: 10px; */
+    right: 10px;
+    width: 350px;
+    display: flex;
+    overflow: hidden;
+    position: absolute;
+    border-radius: 8px;
+    background-color: #525151;
+    transition:  0.3s ease-in-out;
+    justify-content: space-between;
+}
+
+.colorBar{
+    width: 2.5%;
+}
+
+.logoSec{
+    width: 22%;
+    margin: 0px 0.1rem;
+    padding: 0.4rem 0.7rem;
+    background-color: inherit;
+}
+
+.logoSec img{
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    background-color: inherit;
+}
+
+.message{
+    width: 55%;
+    display: flex;
+    color: white;
+    font-weight: 500;
+    font-size: 0.9rem;
+    padding: 10px 0px;
+    align-items: center;
+    background-color: inherit;
+}
+
+.closeButton{
+    width: 15%;
+    cursor: pointer;
+    padding: 0.7rem;
+}
+
+.closeButton img{
+    width: 100%;
+    height: 100%;
+}

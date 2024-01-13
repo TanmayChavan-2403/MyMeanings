@@ -1,11 +1,12 @@
 import React, { Suspense, useState } from "react";
 import mainStyle from "./stylesheets/main.module.css"
 import Navbar, {StatusLine} from "./components/topSection";
-import { SearchBar,Modal } from "./components/topSection";
+import { SearchBar} from "./components/topSection";
+import Modal from "./components/modal/modal";
 import AddNewTask from "./components/newTask";
 import Fallback from './components/fallbackComp'
 import { ReturnStateContext } from './components/context';
-import Profile from "./components/profile";
+import Profile from "./components/profile/profile";
 const ListContainer = React.lazy(() => import("./components/listContainer"))
 
 const Body = (props) => {

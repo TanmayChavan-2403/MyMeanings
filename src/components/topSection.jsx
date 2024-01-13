@@ -48,40 +48,67 @@ export const SearchBar = (props) => {
     useEffect(() => {
     }, [])
 
-    const udpateSubscriptionStatus = () => {
+    const unSubscribe = () => {
         if (notif){
+            // unregistering from the browser
             navigator.serviceWorker.ready.then((reg) => {
                 reg.pushManager.getSubscription().then((subscription) => {
                   subscription.unsubscribe().then((successful) => {
-                    props.updateModal('Unsubscribed ')
+                    console.log("removed from browser")
+                    props.updateModal('Unsubscribed Successfully!')
                   }).catch((error) => {
-                    props.updateModal('[79]Error while unsubscribing', true)
+                    props.updateModal('[59]Error while unsubscribing', true)
                     setError(error)
                   })
                 })
             });
+
+
+            fetch(`${process.env.REACT_APP_SERVERURL}/subscribe`,{
+                method: "POST",
+                credentials: "include",
+                headers:{
+                    'Content-type': "application/json"
+                },
+                body: JSON.stringify({subscriptionURL: "", notif: false})
+            }).then(res => res.json())
+            .then(resp => {
+                props.updateModal(resp.message)
+                window.sessionStorage.setItem('notificationTurnedOn', "false")
+                
+                // Update the notification icon
+                setNotif("false");
+
+                navigator.serviceWorker.ready.then((reg) => {
+                    reg.pushManager.getSubscription().then((subscription) => {
+                      subscription.unsubscribe().then((successful) => {
+                        props.updateModal('Unsubscribed Successfully')
+                      }).catch((error) => {
+                        props.updateModal('[86]Error while unsubscribing', true)
+                        setError(error)
+                      })
+                    })
+                });
+            })
+            .catch(err => {
+                console.log(err)
+                props.updateModal(err.message, true)
+            });
         }
 
-        // update database
-        // Checking if serviceWorker is supported by browser
-        if (!notif){
-            if ('serviceWorker' in navigator){
-                subscribe()
-            }
-        }
-
-        // Update the notification icon
-        setNotif(!notif);
+        
     }
 
     const subscribe = async () => {
-        const publicVapidKey = "BJthRQ5myDgc7OSXzPCMftGw-n16F7zQBEN7EUD6XxcfTTvrLGWSIG7y_JxiWtVlCFua0S8MTB5rPziBqNx1qIo";
+        // A random generated key
+        const publicVapidKey = "BIW3IW2Mm2RWAT2wzlV_VQ6kweq-Wxu7UYmWaXjjXVCMuV9tvEYZIKyOLuMHimZ6eBUkE4ThHsqwW2WxWkTyctg";
+
         // STEP 1 Registering service-worker.js file as service worker 
         // It returns serviceWorkerRegistration Interface of SW
         const register = await navigator.serviceWorker.register('./service-worker.js',{
             scope: "/"
         })
-        props.updateModal('Service Worker is registered !')
+        // props.updateModal('Service Worker is registered !')
         myConsole('Service Worker is registered successfully!');
 
         // STEP 2 Getting subscription of PUSH API
@@ -92,14 +119,21 @@ export const SearchBar = (props) => {
         myConsole('Subscription URL generated successfully!',subscription);
 
         // STEP 3 Sending to database for storing
-        fetch("http://localhost:4500/subscribe",{
+        fetch(`${process.env.REACT_APP_SERVERURL}/subscribe`,{
             method: "POST",
+            credentials: "include",
             headers:{
                 'Content-type': "application/json"
             },
-            body: JSON.stringify({subscriptionURL: subscription})
+            body: JSON.stringify({subscriptionURL: subscription, notif: true})
         }).then(res => res.json())
-        .then(resp => console.log(resp))
+        .then(resp => {
+            props.updateModal(resp.message)
+            window.sessionStorage.setItem('notificationTurnedOn', "true")
+            
+            // Update the notification icon
+            setNotif("true");
+        })
         .catch(err => console.error(err));
 
         // storeSubscription(JSON.stringify(subscription), !notif)
@@ -178,67 +212,33 @@ export const SearchBar = (props) => {
     }
 
     return(
-        // Provider is in main.js file
-        <ReturnStateContext.Consumer> 
-            {(shouldWeReturn) => {
-                return(
-                    <div id={styles.sec3}>
-                        <div className={styles.searchBar}>
-                            <input onChange={(e) => updateListContainer(e)} type="text" placeholder="Search here..." value={props.searchText} id={styles.searchInpField} />
-                        </div>
-                        <div style={{display: 'flex'}} className={styles.icons}>
-                            <div id={styles.currentFolder} onClick={() => changeFolder('', true)}>
-                                <p id={styles.folderName}>{props.defaultFolderName}</p>
-                                <i style={arrowDegree} class="fa-solid fa-angle-down"></i>
-                                <div id={styles.dropDown} style={dropDownHeight}>
-                                    {
-                                        folders.map(name => {
-                                            return(
-                                                <p onClick={() => changeFolder(name)} >{name}</p>
-                                            )
-                                        })
-                                    }
-                                </div>
-                            </div>
-                            <img src="./icons/addIcon.png" onClick={(e) => props.newStateStyles[1]({display: "flex", transform: "scale(1)"})} />
-                            {
-                                notif !== "false" ? 
-                                <img src="./icons/notificationOn.png"/> :
-                                <img src="./icons/notificationOff.png" onClick={subscribe} />
-                            }
-                        </div>
-                    </div>
-                )
-            }}
-        </ReturnStateContext.Consumer>
-    )
-}
-
-export const Modal = (props) => {
-
-    const closeModal = (props) => {
-        let modal = document.getElementById(`${styles.modal}`);
-        modal.style.top = "-100px";
-    }
-
-    return ReactDOM.createPortal(
-        <>
-            <div id={styles.modal} style={{top: props.modalTopPosition}}>
-                <div style={{backgroundColor: props.modalMsgType}} className={styles.colorBar}></div>
-                <div className={styles.logoSec}>
-                    <img src="icon.png" />
-                </div>
-                <div className={styles.message}>
-                    <p>{props.modalDisplayText}</p>
-                </div>
-                <div onClick={closeModal} className={styles.closeButton}>
-                    <img src="icons/close.svg"/>
-                </div>
+        <div id={styles.sec3}>
+            <div className={styles.searchBar}>
+                <input onChange={(e) => updateListContainer(e)} type="text" placeholder="Search here..." value={props.searchText} id={styles.searchInpField} />
             </div>
-        </>
-        ,
-        document.getElementById("portals")
-    );
+            <div style={{display: 'flex'}} className={styles.icons}>
+                <div id={styles.currentFolder} onClick={() => changeFolder('', true)}>
+                    <p id={styles.folderName}>{props.defaultFolderName}</p>
+                    <i style={arrowDegree} class="fa-solid fa-angle-down"></i>
+                    <div id={styles.dropDown} style={dropDownHeight}>
+                        {
+                            folders.map(name => {
+                                return(
+                                    <p onClick={() => changeFolder(name)} >{name}</p>
+                                )
+                            })
+                        }
+                    </div>
+                </div>
+                <img src="./icons/addIcon.png" onClick={(e) => props.newStateStyles[1]({display: "flex", transform: "scale(1)"})} />
+                {
+                    notif !== "false" ? 
+                    <img src="./icons/notificationOn.png" onClick={unSubscribe}/> :
+                    <img src="./icons/notificationOff.png" onClick={subscribe} />
+                }
+            </div>
+        </div>
+    )
 }
 
 export default Navbar;

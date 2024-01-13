@@ -10,8 +10,9 @@ class Login extends Component{
             username: '',
             password: '',
             email: '',
-            
+            submit_preloader: '0',
             confirmPassword:'',
+            errorMessage: "",
             heading: 'LOGIN',
             properties: {
                 display: 'flex',
@@ -22,12 +23,25 @@ class Login extends Component{
             question: "Not a member ?"
         }
         this.submit = this.submit.bind(this);
+        this.showError = this.showError.bind(this);
     }
 
     updateState(field, event){
         this.setState({
             [field]: event.target.value
         })
+    }
+
+    showError(msg){
+        this.setState({
+            errorMessage: msg
+        })
+
+        setTimeout(() => {
+            this.setState({
+                errorMessage: ""
+            })
+        }, 2000)
     }
 
     changeOptions(){
@@ -82,11 +96,14 @@ class Login extends Component{
     }
 
     submit(){
+        this.setState({submit_preloader: '1'})
         if (this.state.username.trim().length == 0){
-            alert("Please enter proper username");
+            this.showError("Please enter proper username");
+            this.setState({submit_preloader: '0'})
             return;
         } else if (!this.state.login && this.state.password != this.state.confirmPassword){
-            alert("Confirm Password does not match with password");
+            this.showError("Confirm Password does not match with password");
+            this.setState({submit_preloader: '0'})
             return;
         }
         if (!this.state.login){
@@ -99,7 +116,16 @@ class Login extends Component{
                 },
                 body: JSON.stringify({username: this.state.username, password: this.state.password, email: this.state.email})
             })
-            .then(resp => resp.json())
+            .then(resp => {
+                if (resp.status == 500){
+                    this.showError("Confirm Password does not match with password");
+                    resp.json().then(data => console.log(data))
+                } else if (resp.status == 400) {
+                    this.showError("Confirm Password does not match with password");
+                } else if (resp.status == 200) {
+                    return resp.json()
+                }
+            })
             .then(data => {
                 this.props.navigate('/');
             })
@@ -130,7 +156,8 @@ class Login extends Component{
                         this.props.navigate('/');
                     }, 1000)
                 } else {
-                    alert(data.message);
+                    this.setState({submit_preloader: '0'})
+                    this.showError(data.message);
                 }
             })
             .catch(error => console.log(error));
@@ -143,9 +170,11 @@ class Login extends Component{
                 <div id='loginOuterWrapper' style={this.state.properties}>
                     <div id='loginInnerWrapper'>
                         <div id="welcome-page-container">
-                            {/*<img src="gridBackground.png" alt='Grid background' />*/}
-                            <h1> Welcome Back! </h1>    
-                            <p>We’re happy to see you again.</p>
+                            <img src="/Login Page/img3.jpeg" alt='Grid background' />
+                            <div id='welcome-page-login-message'>
+                                <h1> Welcome Back! </h1>    
+                                <p>I am happy to see you again 😈.</p>
+                            </div>
                         </div>
                         <div id='loginContainer'>
                             <div id='login-container-wrapper'>
@@ -169,10 +198,13 @@ class Login extends Component{
                                 </div>
                                 <div id='buttons'>
                                     <button onClick={this.submit}>
+                                        <img style={{scale: this.state.submit_preloader}} src="submit-preloader.gif" alt="" />
                                         SUBMIT
                                     </button>
-                                    
                                 </div>
+                                <p style={{color: "red", textAlign: 'center', width: '100%'}}>
+                                    {this.state.errorMessage}
+                                </p>
                             </div>
                         </div>
                     </div>

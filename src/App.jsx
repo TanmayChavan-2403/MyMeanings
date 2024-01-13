@@ -3,7 +3,7 @@ import React, { Component } from 'react'
 import {Routes, Route, useNavigate, Router} from 'react-router-dom';
 import Fallback, {ServerError} from './components/fallbackComp'
 import Login from "./components/login";
-import Profile from "./components/profile";
+import Profile from "./components/profile/profile";
 import Preloader from './components/preloader';
 
 class App extends Component{
@@ -30,11 +30,9 @@ class App extends Component{
             if (resp.status == 401){
                 this.props.navigate('login');
             }
-            setTimeout(() => {
-                this.setState({
-                    authenticate: false
-                })
-            }, 3000)
+            this.setState({
+                authenticate: false
+            })
         })
         .catch(error => {
             console.log("Some error occured", error)
