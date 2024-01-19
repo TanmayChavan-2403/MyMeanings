@@ -1,11 +1,11 @@
 import React, { Component, useState } from 'react';
-import notifStyles from './profile.module.css';
-
+import Notification from './notification/notification'
+import Modal from '../modal/modal';
 import './profile.css'
 
 class Profile extends Component{
     constructor(props){
-        super(props);
+        super(props)
         this.state = {
             activeContainer: 'account',
             activeStyle: {backgroundColor: 'var(--grey)'},
@@ -15,6 +15,7 @@ class Profile extends Component{
         }
         this.showCnfContainer = this.showCnfContainer.bind(this);
         this.toggleConfirmationWindow = this.toggleConfirmationWindow.bind(this);
+        this.displayMessage = this.displayMessage.bind(this)
     }
 
     changeTab(name){
@@ -34,10 +35,18 @@ class Profile extends Component{
             confirmContanier: !this.state.confirmContanier
         })
     }
+
+    displayMessage(message, error=false, warning=false){
+        this.props.updateModal(message, error, warning)
+    }
     
     render(){
         return(
             <div id='profileOuterWrapper'>
+                <Modal modalTopPosition={this.props.modalTopPosition}
+                      modalDisplayText={this.props.modalDisplayText}
+                      modalMsgType = {this.props.modalMsgType}
+                />
                 <div id='profileInnerWrapper'>
 
                     <div id='profile_banner'>
@@ -78,7 +87,7 @@ class Profile extends Component{
                         <div id='content'>
                             {
                                 this.state.activeContainer === 'friends' ? <Friends /> :
-                                this.state.activeContainer === 'notification' ? <Notification /> : 
+                                this.state.activeContainer === 'notification' ? <Notification displayMessage={this.displayMessage} /> : 
                                 this.state.activeContainer === 'statistics' ? <Statistics /> :
                                 <Account 
                                     status={this.state.cnfContainer}
@@ -226,18 +235,7 @@ function Friends(){
     )
 }
 
-function Notification(){
-    const {} = useState(["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"])
-    return(
-        <div id={notifStyles.notification_container_wrapper} class='sb'>
-            <div id={notifStyles.notificationContainer}>
-                <div id={notifStyles.hours_container}>
 
-                </div>
-            </div>
-        </div>
-    )
-}
 
 function Statistics(){
     return(

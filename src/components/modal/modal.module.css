@@ -3,6 +3,7 @@
     right: 10px;
     width: 350px;
     display: flex;
+    z-index: 999;
     overflow: hidden;
     position: absolute;
     border-radius: 8px;

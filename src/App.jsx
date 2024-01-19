@@ -12,8 +12,12 @@ class App extends Component{
         this.state ={
             error: null,
             flag: false,
-            authenticate: true
+            authenticate: true,
+            modalTopPosition: "-100px",
+            modalMsgType: 'green',
+            modalDisplayText: ''
         }
+        this.updateModal = this.updateModal.bind(this);
     }
 
     componentDidMount(){
@@ -47,6 +51,21 @@ class App extends Component{
         });
     }
 
+    updateModal(message, error = false, warning=false){
+        this.setState({modalTopPosition: "10px"})
+        this.setState({modalDisplayText: message})
+        if (error){
+            this.setState({modalMsgType: 'red'})
+        } else if (warning) {
+            this.setState({modalMsgType: 'yellow'})
+        } else {
+            this.setState({modalMsgType: 'green'})
+        }
+        setTimeout(()=>{
+            this.setState({modalTopPosition: "-100px"})
+        }, 3000)
+    }
+
     render(){
         if (this.state.flag){
             return (
@@ -60,9 +79,19 @@ class App extends Component{
         else {
             return(
                 <Routes>
-                    <Route path="/" element={<Body />}  />
+                    <Route path="/" element={<Body 
+                        updateModal={this.updateModal}
+                        modalMsgType={this.state.modalMsgType}
+                        modalDisplayText={this.state.modalDisplayText}
+                        modalTopPosition={this.state.modalTopPosition}
+                    />}  />
                     <Route path="login" element={<Login />} />
-                    <Route path="profile" element={<Profile />} />
+                    <Route path="profile" element={<Profile
+                        updateModal={this.updateModal}
+                        modalMsgType={this.state.modalMsgType}
+                        modalDisplayText={this.state.modalDisplayText}
+                        modalTopPosition={this.state.modalTopPosition}
+                    />} />
                 </Routes>
             )
         }
