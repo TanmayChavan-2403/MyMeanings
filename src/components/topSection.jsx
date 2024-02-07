@@ -1,14 +1,12 @@
 import styles from "../stylesheets/topSection.module.css";
 import React, { useState, useEffect } from 'react';
-import { ReturnStateContext } from './context';
 import {Link } from 'react-router-dom';
-import * as ReactDOM from 'react-dom';
 
 const Navbar = (props) => {
     return(
         <>
             <div id={styles.navbar}>
-                <img src="logo.svg"></img>
+                <img src="logo.svg" alt="logo"></img>
                 <div id={styles.profileContainer}>
                     <Link to='/profile'>
                         <div id={styles.profile}>
@@ -38,12 +36,10 @@ export const StatusLine = (props) => {
 
 export const SearchBar = (props) => {
     const [notif, setNotif] = useState(sessionStorage.getItem('notificationTurnedOn'));
-    const [error, setError] = useState(null);
     const [dropDownHeight, updateDropDownHeight] = useState({height: '0%'});
     const [arrowDegree, updateArrowDegree] = useState({transform: 'rotate(0deg)'});
+    // eslint-disable-next-line
     const [folders, updateFolders] = useState(JSON.parse(sessionStorage.getItem('folders')));
-    const [notificationStatus, setNotificationStatus] = useState(sessionStorage.getItem('notificationTurnedOn'));
-    const [storagetype, setStorageType] = useState('localStorage');
 
     useEffect(() => {
     }, [])
@@ -58,7 +54,6 @@ export const SearchBar = (props) => {
                     props.updateModal('Unsubscribed Successfully!')
                   }).catch((error) => {
                     props.updateModal('[59]Error while unsubscribing', true)
-                    setError(error)
                   })
                 })
             });
@@ -85,7 +80,6 @@ export const SearchBar = (props) => {
                         props.updateModal('Unsubscribed Successfully')
                       }).catch((error) => {
                         props.updateModal('[86]Error while unsubscribing', true)
-                        setError(error)
                       })
                     })
                 });
@@ -135,19 +129,6 @@ export const SearchBar = (props) => {
             setNotif("true");
         })
         .catch(err => console.error(err));
-
-        // storeSubscription(JSON.stringify(subscription), !notif)
-        // .then(resp => {
-        //     console.log(resp);
-        //     setTimeout(() => {
-        //         props.updateModal(resp)
-        // }, 1500)
-        // }).catch(error => {
-        //     setTimeout(() => {
-        //         props.updateModal('Failed to save URL in database', true)
-        //         setError(error)
-        //     }, 1500)
-        // })
     }
 
     const myConsole = (text, ext=undefined) => {
@@ -158,9 +139,8 @@ export const SearchBar = (props) => {
 
     function urlBase64ToUint8Array(base64String) {
       const padding = "=".repeat((4 - base64String.length % 4) % 4);
-      const base64 = (base64String + padding)
-        .replace(/\-/g, "+")
-        .replace(/_/g, "/");
+      // eslint-disable-next-line
+      const base64 = (base64String + padding).replace(/\-/g, "+").replace(/_/g, "/");
 
       const rawData = window.atob(base64);
       const outputArray = new Uint8Array(rawData.length);
@@ -174,7 +154,7 @@ export const SearchBar = (props) => {
     const updateListContainer = (e) => {
         // Updating the value in the input section's value
         props.setSearchText(e.target.value);
-        if (e.target.value == ""){
+        if (e.target.value === ""){
             props.setSearchResult([]);
         } else {
             let payload = {
@@ -202,7 +182,7 @@ export const SearchBar = (props) => {
         if (!toggle){
             props.changeDefaultFolder(name);
         }
-        if (dropDownHeight.height == '0%'){
+        if (dropDownHeight.height === '0%'){
             updateDropDownHeight({height: 'fit-content'});
             updateArrowDegree({transform: 'rotate(180deg)'});
         } else {
@@ -230,11 +210,11 @@ export const SearchBar = (props) => {
                         }
                     </div>
                 </div>
-                <img src="./icons/addIcon.png" onClick={(e) => props.newStateStyles[1]({display: "flex", transform: "scale(1)"})} />
+                <img src="./icons/addIcon.png" alt="Add" onClick={(e) => props.newStateStyles[1]({display: "flex", transform: "scale(1)"})} />
                 {
                     notif !== "false" ? 
-                    <img src="./icons/notificationOn.png" onClick={unSubscribe}/> :
-                    <img src="./icons/notificationOff.png" onClick={subscribe} />
+                    <img src="./icons/notificationOn.png" alt='On' onClick={unSubscribe}/> :
+                    <img src="./icons/notificationOff.png" alt="Off" onClick={subscribe} />
                 }
             </div>
         </div>
