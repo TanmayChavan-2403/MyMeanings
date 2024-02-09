@@ -8,7 +8,7 @@ class Profile extends Component{
         super(props)
         this.state = {
             activeContainer: 'account',
-            activeStyle: {backgroundColor: 'var(--grey)'},
+            activeStyle: {backgroundColor: 'var(--container_bg)'},
             deactiveStyle: {backgroundColor: 'transparent'},
             cnfContainer: false,
             confirmContanier: false

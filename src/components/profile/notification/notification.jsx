@@ -7,41 +7,85 @@ function Notification({displayMessage}){
     let navigate = useNavigate();
 
     //eslint-disable-next-line
-    const [minutes, updateMinutes] = useState([-1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59])
-    const [selectedMinute, updateSelectedMinute] = useState(-1)
+    const [minutes, updateMinutes] = useState(-1)
+    const [minutesBorder, updateMinutesBorder] = useState({borderColor: 'white'})
 
     //eslint-disable-next-line
     const [hours, updateHours] = useState(['-1','00', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23'])
-    const [selectedHour, updateSelectedHour] = useState(-1)
+    const [hoursBorder, updateHoursBorder] = useState({borderColor: 'white'})
 
     //eslint-disable-next-line
     const [mdays, updateMdays] = useState([-1, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31])
-    const [selectedMDays, updateSelectedMDays] = useState(-1)
+    const [mdaysBorder, updateMDaysBorder] = useState({borderColor: 'white'})
 
     //eslint-disable-next-line
     const [weekDays, updateWeekDays] = useState([-1, "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"])
-    const [selectedWeekDay, updateSelectedWeekDay] = useState(-1)
+    const [weekDaysBorder, updateWeekDaysBorder] = useState({borderColor: 'white'})
 
     //eslint-disable-next-line
     const [months, updateMonths] = useState([-1, "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"])
-    const [selectedMonth, updateSelectedMonths] = useState(-1)
+    const [monthsBorder, updateMonthsBorder] = useState({borderColor: 'white'})
 
+    const [currentPannel, updatePannel] = useState('scheduleNotif')
+    const activeBtnStyle = {backgroundColor: 'var(--container_bg)'}
+    const deactiveBtnStyle = {backgroundColor: 'transparent'}
 
-    function checkPos(e){
-        let attr = e.target.attributes['data-ele'].nodeValue
-        if (e.target.scrollTop % 50 === 0){
-            if (attr === 'minutes'){
-                updateSelectedMinute(minutes[e.target.scrollTop / 50])
-            } else if(attr === 'hours'){
-                updateSelectedHour(hours[e.target.scrollTop / 50])
-            } else if(attr === 'weekDays'){
-                updateSelectedWeekDay(weekDays[e.target.scrollTop / 50])
-            } else if (attr === 'months'){
-                updateSelectedMonths(months[e.target.scrollTop / 50])
-            } else if (attr === 'mdays') {
-                updateSelectedMDays(mdays[e.target.scrollTop / 50])
-            }else {
-                updateSelectedMonths(mdays[e.target.scrollTop / 50])
+    function updateParam(attr, e){
+        const val = parseInt(e.target.value)
+        if (attr === 'minutes'){
+            if (-1 <= val && val <= 59){
+                updateMinutes(val)
+                updateMinutesBorder({borderColor: 'green'})
+            } else if (isNaN(val)) {
+                updateMinutes(-1)
+                updateMinutesBorder({borderColor: 'white'})
+            } else {
+                updateMinutes(-1)
+                updateMinutesBorder({borderColor: 'red'})
+            }
+        } else if(attr === 'hours'){
+            if (-1 <= val && val <= 23){
+                updateHours(val)
+                updateHoursBorder({borderColor: 'green'})
+            } else if (isNaN(val)) {
+                updateHours(-1)
+                updateHoursBorder({borderColor: 'white'})
+            } else {
+                updateHours(-1)
+                updateHoursBorder({borderColor: 'red'})
+            }
+        } else if(attr === 'weekDays'){
+            if (-1 <= val && val <= 7){
+                updateWeekDays(val)
+                updateWeekDaysBorder({borderColor: 'green'})
+            } else if (isNaN(val)) {
+                updateWeekDays(-1)
+                updateWeekDaysBorder({borderColor: 'white'})
+            } else {
+                updateWeekDays(-1)
+                updateWeekDaysBorder({borderColor: 'red'})
+            }
+        } else if (attr === 'months'){
+            if (-1 <= val && val <= 12){
+                updateMonths(val)
+                updateMonthsBorder({borderColor: 'green'})
+            } else if (isNaN(val)) {
+                updateMonths(-1)
+                updateMonthsBorder({borderColor: 'white'})
+            } else {
+                updateMonths(-1)
+                updateMonthsBorder({borderColor: 'red'})
+            }
+        } else if (attr === 'mdays') {
+            if (-1 <= val && val <= 31){
+                updateMdays(val)
+                updateMDaysBorder({borderColor: 'green'})
+            } else if (isNaN(val)) {
+                updateMdays(-1)
+                updateMDaysBorder({borderColor: 'white'})
+            } else {
+                updateMdays(-1)
+                updateMDaysBorder({borderColor: 'red'})
             }
         }
     }
@@ -49,11 +93,11 @@ function Notification({displayMessage}){
     function submitTime(){
         const payload = {
             title: "Static Title",
-            minutes: selectedMinute,
-            hours: selectedHour,
-            mdays: selectedMDays,
-            wdays: selectedWeekDay,
-            months: selectedMonth
+            minutes: minutes,
+            hours: hours,
+            mdays: mdays,
+            wdays: weekDays,
+            months: months
         }
         fetch(`${process.env.REACT_APP_SERVERURL}/addNotificationSlot`, {
             method: "POST",
@@ -65,14 +109,15 @@ function Notification({displayMessage}){
         })
         .then(resp => {
             if (resp.status === 401){
-                displayMessage('Session timeout, please login again', true)
+                displayMessage('Session timeout, redirecting to login page', true)
                 setTimeout(() => {
-                    navigate('login', { replace: true });
+                    console.log("LOgging out from notification")
+                    navigate('/login', { replace: true });
                 }, 2000);
             } else if (resp.status === 200){
                 displayMessage('Notification added successfully')
             } else if (resp.status === 509){
-                displayMessage('Notification added but something went wrong whlie updating your account')
+                displayMessage('Notification added but something went wrong whlie updating your account', false, true)
             } else {
                 console.log(resp.status)
                 displayMessage('Failed to add notification', true)
@@ -83,7 +128,80 @@ function Notification({displayMessage}){
     return(
         <div id={notifStyles.notification_container_wrapper} class='sb'>
             <div id={notifStyles.notificationContainer}>
-                <div className={notifStyles.data_container_wrapper}>
+                <div id={notifStyles.notificationNavbar}>
+                    <div id={notifStyles.notif_nav_btn} style={currentPannel === 'scheduleNotif' ? activeBtnStyle: deactiveBtnStyle} onClick={() => updatePannel('scheduleNotif')}>
+                        <h4>Schedule Notification</h4>
+                    </div>
+                    <div id={notifStyles.notif_nav_btn} style={currentPannel === 'listSchedules' ? activeBtnStyle: deactiveBtnStyle} onClick={() => updatePannel('listSchedules')}>
+                        <h4>List Schedules</h4>
+                    </div>
+                </div>
+
+                {
+                    currentPannel === 'listSchedules' ? 
+                    <div id={notifStyles.notif_list_container}>
+                        {/* <h1>Notification list section</h1> */}
+                    </div>
+                    :
+                    <div id={notifStyles.notif_list_container}>
+                        <div id={notifStyles.notif_input_section}>
+                            <div className={notifStyles.input_sec_container}>
+                                <div className={notifStyles.notif_input_text}>
+                                    <h4>Minutes</h4>
+                                </div>
+                                <h3>:</h3>
+                                <div className={notifStyles.notif_input_box}>
+                                    <input style={minutesBorder} onChange={(e) => updateParam('minutes', e)} type="text" placeholder='0 - 59 [-1 default]' className={notifStyles.notif_input_ele}/>
+                                </div>
+                            </div>
+                            <div className={notifStyles.input_sec_container}>
+                                <div className={notifStyles.notif_input_text}>
+                                    <h4>Hours </h4>
+                                </div>
+                                <h3>:</h3>
+                                <div className={notifStyles.notif_input_box}>
+                                    <input style={hoursBorder} onChange={(e) => updateParam('hours', e)} type="text" placeholder='0 - 23 [-1 default]' className={notifStyles.notif_input_ele}/>
+                                </div>
+                            </div>
+                            <div className={notifStyles.input_sec_container}>
+                                <div className={notifStyles.notif_input_text}>
+                                    <h4>Days </h4>
+                                </div>
+                                <h3>:</h3>
+                                <div className={notifStyles.notif_input_box}>
+                                    <input style={mdaysBorder} onChange={(e) => updateParam('mdays', e)} type="text" placeholder='1 - 31 [-1 default]' className={notifStyles.notif_input_ele}/>
+                                </div>
+                            </div>
+                            <div className={notifStyles.input_sec_container}>
+                                <div className={notifStyles.notif_input_text}>
+                                    <h4>Week Days </h4>
+                                </div>
+                                <h3>:</h3>
+                                <div className={notifStyles.notif_input_box}>
+                                    <input style={weekDaysBorder} onChange={(e) => updateParam('weekDays', e)} type="text" placeholder='1 - 7 [-1 default]' className={notifStyles.notif_input_ele}/>
+                                </div>
+                            </div>
+                            <div className={notifStyles.input_sec_container}>
+                                <div className={notifStyles.notif_input_text}>
+                                    <h4>Month </h4>
+                                </div>
+                                <h3>:</h3>
+                                <div className={notifStyles.notif_input_box}>
+                                    <input style={monthsBorder} onChange={(e) => updateParam('months', e)} type="text" placeholder='1 - 12 [-1 default]' className={notifStyles.notif_input_ele}/>
+                                </div>
+                            </div>
+                            <button onClick={submitTime} id ={notifStyles.sumbitButtons}> Submit </button>
+                        </div>
+                        <div id={notifStyles.notif_output_section}>
+                            <h4>Based on the </h4>
+                        </div>
+                    </div>
+                }
+                
+
+                
+
+                {/* <div className={notifStyles.data_container_wrapper}>
                     <h2>Minutes</h2>
                     <div className={notifStyles.data_container} data-ele='minutes' onScroll={checkPos}>
                         {
@@ -152,9 +270,9 @@ function Notification({displayMessage}){
                             })
                         }
                     </div>
-                </div>
+                </div> */}
             </div>
-            <button onClick={submitTime} id={notifStyles.submitTime}>Submit</button>
+            {/* <button onClick={submitTime} id={notifStyles.submitTime}>Submit</button> */}
         </div>
     )
 }
