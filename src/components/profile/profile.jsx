@@ -36,8 +36,8 @@ class Profile extends Component{
         })
     }
 
-    displayMessage(message, error=false, warning=false){
-        this.props.updateModal(message, error, warning)
+    displayMessage(message, error=false, warning=false, info=false){
+        this.props.updateModal(message, error, warning, info)
     }
     
     render(){

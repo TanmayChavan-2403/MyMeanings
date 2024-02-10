@@ -67,7 +67,7 @@
 
 #notif_list_container{
     width: 100%;
-    height: 85%;
+    height: 95%;
     padding: 15px;
     display: flex;
     border-radius: 10px;
@@ -77,11 +77,15 @@
 #notif_input_section, #notif_output_section{
     width: 50%;
     height: 100%;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+#notif_output_section h4{
+    margin: 0px 5px;
 }
 
 #notif_input_section{
-    display: flex;
-    flex-wrap: wrap;
     justify-content: center;
     align-content: space-evenly;
 }

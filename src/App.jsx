@@ -51,18 +51,23 @@ class App extends Component{
         });
     }
 
-    updateModal(message, error = false, warning=false){
+    updateModal(message, error = false, warning=false, info=false){
         this.setState({modalTopPosition: "10px"})
         this.setState({modalDisplayText: message})
         if (error){
             this.setState({modalMsgType: 'red'})
         } else if (warning) {
             this.setState({modalMsgType: 'yellow'})
+        } else if (info){
+            this.setState({modalMsgType: '#1e90ff'})
         } else {
             this.setState({modalMsgType: 'green'})
         }
         setTimeout(()=>{
             this.setState({modalTopPosition: "-100px"})
+            setTimeout(() => {
+                this.setState({modalDisplayText: ""})
+            }, 300)
         }, 3000)
     }
 

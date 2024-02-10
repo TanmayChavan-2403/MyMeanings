@@ -15,20 +15,19 @@ function Notification({displayMessage}){
     const [hoursBorder, updateHoursBorder] = useState({borderColor: 'white'})
 
     //eslint-disable-next-line
-    const [mdays, updateMdays] = useState([-1, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31])
+    const [mdays, updateMdays] = useState(-1)
+    const monthDays = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31]
     const [mdaysBorder, updateMDaysBorder] = useState({borderColor: 'white'})
 
     //eslint-disable-next-line
-    const [weekDays, updateWeekDays] = useState([-1, "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"])
+    const [weekDays, updateWeekDays] = useState(-1)
+    const weekDaysList = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
     const [weekDaysBorder, updateWeekDaysBorder] = useState({borderColor: 'white'})
 
     //eslint-disable-next-line
-    const [months, updateMonths] = useState([-1, "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"])
+    const [months, updateMonths] = useState(-1)
+    const monthsList = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
     const [monthsBorder, updateMonthsBorder] = useState({borderColor: 'white'})
-
-    const [currentPannel, updatePannel] = useState('scheduleNotif')
-    const activeBtnStyle = {backgroundColor: 'var(--container_bg)'}
-    const deactiveBtnStyle = {backgroundColor: 'transparent'}
 
     function updateParam(attr, e){
         const val = parseInt(e.target.value)
@@ -55,6 +54,13 @@ function Notification({displayMessage}){
                 updateHoursBorder({borderColor: 'red'})
             }
         } else if(attr === 'weekDays'){
+            if (mdays !== -1){
+                updateMdays(-1)
+                updateMDaysBorder({borderColor: "red"})
+                displayMessage("You can either set month days or week days, internally it will take default value for another field", false, false, true)
+            } else {
+                updateMDaysBorder({borderColor: "white"})
+            }
             if (-1 <= val && val <= 7){
                 updateWeekDays(val)
                 updateWeekDaysBorder({borderColor: 'green'})
@@ -77,6 +83,13 @@ function Notification({displayMessage}){
                 updateMonthsBorder({borderColor: 'red'})
             }
         } else if (attr === 'mdays') {
+            if (weekDays !== -1){
+                updateWeekDays("")
+                updateWeekDaysBorder({borderColor: "red"})
+                displayMessage("You can either set month days or week days, internally it will take default value for another field", false, false, true)
+            } else {
+                updateWeekDaysBorder({borderColor: "white"})
+            }
             if (-1 <= val && val <= 31){
                 updateMdays(val)
                 updateMDaysBorder({borderColor: 'green'})
@@ -128,77 +141,60 @@ function Notification({displayMessage}){
     return(
         <div id={notifStyles.notification_container_wrapper} class='sb'>
             <div id={notifStyles.notificationContainer}>
-                <div id={notifStyles.notificationNavbar}>
-                    <div id={notifStyles.notif_nav_btn} style={currentPannel === 'scheduleNotif' ? activeBtnStyle: deactiveBtnStyle} onClick={() => updatePannel('scheduleNotif')}>
-                        <h4>Schedule Notification</h4>
+                <div id={notifStyles.notif_list_container}>
+                    <div id={notifStyles.notif_input_section}>
+                        <div className={notifStyles.input_sec_container}>
+                            <div className={notifStyles.notif_input_text}>
+                                <h4>Minutes</h4>
+                            </div>
+                            <h3>:</h3>
+                            <div className={notifStyles.notif_input_box}>
+                                <input style={minutesBorder} onChange={(e) => updateParam('minutes', e)} type="text" placeholder='0 - 59 [-1 default]' className={notifStyles.notif_input_ele} />
+                            </div>
+                        </div>
+                        <div className={notifStyles.input_sec_container}>
+                            <div className={notifStyles.notif_input_text}>
+                                <h4>Hours </h4>
+                            </div>
+                            <h3>:</h3>
+                            <div className={notifStyles.notif_input_box}>
+                                <input style={hoursBorder} onChange={(e) => updateParam('hours', e)} type="text" placeholder='0 - 23 [-1 default]' className={notifStyles.notif_input_ele}/>
+                            </div>
+                        </div>
+                        <div className={notifStyles.input_sec_container}>
+                            <div className={notifStyles.notif_input_text}>
+                                <h4>Days </h4>
+                            </div>
+                            <h3>:</h3>
+                            <div className={notifStyles.notif_input_box}>
+                                <input style={mdaysBorder} onChange={(e) => updateParam('mdays', e)} type="text" placeholder='1 - 31 [-1 default]' className={notifStyles.notif_input_ele}/>
+                            </div>
+                        </div>
+                        <div className={notifStyles.input_sec_container}>
+                            <div className={notifStyles.notif_input_text}>
+                                <h4>Week Days </h4>
+                            </div>
+                            <h3>:</h3>
+                            <div className={notifStyles.notif_input_box}>
+                                <input style={weekDaysBorder} onChange={(e) => updateParam('weekDays', e)} type="text" placeholder='1 - 7 [-1 default]' className={notifStyles.notif_input_ele}/>
+                            </div>
+                        </div>
+                        <div className={notifStyles.input_sec_container}>
+                            <div className={notifStyles.notif_input_text}>
+                                <h4>Month </h4>
+                            </div>
+                            <h3>:</h3>
+                            <div className={notifStyles.notif_input_box}>
+                                <input style={monthsBorder} onChange={(e) => updateParam('months', e)} type="text" placeholder='1 - 12 [-1 default]' className={notifStyles.notif_input_ele}/>
+                            </div>
+                        </div> 
+                        <button onClick={submitTime} id ={notifStyles.sumbitButtons}> Submit </button>
                     </div>
-                    <div id={notifStyles.notif_nav_btn} style={currentPannel === 'listSchedules' ? activeBtnStyle: deactiveBtnStyle} onClick={() => updatePannel('listSchedules')}>
-                        <h4>List Schedules</h4>
+                    <div id={notifStyles.notif_output_section}>
+                        
                     </div>
                 </div>
-
-                {
-                    currentPannel === 'listSchedules' ? 
-                    <div id={notifStyles.notif_list_container}>
-                        {/* <h1>Notification list section</h1> */}
-                    </div>
-                    :
-                    <div id={notifStyles.notif_list_container}>
-                        <div id={notifStyles.notif_input_section}>
-                            <div className={notifStyles.input_sec_container}>
-                                <div className={notifStyles.notif_input_text}>
-                                    <h4>Minutes</h4>
-                                </div>
-                                <h3>:</h3>
-                                <div className={notifStyles.notif_input_box}>
-                                    <input style={minutesBorder} onChange={(e) => updateParam('minutes', e)} type="text" placeholder='0 - 59 [-1 default]' className={notifStyles.notif_input_ele}/>
-                                </div>
-                            </div>
-                            <div className={notifStyles.input_sec_container}>
-                                <div className={notifStyles.notif_input_text}>
-                                    <h4>Hours </h4>
-                                </div>
-                                <h3>:</h3>
-                                <div className={notifStyles.notif_input_box}>
-                                    <input style={hoursBorder} onChange={(e) => updateParam('hours', e)} type="text" placeholder='0 - 23 [-1 default]' className={notifStyles.notif_input_ele}/>
-                                </div>
-                            </div>
-                            <div className={notifStyles.input_sec_container}>
-                                <div className={notifStyles.notif_input_text}>
-                                    <h4>Days </h4>
-                                </div>
-                                <h3>:</h3>
-                                <div className={notifStyles.notif_input_box}>
-                                    <input style={mdaysBorder} onChange={(e) => updateParam('mdays', e)} type="text" placeholder='1 - 31 [-1 default]' className={notifStyles.notif_input_ele}/>
-                                </div>
-                            </div>
-                            <div className={notifStyles.input_sec_container}>
-                                <div className={notifStyles.notif_input_text}>
-                                    <h4>Week Days </h4>
-                                </div>
-                                <h3>:</h3>
-                                <div className={notifStyles.notif_input_box}>
-                                    <input style={weekDaysBorder} onChange={(e) => updateParam('weekDays', e)} type="text" placeholder='1 - 7 [-1 default]' className={notifStyles.notif_input_ele}/>
-                                </div>
-                            </div>
-                            <div className={notifStyles.input_sec_container}>
-                                <div className={notifStyles.notif_input_text}>
-                                    <h4>Month </h4>
-                                </div>
-                                <h3>:</h3>
-                                <div className={notifStyles.notif_input_box}>
-                                    <input style={monthsBorder} onChange={(e) => updateParam('months', e)} type="text" placeholder='1 - 12 [-1 default]' className={notifStyles.notif_input_ele}/>
-                                </div>
-                            </div>
-                            <button onClick={submitTime} id ={notifStyles.sumbitButtons}> Submit </button>
-                        </div>
-                        <div id={notifStyles.notif_output_section}>
-                            <h4>Based on the </h4>
-                        </div>
-                    </div>
-                }
                 
-
                 
 
                 {/* <div className={notifStyles.data_container_wrapper}>

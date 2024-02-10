@@ -36,7 +36,6 @@ const Body = ({updateModal, modalMsgType, modalDisplayText, modalTopPosition}) =
                 <Navbar />
                 <StatusLine />
                 <div id={mainStyle.InnerWrapper}>
-
                     <ReturnStateContext.Provider value={returnBtnState}>
                         <SearchBar
                                 pinned={pinned} 
