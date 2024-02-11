@@ -1,4 +1,4 @@
-import React, { Component, useState } from 'react';
+import React, { Component } from 'react';
 import Notification from './notification/notification'
 import Modal from '../modal/modal';
 import './profile.css'

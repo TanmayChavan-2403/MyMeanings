@@ -14,13 +14,13 @@ function Modal(props){
             <div id={styles.modal} style={{top: props.modalTopPosition}}>
                 <div style={{backgroundColor: props.modalMsgType}} className={styles.colorBar}></div>
                 <div className={styles.logoSec}>
-                    <img src="icon.png" />
+                    <img src="icon.png" alt="logo" />
                 </div>
                 <div className={styles.message}>
                     <p>{props.modalDisplayText}</p>
                 </div>
                 <div onClick={closeModal} className={styles.closeButton}>
-                    <img src="icons/close.svg"/>
+                    <img src="icons/close.svg" alt="close" />
                 </div>
             </div>
         </>

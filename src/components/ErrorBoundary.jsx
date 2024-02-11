@@ -57,7 +57,7 @@ class ErrorBoundary extends Component{
 			return (
 				<div style={errorPage}>
 					<div style={errorImage}>
-						<img src="./error.png" />
+						<img src="./error.png" alt='Error' />
 					</div>
 					<div style={errorText}>
 						<h1 style={text}> Please seat tight, while we are fixing error for you. </h1>

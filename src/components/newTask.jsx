@@ -7,21 +7,20 @@ import { useNavigate } from 'react-router-dom';
 const AddNewTask = (props) => {
 	const [word, updateWord] = useState("");
 	const [pinned, updatePin] = useState(false);
-	const [notify, updateNotify] = useState(true)
+	const notify = true
 	const [meaning, updateMeaning] = useState("");
 	
 	// Folder drop down states
 	const [droppedContainer, updateDroppedContainerName] = useState('');
-	const [activeDropDown, updateActiveDropDown] = useState({height: "200px"});
-	const [deactiveDropdown, updateDeactiveDropdown] = useState({height: "0px"})
+	const activeDropDown = {height: "200px"}
+	const deactiveDropdown = {height: "0px"}
 
 	const [categoryName, udpateCategoryName] = useState('mix');
 	const [folderName, updateFolderName] = useState(window.sessionStorage.getItem('defaultFolder'));
 
-	const [folderNames, updateFolderNames] = useState(JSON.parse(window.sessionStorage.getItem('folders')) || []);
-	const [categoryNames, updateCategoryNames] = useState(JSON.parse(window.sessionStorage.getItem('categories')) || []);
+	const folderNames = JSON.parse(window.sessionStorage.getItem('folders')) || [];
+	const categoryNames= JSON.parse(window.sessionStorage.getItem('categories')) || [];
 
-	const [isNewfolder, updateisNewFolder] = useState(false);
 	const [tooltipState, setTooltipState] = useState({opacity: '0'})
 	const navigate = useNavigate();
 
@@ -82,7 +81,7 @@ const AddNewTask = (props) => {
 	            body: JSON.stringify(payload)
 	        })
 	        .then(resp => {
-	        	if (resp.status == 401){
+	        	if (resp.status === 401){
 	        		navigate('/login');
 	        	} else{
 	        		return resp.json();
@@ -132,7 +131,7 @@ const AddNewTask = (props) => {
 	}
 
 	document.onkeypress = (e) => {
-		if (e.charCode == 13){
+		if (e.charCode === 13){
 			submit();
 		}
 	}
@@ -162,7 +161,7 @@ const AddNewTask = (props) => {
 		<div id={styles.taskBgSupport} style={props.newStateStyles[0]}>
 			<div id={styles.taskContainer}>
 				<div className={styles.closeBtnContainer}>
-					<img onClick={(e) => props.newStateStyles[1]({display: "none", transform: "scale(0)"})} src="./icons/closeIcon.svg" />
+					<img alt='close' onClick={(e) => props.newStateStyles[1]({display: "none", transform: "scale(0)"})} src="./icons/closeIcon.svg" />
 				</div>
 				<div className={styles.globalInputContainer}>
 					<div className={styles.inputContainer1}>
@@ -178,7 +177,7 @@ const AddNewTask = (props) => {
 								e.target.value === "" ? setTooltipState({opacity: '1'}) : setTooltipState({opacity: '0'})
 							}}
 						value={meaning} type="text" placeholder="meaning"/>
-						<img className={styles.clearIcon} onClick={(e) => updateMeaning("")} src='./icons/crossMark.png' />
+						<img alt='close' className={styles.clearIcon} onClick={(e) => updateMeaning("")} src='./icons/crossMark.png' />
 					</div>
 				</div>
 				<div className={styles.settings}>
@@ -202,13 +201,13 @@ const AddNewTask = (props) => {
 					<div className={styles.folderSelection}>
 						<div onClick={() => toggleDropdowns('category')} className={styles.folderName}>
 							<p styles={{pointerEvents: "none"}}> {categoryName} </p>
-							<img className={styles.arrowIcon} src="./icons/downArrow.png" />
+							<img alt='down arrow' className={styles.arrowIcon} src="./icons/downArrow.png" />
 						</div>
 						<div data-state="close" style={droppedContainer === 'category' ? activeDropDown : deactiveDropdown} className={styles.folderList}>
 							<ul>
 								<li>
 									<input onChange={(e) => udpateCategoryName(e.target.value)} placeholder="Create New [Type & hit enter]" />
-									<img onClick={(e) => selectFolder(e, "From Image")} id = {styles.enter}src="./icons/enterBlack.svg"></img>
+									<img alt='enter' onClick={(e) => selectFolder(e, "From Image")} id = {styles.enter}src="./icons/enterBlack.svg"></img>
 								</li>
 								{categoryNames.map(folder => {
 									return(
@@ -224,13 +223,13 @@ const AddNewTask = (props) => {
 					<div className={styles.folderSelection}>
 						<div onClick={() => toggleDropdowns('folder')} className={styles.folderName}>
 							<p styles={{pointerEvents: "none"}}> {folderName} </p>
-							<img className={styles.arrowIcon} src="./icons/downArrow.png" />
+							<img alt='down arrow' className={styles.arrowIcon} src="./icons/downArrow.png" />
 						</div>
 						<div data-state="close" style={droppedContainer === 'folder' ? activeDropDown : deactiveDropdown} className={styles.folderList}>
 							<ul>
 								<li>
 								<input onChange={(e) => updateFolderName(e.target.value)} placeholder="Create New [Type & hit enter]" />
-								<img onClick={(e) => selectFolder(e, "From Image")} id = {styles.enter}src="./icons/enterBlack.svg"></img>
+								<img onClick={(e) => selectFolder(e, "From Image")} id = {styles.enter}src="./icons/enterBlack.svg" alt='enter'></img>
 								</li>
 								{folderNames.map(folder => {
 									return(

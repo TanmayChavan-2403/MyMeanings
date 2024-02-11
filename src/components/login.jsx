@@ -49,7 +49,7 @@ class Login extends Component{
             let transitions = ["ROGIN", "REGIN", "REGIS", "REGIST","REGISTE", "REGISTER","REGISTER NOW!"];
             let time = 400;
             for(let i = 0; i < transitions.length; i++){
-                if (i == 6){
+                if (i === 6){
                     time = 450;
                 }
                 setTimeout(() => {
@@ -68,7 +68,7 @@ class Login extends Component{
             let transitions = [" _ ", " __ ", " ___ ", " ____ ", " ____ "," _____ ", "LOGIN"];
             let time = 350;
             for(let i = 0; i < transitions.length; i++){
-                if (i == 6){
+                if (i === 6){
                     time = 450;
                 }
                 setTimeout(() => {
@@ -97,11 +97,11 @@ class Login extends Component{
 
     submit(){
         this.setState({submit_preloader: '1'})
-        if (this.state.username.trim().length == 0){
+        if (this.state.username.trim().length === 0){
             this.showError("Please enter proper username");
             this.setState({submit_preloader: '0'})
             return;
-        } else if (!this.state.login && this.state.password != this.state.confirmPassword){
+        } else if (!this.state.login && this.state.password !== this.state.confirmPassword){
             this.showError("Confirm Password does not match with password");
             this.setState({submit_preloader: '0'})
             return;
@@ -117,12 +117,12 @@ class Login extends Component{
                 body: JSON.stringify({username: this.state.username, password: this.state.password, email: this.state.email})
             })
             .then(resp => {
-                if (resp.status == 500){
+                if (resp.status === 500){
                     this.showError("Confirm Password does not match with password");
                     resp.json().then(data => console.log(data))
-                } else if (resp.status == 400) {
+                } else if (resp.status === 400) {
                     this.showError("Confirm Password does not match with password");
-                } else if (resp.status == 200) {
+                } else if (resp.status === 200) {
                     return resp.json()
                 }
             })

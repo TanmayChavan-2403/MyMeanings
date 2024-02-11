@@ -89,7 +89,7 @@ const ListContainer = (props) => {
 			credentials: "include"
 		})
 		.then(res => {
-			if (res.status == 401){
+			if (res.status === 401){
 				navigate('/login');
 				return fail();
 			} else {
@@ -113,7 +113,7 @@ const ListContainer = (props) => {
 		fetchData(0);
 		props.updatePinnedList([]);
 		props.updateUnpinnedList([]);
-	}, [props.defaultFolderName]);
+	}, [props.defaultFolderName]); // eslint-disable-line
 
 	return(
 		<>
@@ -123,7 +123,7 @@ const ListContainer = (props) => {
 					{
 						props.searchResult.length === 0 ?
 							<div id={styles.emptyContainer}>
-								<img src="./emptyResult.png" alt='No results found image'/>
+								<img src="./emptyResult.png" alt='No results found'/>
 								<h1>No data found ☹</h1>
 							</div> 
 						:

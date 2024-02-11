@@ -6,7 +6,6 @@ import Modal from "./components/modal/modal";
 import AddNewTask from "./components/newTask";
 import Fallback from './components/fallbackComp'
 import { ReturnStateContext } from './components/context';
-import Profile from "./components/profile/profile";
 const ListContainer = React.lazy(() => import("./components/listContainer"))
 
 const Body = ({updateModal, modalMsgType, modalDisplayText, modalTopPosition}) => {
