@@ -1,7 +1,6 @@
 import '../stylesheets/fallBackComp.css'
 
 const Fallback = props => {
-
 	const STYLES = {
 		color: "white",
 		display: 'flex',
@@ -17,13 +16,13 @@ const Fallback = props => {
 	)
 }
 
-export const ServerError = (props) =>{
+export const ServerError = ({message}) =>{
 	return(
 		<div id='error-container'>
 			<div id='message'>
 				<h1 id='oops'> OOPS! </h1>
 				<div id='message-overlay'>
-					<p id='error-message'>500 - OUR SERVER IS ON A BREAK</p>
+					<p id='error-message'>500 - {message.toUpperCase()}</p>
 				</div>
 			</div>
 {/*			<div id='home-button'>

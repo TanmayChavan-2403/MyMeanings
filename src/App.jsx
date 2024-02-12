@@ -40,9 +40,9 @@ class App extends Component{
         })
         .catch(error => {
             console.log("Some error occured", error)
-            if (error.message.includes('NetworkError')){
+            if (error.message.includes('NetworkError') || error.message.includes('Failed to fetch')){
                 this.setState({
-                    error: "Server is down, please try again after sometime",
+                    error: "Server under maintainance",
                     flag: true
                 });
             } else {
