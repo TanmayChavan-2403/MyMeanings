@@ -46,15 +46,20 @@
     height: 100%;
     display: flex;
     flex-wrap: wrap;
-}
-
-#notif_output_section h4{
-    margin: 0px 5px;
-}
-
-#notif_input_section{
     justify-content: center;
     align-content: space-evenly;
+}
+
+#notif_output_section{
+    align-content: start;
+}
+
+#notif_output_section h3{
+    margin: 11px;
+}
+
+#notif_output_section > h4{
+    margin: 0px 5px;
 }
 
 .input_sec_container{
@@ -73,12 +78,28 @@
 }
 
 .notif_input_ele{
-    width: 80%;
+    width: 100%;
     height: 90%;
     color: white;
     outline: none;
     padding: 7px;
     border-radius: 5px;
+    border: 1px solid white;
+    background-color: transparent;
+}
+
+#submitSection{
+    width: 100%;
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.notifTitleInputBox{
+    width: 70%;
+    height: 90%;
+    color: white;
+    outline: none;
+    padding: 7px;
     border: 1px solid white;
     background-color: transparent;
 }
@@ -89,6 +110,25 @@
     cursor: pointer;
     font-weight: bold;
     padding: 5px 15px;
+    background-color: green;
+}
+
+.notif_list_container{
+    width: 90%;
+    height: 10%;
     border-radius: 5px;
-    background-color: var(--bg);
+    border: 1px solid white;
+}
+
+.jobList{
+    width: 80%;
+    height: 98%;
+    display: flex;
+    align-items: center;
+    border-radius: 5px;
+    border: 1px solid white;
+}
+
+.jobList h4{
+    margin: 0px 20px;
 }

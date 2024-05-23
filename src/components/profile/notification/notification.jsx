@@ -7,6 +7,10 @@ import {ServerError} from '../../fallbackComp'
 function Notification({ displayMessage }) {
     let navigate = useNavigate();
 
+    const [jobList, udpateJobList] = useState([])
+    const [notifTitle, updateNotifTitle] = useState("")
+    const [submitBtnStatus, udpateSubmitBtnCol] = useState(true)
+
     //eslint-disable-next-line
     const [minutes, updateMinutes] = useState(-1)
     const [minutesBorder, updateMinutesBorder] = useState({ borderColor: 'white' })
@@ -106,7 +110,7 @@ function Notification({ displayMessage }) {
 
     function submitTime() {
         const payload = {
-            title: "Static Title",
+            title: notifTitle,
             minutes: minutes,
             hours: hours,
             mdays: mdays,
@@ -125,22 +129,25 @@ function Notification({ displayMessage }) {
             if (resp.status === 401) {
                 displayMessage('Session timeout, redirecting to login page', true)
                 setTimeout(() => {
-                    console.log("LOgging out from notification")
-                    navigate('/login', { replace: true });
+                    console.log(">>>>>>>>>>>>>>...NAGIVATING TO LOGIN")
+                    // navigate('/login');
                 }, 2000);
             } else if (resp.status === 200) {
                 displayMessage('Notification added successfully')
             } else if (resp.status === 509) {
                 displayMessage('Notification added but something went wrong whlie updating your account', false, true)
             } else if (resp.status === 503){
-                console.log("Setting error")
                 setError(true)
                 setErrorMessage("Notification Server is Down")
             } else {
-                console.log(resp.status)
                 displayMessage('Failed to add notification', true)
             }
         })
+    }
+
+    function updateSubmitSection(e){
+        updateNotifTitle(e.target.value)
+        udpateSubmitBtnCol(e.target.value.length > 0 ? false : true)
     }
 
     useEffect(() => {
@@ -149,10 +156,29 @@ function Notification({ displayMessage }) {
             fetch(`${process.env.REACT_APP_SERVERURL}/fetchNotificationList`, {
                 method: "GET",
                 credentials: "include"            
-            }).then(resp => console.log(resp))
-            .catch(err => console.log(err))
+            }).then(resp => {
+                if (resp.status == 201){
+                    return resp.json()
+                } else if (resp.status == 204){
+                    return Promise.reject(204);
+                }
+            })
+            .then(data => {
+                console.log(data)
+                window.sessionStorage.setItem('notif_lists', JSON.stringify(data))
+                udpateJobList(data['payload'])
+            })
+            .catch(err => {
+                if (err == 204){
+                    displayMessage('No Notification jobs found', false, false, true);
+                } else {
+                    displayMessage("Something went wrong while fetching list")
+                }
+            })
+        } else {
+            udpateJobList(notification_lists['payload'])
         }
-    })
+    }, [])
 
     if (error){
         return(
@@ -164,6 +190,7 @@ function Notification({ displayMessage }) {
                 <div id={notifStyles.notificationContainer}>
                     <div id={notifStyles.notif_list_container}>
                         <div id={notifStyles.notif_input_section}>
+                            <h3>Schedule Notification</h3>
                             <div className={notifStyles.input_sec_container}>
                                 <div className={notifStyles.notif_input_text}>
                                     <h4>Minutes</h4>
@@ -209,10 +236,27 @@ function Notification({ displayMessage }) {
                                     <input style={monthsBorder} onChange={(e) => updateParam('months', e)} type="text" placeholder='1 - 12 [-1 default]' className={notifStyles.notif_input_ele} />
                                 </div>
                             </div>
-                            <button onClick={submitTime} id={notifStyles.sumbitButtons}> Submit </button>
+                            <div id={notifStyles.submitSection}>
+                                <input style={monthsBorder} onChange={(e) => updateSubmitSection(e)} type="text" placeholder="Enter title for Notification" className={notifStyles.notifTitleInputBox} />
+                                <button onClick={submitTime} id={notifStyles.sumbitButtons} disabled={submitBtnStatus} > Submit </button>
+                            </div>
                         </div>
                         <div id={notifStyles.notif_output_section}>
-    
+                            <h3>List of Scheduled Notifications</h3>
+                            {
+                                jobList.map(job => {
+                                    let key = Object.keys(job)[0]
+                                    return(
+                                        <div className={notifStyles.input_sec_container}>
+                                            <div className={notifStyles.jobList}>
+                                                <h4>{key}</h4>
+                                                <p>{job[key]}</p>
+                                            </div>
+                                        </div>
+                                    )
+                                })
+                            }
+                            
                         </div>
                     </div>
                 </div>

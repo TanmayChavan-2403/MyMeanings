@@ -39,7 +39,7 @@ export const SearchBar = (props) => {
     const [dropDownHeight, updateDropDownHeight] = useState({height: '0%'});
     const [arrowDegree, updateArrowDegree] = useState({transform: 'rotate(0deg)'});
     // eslint-disable-next-line
-    const [folders, updateFolders] = useState(JSON.parse(sessionStorage.getItem('folders')));
+    const [folders, updateFolders] = useState(JSON.parse(sessionStorage.getItem('folders')) || []);
 
     useEffect(() => {
     }, [])
