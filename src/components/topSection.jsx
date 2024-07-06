@@ -66,7 +66,13 @@ export const SearchBar = (props) => {
                     'Content-type': "application/json"
                 },
                 body: JSON.stringify({subscriptionURL: "", notif: false})
-            }).then(res => res.json())
+            }).then(res => {
+                if (res.status === 401){
+                    this.props.navigate('login');
+                } else {
+                    return res.json();
+                }
+            })
             .then(resp => {
                 props.updateModal(resp.message)
                 window.sessionStorage.setItem('notificationTurnedOn', "false")
@@ -120,7 +126,13 @@ export const SearchBar = (props) => {
                 'Content-type': "application/json"
             },
             body: JSON.stringify({subscriptionURL: subscription, notif: true})
-        }).then(res => res.json())
+        }).then(res => {
+            if (res.status === 401){
+                this.props.navigate('login');
+            } else {
+                return res.json();
+            }
+        })
         .then(resp => {
             props.updateModal(resp.message)
             window.sessionStorage.setItem('notificationTurnedOn', "true")
@@ -204,7 +216,7 @@ export const SearchBar = (props) => {
                         {
                             folders.map(name => {
                                 return(
-                                    <p onClick={() => changeFolder(name)} >{name}</p>
+                                    <p key={name} onClick={() => changeFolder(name)} >{name}</p>
                                 )
                             })
                         }

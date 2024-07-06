@@ -152,30 +152,32 @@ function Notification({ displayMessage }) {
 
     useEffect(() => {
         const notification_lists = JSON.parse(window.sessionStorage.getItem("notif_lists")) || []
+        console.log(notification_lists)
         if (notification_lists.length === 0) {
+            console.log("Requesting notification list")
             fetch(`${process.env.REACT_APP_SERVERURL}/fetchNotificationList`, {
                 method: "GET",
                 credentials: "include"            
             }).then(resp => {
-                if (resp.status == 201){
+                if (resp.status === 201){
                     return resp.json()
-                } else if (resp.status == 204){
+                } else if (resp.status === 204){
                     return Promise.reject(204);
                 }
             })
             .then(data => {
-                console.log(data)
                 window.sessionStorage.setItem('notif_lists', JSON.stringify(data))
                 udpateJobList(data['payload'])
             })
             .catch(err => {
-                if (err == 204){
+                if (err === 204){
                     displayMessage('No Notification jobs found', false, false, true);
                 } else {
                     displayMessage("Something went wrong while fetching list")
                 }
             })
         } else {
+            console.log("Reaching here....")
             udpateJobList(notification_lists['payload'])
         }
     }, [])

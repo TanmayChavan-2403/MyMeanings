@@ -30,7 +30,6 @@ class App extends Component{
             }
         })
         .then(resp => {
-            console.log(resp)
             if (resp.status === 401){
                 this.props.navigate('login');
             }

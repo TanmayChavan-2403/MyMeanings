@@ -16,7 +16,7 @@ class ErrorBoundary extends Component{
 
 	componentDidCatch(error, errorInfo){
     	// sessionStorage.clear();
-		setTimeout(() => {window.location.replace(window.location.origin + '/')}, 10000)
+		setTimeout(() => {window.location.replace(window.location.origin + '/')}, 20000)
 	}
 
 	render(){
