@@ -83,7 +83,6 @@ const ListContainer = (props) => {
 
 	function fetchData(payload){
 		nextPage(payload);
-		// let defaultFolder = sessionStorage.getItem('defaultFolder');
 		fetch(`${process.env.REACT_APP_SERVERURL}/getList?page=${payload}&limit=20&defaultFolder=${props.defaultFolderName}`, {
 			method: "GET",
 			credentials: "include"
@@ -92,12 +91,14 @@ const ListContainer = (props) => {
 			if (res.status === 401){
 				navigate('/login');
 				return fail();
+			} else if (res.status === 204){
+				props.updateModal("Could not fetcha any data, please login again if you had any data", true);
+				return fail();
 			} else {
 				return res.json();
 			}
 		})
 		.then( async (data) => { //Returns object which contains status, resultCount and response fields
-						
 			if (data.resultCount === 0){
 				setEndOfData(true);
 			} else {

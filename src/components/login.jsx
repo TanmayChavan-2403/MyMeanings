@@ -144,7 +144,6 @@ class Login extends Component{
             .then(data => {
                 if (data.status === 'PASS'){
                     setTimeout(() =>{
-                        console.log(data);
                         window.sessionStorage.setItem('newNotif',data.payload.newNotificationReceived);
                         window.sessionStorage.setItem('pinCount',data.payload.pinCount);
                         window.sessionStorage.setItem('username',data.payload.username);
@@ -169,13 +168,13 @@ class Login extends Component{
             <>
                 <div id='loginOuterWrapper' style={this.state.properties}>
                     <div id='loginInnerWrapper'>
-                        <div id="welcome-page-container">
+                        {/* <div id="welcome-page-container">
                             <img src="/Login Page/img3.jpeg" alt='Grid background' />
                             <div id='welcome-page-login-message'>
                                 <h1> Welcome Back! </h1>    
                                 <p>I am happy to see you again 😈.</p>
                             </div>
-                        </div>
+                        </div> */}
                         <div id='loginContainer'>
                             <div id='login-container-wrapper'>
                                 <div id='heading'>

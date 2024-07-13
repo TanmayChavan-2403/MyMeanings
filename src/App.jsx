@@ -32,10 +32,24 @@ class App extends Component{
         .then(resp => {
             if (resp.status === 401){
                 this.props.navigate('login');
+                this.setState({authenticate: false})
+            } else if (resp.status === 202){
+                this.setState({authenticate: true})
+                return resp.json();
+            } else if (resp.status === 500){
+                throw new Error("")
             }
-            this.setState({
-                authenticate: false
-            })
+        })
+        .then(data => {
+            window.sessionStorage.setItem('newNotif',data.payload.newNotificationReceived);
+            window.sessionStorage.setItem('pinCount',data.payload.pinCount);
+            window.sessionStorage.setItem('username',data.payload.username);
+            window.sessionStorage.setItem('defaultFolder',data.payload.defaultFolder);
+            window.sessionStorage.setItem('email',data.payload.email);
+            window.sessionStorage.setItem('folders', JSON.stringify(data.payload.folders));
+            window.sessionStorage.setItem('categories', JSON.stringify(data.payload.categories));
+            window.sessionStorage.setItem('notificationTurnedOn', data.payload.notificationTurnedOn)
+            this.setState({authenticate: false})
         })
         .catch(error => {
             console.log("Some error occured", error)
@@ -83,12 +97,15 @@ class App extends Component{
         else {
             return(
                 <Routes>
-                    <Route path="/" element={<Body 
-                        updateModal={this.updateModal}
-                        modalMsgType={this.state.modalMsgType}
-                        modalDisplayText={this.state.modalDisplayText}
-                        modalTopPosition={this.state.modalTopPosition}
-                    />}  />
+                    <Route path="/" element={
+                            <Body 
+                                updateModal={this.updateModal}
+                                modalMsgType={this.state.modalMsgType}
+                                modalDisplayText={this.state.modalDisplayText}
+                                modalTopPosition={this.state.modalTopPosition}
+                            />
+                        }
+                    />
                     <Route path="login" element={<Login />} />
                     <Route path="profile" element={<Profile
                         updateModal={this.updateModal}
