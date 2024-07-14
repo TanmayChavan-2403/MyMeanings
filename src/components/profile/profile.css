@@ -45,7 +45,7 @@
     align-items: center;
 }
 
-#avatar_container_wrapper{
+#tabs_container_wrapper{
     width: 100%;
     height: 16%;
     display: flex;
@@ -59,8 +59,29 @@
     justify-content: center;
 }
 
+#avatar_container_forMobile{
+    display: none;
+    width: 13%;
+    position: relative;
+    justify-content: center;
+}
+
+#avatar{
+    position: absolute;
+    border-radius: 50%;
+    overflow: hidden;
+    background-color: white;
+    border: 10px solid var(--bg);
+}
+
+#avatar_image{
+    width: inherit;
+    height: inherit;
+    object-fit: cover;
+}
+
 #tabs-container{
-    width: 75%;
+    width: 69%;
     height: 100%;
     display: flex;
 }
@@ -104,22 +125,6 @@
     cursor: pointer;
 }
 
-#avatar{
-    top: -100%;
-    width: 160px;
-    height: 160px;
-    position: absolute;
-    border-radius: 50%;
-    overflow: hidden;
-    background-color: white;
-    border: 10px solid var(--bg);
-}
-
-#avatar_image{
-    width: inherit;
-    height: inherit;
-    object-fit: cover;
-}
 
 #content{
     width: 100%;
@@ -162,6 +167,7 @@
     height: 100%;
     display: flex;
     position: relative;
+    align-items: center;
     justify-content: center;
 }
 
@@ -380,11 +386,57 @@
 }
 
 
-
 /* Folders section */
 #statistics-container{
     color: var(--text); 
     flex-flow: column;
     align-items: center;
     justify-content: center;
+}
+
+@media (max-width: 800px) {
+    #avatar_placeholder{
+        display: none;
+    }    
+
+    #avatar_container_forMobile{
+        display: flex;
+        align-items: center;
+    }
+
+    #avatar_container{
+        display: none;
+    }
+    
+    #profile_banner{
+        height: 10%;
+    }
+
+    #username{
+        font-size: 1rem;
+    }
+
+    #tabs_container_wrapper{
+        display: none;
+    }
+
+    #content{
+        height: 100%;
+    }
+
+    #profileContainer{
+        height: 90%;
+    }
+
+    #account-container{
+        width: 95%;
+        height: 60%;
+    }
+
+    .field, .Spfield{
+        font-size: 11px;
+    }
+    #password, #deleteAcc, #logout{
+        font-size: 11px;
+    }
 }

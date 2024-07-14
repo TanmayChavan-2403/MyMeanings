@@ -11,7 +11,8 @@ class Profile extends Component{
             activeStyle: {backgroundColor: 'var(--container_bg)'},
             deactiveStyle: {backgroundColor: 'transparent'},
             cnfContainer: false,
-            confirmContanier: false
+            confirmContanier: false,
+            avatarContainerWidth: {width: "130px", height: "130px", top:'-100%'}
         }
         this.showCnfContainer = this.showCnfContainer.bind(this);
         this.toggleConfirmationWindow = this.toggleConfirmationWindow.bind(this);
@@ -40,6 +41,13 @@ class Profile extends Component{
         this.props.updateModal(message, error, warning, info)
     }
     
+    static getDerivedStateFromProps(props, state) {
+        let size = `${(window.screen.width*0.13) - 20}px`
+        let fromTop = `-${((window.screen.height*0.16) / 2)+15}px`;
+        console.log(fromTop)
+        return {avatarContainerWidth: {width: size, height: size, top: fromTop}};
+    }
+
     render(){
         return(
             <div id='profileOuterWrapper'>
@@ -51,15 +59,20 @@ class Profile extends Component{
 
                     <div id='profile_banner'>
                         <div id="avatar_placeholder" />
+                        <div id='avatar_container_forMobile'>
+                                <div id='avatar' style={{width:`${(window.screen.width*0.13) - 20}px`,height: `${(window.screen.width*0.13) - 20}px`, position: 'relative', border: '1px solid var(--bg)'}}>
+                                    <img id='avatar_image' src='./avatar.png' alt='Avatar'></img>
+                                </div>
+                            </div>
                         <div id='username'>
                             <h1> {window.sessionStorage.getItem('username')} </h1>
                         </div>
                     </div>
 
-                    <eiv id='profileContainer'>
-                        <div id='avatar_container_wrapper'>
+                    <div id='profileContainer'>
+                        <div id='tabs_container_wrapper'>
                             <div id='avatar_container'>
-                                <div id='avatar'>
+                                <div id='avatar' style={this.state.avatarContainerWidth}>
                                     <img id='avatar_image' src='./avatar.png' alt='Avatar'></img>
                                 </div>
                             </div>
@@ -95,16 +108,15 @@ class Profile extends Component{
                                     confirmContanier={this.state.confirmContanier}
                                     toggleCnfWindow={this.toggleConfirmationWindow}
                                 />
-                            }                          
+                            }
                         </div>
 
-                    </eiv>
+                    </div>
                 </div>
             </div>
         )
     }
 }
-
 
 function Account(props){
 
@@ -146,7 +158,7 @@ function Account(props){
                     <div class='field'>
                         <div class='key'><strong>Password</strong></div>
                         <div class='value'> 
-                            <button  onClick={() => props.updateStatus()} id='password'> <i class="fa-solid fa-lock"></i> Request password visibility </button>
+                            <button  onClick={() => props.updateStatus()} id='password'> <i class="fa-solid fa-lock"></i> Show password </button>
                         </div>
                     </div>
                     <div class='field'>
@@ -234,7 +246,6 @@ function Friends(){
         </div>
     )
 }
-
 
 
 function Statistics(){
