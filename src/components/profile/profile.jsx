@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Notification from './notification/notification'
 import Modal from '../modal/modal';
+import { useNavigate } from 'react-router-dom';
 import './profile.css'
 
 class Profile extends Component{
@@ -44,7 +45,6 @@ class Profile extends Component{
     static getDerivedStateFromProps(props, state) {
         let size = `${(window.screen.width*0.13) - 20}px`
         let fromTop = `-${((window.screen.height*0.16) / 2)+15}px`;
-        console.log(fromTop)
         return {avatarContainerWidth: {width: size, height: size, top: fromTop}};
     }
 
@@ -66,6 +66,7 @@ class Profile extends Component{
                             </div>
                         <div id='username'>
                             <h1> {window.sessionStorage.getItem('username')} </h1>
+                            
                         </div>
                     </div>
 
@@ -119,6 +120,7 @@ class Profile extends Component{
 }
 
 function Account(props){
+    let navigate = useNavigate();
 
     const logout = () => {
         fetch(`${process.env.REACT_APP_SERVERURL}/logout`, {
@@ -126,8 +128,7 @@ function Account(props){
         })
         .then(rec => {
             sessionStorage.clear();
-            window.location.reload();
-
+            navigate('/')
         })
         .catch(err => console.log(err));
     }
@@ -208,7 +209,6 @@ function Account(props){
 function Friends(){
 
     function updateNotificationList(){
-        console.log('Client side')
         const payload = {
             "title": "Monday morning",
             "hours": 8,

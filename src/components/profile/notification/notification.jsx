@@ -150,9 +150,39 @@ function Notification({ displayMessage }) {
         udpateSubmitBtnCol(e.target.value.length > 0 ? false : true)
     }
 
+    function deleteCronJob(e, jobid){
+        
+        e.target.src = 'sub-preloader.gif'
+        fetch(`${process.env.REACT_APP_SERVERURL}/deleteJob`, {
+            method: "DELETE",
+            headers: {
+                'Content-type': 'application/json'
+            },
+            credentials: "include",
+            body: JSON.stringify({jobid})
+        })
+        .then(resp => {
+            if (resp.status == 200){
+                displayMessage('Job Deleted successfully')
+                let newJobList = jobList.filter(([key, title]) => key != jobid)
+                udpateJobList(newJobList)
+
+                let notification_lists = JSON.parse(window.sessionStorage.getItem("notif_lists"))['payload'] || []
+                let new_notification_list = notification_lists.filter(([key, title]) => key != jobid)
+                window.sessionStorage.setItem('notif_lists', JSON.stringify({payload: new_notification_list}))
+            } else if (resp.status == 429){
+                displayMessage('Rate limit exhausted, please try deleting tomorrow.', false, false, true)
+            } else if (resp.status == 500){
+                displayMessage('Internal server issue, please try again after sometime.')
+            }
+        })
+        .catch(err => {
+            displayMessage("Couldn't perform this action, please refresh and try again", true)
+        })
+    }
+
     useEffect(() => {
         const notification_lists = JSON.parse(window.sessionStorage.getItem("notif_lists")) || []
-        console.log(notification_lists)
         if (notification_lists.length === 0) {
             console.log("Requesting notification list")
             fetch(`${process.env.REACT_APP_SERVERURL}/fetchNotificationList`, {
@@ -166,8 +196,12 @@ function Notification({ displayMessage }) {
                 }
             })
             .then(data => {
-                window.sessionStorage.setItem('notif_lists', JSON.stringify(data))
-                udpateJobList(data['payload'])
+                let temp_holder= []
+                Object.entries(data['payload']).forEach(([index, jobObject]) => {
+                    temp_holder.push(Object.entries(jobObject)[0])
+                })
+                window.sessionStorage.setItem('notif_lists', JSON.stringify({payload: temp_holder}))
+                udpateJobList(temp_holder)
             })
             .catch(err => {
                 if (err === 204){
@@ -177,7 +211,6 @@ function Notification({ displayMessage }) {
                 }
             })
         } else {
-            console.log("Reaching here....")
             udpateJobList(notification_lists['payload'])
         }
     }, [])
@@ -247,18 +280,19 @@ function Notification({ displayMessage }) {
                             <h3>List of Scheduled Notifications</h3>
                             {
                                 jobList.map(job => {
-                                    let key = Object.keys(job)[0]
                                     return(
-                                        <div className={notifStyles.input_sec_container}>
+                                        <div key={job[0]} className={notifStyles.input_sec_container}>
                                             <div className={notifStyles.jobList}>
-                                                <h4>{key}</h4>
-                                                <p>{job[key]}</p>
+                                                <h4>{job[0]}</h4>
+                                                <div className={notifStyles.cronJobName}>
+                                                    <p>{job[1]}</p>
+                                                    <img src="/icons/deleteIcon.svg" alt="delete" onClick={(e) => deleteCronJob(e, job[0])}/>
+                                                </div>
                                             </div>
                                         </div>
                                     )
                                 })
                             }
-                            
                         </div>
                     </div>
                 </div>
