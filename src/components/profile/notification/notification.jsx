@@ -171,12 +171,15 @@ function Notification({ displayMessage }) {
                 let new_notification_list = notification_lists.filter(([key, title]) => key != jobid)
                 window.sessionStorage.setItem('notif_lists', JSON.stringify({payload: new_notification_list}))
             } else if (resp.status == 429){
+                e.target.src = 'icons/deleteIcon.svg'
                 displayMessage('Rate limit exhausted, please try deleting tomorrow.', false, false, true)
             } else if (resp.status == 500){
+                e.target.src = 'icons/deleteIcon.svg'
                 displayMessage('Internal server issue, please try again after sometime.')
             }
         })
         .catch(err => {
+            e.target.src = 'icons/deleteIcon.svg'
             displayMessage("Couldn't perform this action, please refresh and try again", true)
         })
     }
@@ -286,7 +289,7 @@ function Notification({ displayMessage }) {
                                                 <h4>{job[0]}</h4>
                                                 <div className={notifStyles.cronJobName}>
                                                     <p>{job[1]}</p>
-                                                    <img src="/icons/deleteIcon.svg" alt="delete" onClick={(e) => deleteCronJob(e, job[0])}/>
+                                                    <img src="icons/deleteIcon.svg" alt="delete" onClick={(e) => deleteCronJob(e, job[0])}/>
                                                 </div>
                                             </div>
                                         </div>

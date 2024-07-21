@@ -45,6 +45,7 @@
     width: 50%;
     height: 100%;
     display: flex;
+    row-gap: 10px;
     flex-wrap: wrap;
     justify-content: center;
     align-content: space-evenly;
@@ -125,6 +126,7 @@
     width: 80%;
     height: 98%;
     display: flex;
+    min-height: 40px;
     border-radius: 5px;
     align-items: center;
     border: 1px solid white;
@@ -146,4 +148,36 @@
     height: 55%;
     cursor: pointer;
     margin-right: 10px;
+}
+
+
+
+
+
+
+
+
+
+
+@media (max-width: 800px){
+    #notification_container_wrapper{
+        margin: 10px 0px;
+    } 
+    
+    #notificationContainer{
+        width: 95%;
+    }
+
+    #notif_list_container{
+        flex-direction: column;
+    }
+
+    #notif_input_section, #notif_output_section{
+        width: 100%;
+        margin: 10px 0px;
+    }
+
+    .jobList{
+        width: 95%;
+    }
 }

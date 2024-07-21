@@ -14,6 +14,7 @@
     width: 100%;
     height: 100%;
     display: flex;
+    overflow: auto;
     flex-wrap: wrap;
     max-width: 2000px;
     justify-content: center;
@@ -184,7 +185,7 @@
     background-color: var(--container_bg);
 }
 
-.field, .Spfield{
+.field{
     width: 100%;
     height: 13%;
     display: flex;
@@ -207,16 +208,19 @@
 }
 
 .Spfield{
+    width: 100%;
+    display: flex;
+    color: var(--text);
     margin-top: 25px;
     justify-content: space-between;
 }
 
 #deleteAcc, #logout{
     width: 30%; 
-    height: 80%;
     color: white;
     font-weight: 400;
     cursor: pointer;
+    min-height: 35px;
 }
 
 #deleteAcc{
@@ -369,7 +373,6 @@
     font-weight: 200;
 }
 
-
 .nf2{
     border-top: none;
 }
@@ -386,7 +389,7 @@
 }
 
 
-/* Folders section */
+/* Statistics section */
 #statistics-container{
     color: var(--text); 
     flex-flow: column;
@@ -394,10 +397,15 @@
     justify-content: center;
 }
 
-@media (max-width: 800px) {
+@media (max-width: 800px){
+
+    #account-container-wrapper{
+        margin: 10px 0px;
+    }
+
     #avatar_placeholder{
         display: none;
-    }    
+    }
 
     #avatar_container_forMobile{
         display: flex;
@@ -409,7 +417,10 @@
     }
     
     #profile_banner{
-        height: 10%;
+        height: 7%;
+        width: 95%;
+        margin-top: 10px;
+        border-radius: 50px;
     }
 
     #username{
@@ -421,7 +432,7 @@
     }
 
     #content{
-        height: 100%;
+        height: fit-content;
     }
 
     #profileContainer{
@@ -430,13 +441,22 @@
 
     #account-container{
         width: 95%;
-        height: 60%;
+        /* height: 60%; */
     }
 
     .field, .Spfield{
         font-size: 11px;
+        min-height: 25px;
+        margin: 0px;
     }
+
     #password, #deleteAcc, #logout{
         font-size: 11px;
+        height: 100%;
+    }
+
+    #mobile_tabs{
+        margin: 0px 15px;
+        color: white;
     }
 }

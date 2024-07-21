@@ -43,7 +43,7 @@ class Profile extends Component{
     }
     
     static getDerivedStateFromProps(props, state) {
-        let size = `${(window.screen.width*0.13) - 20}px`
+        let size = `${(window.screen.width*0.13)}px`
         let fromTop = `-${((window.screen.height*0.16) / 2)+15}px`;
         return {avatarContainerWidth: {width: size, height: size, top: fromTop}};
     }
@@ -60,13 +60,12 @@ class Profile extends Component{
                     <div id='profile_banner'>
                         <div id="avatar_placeholder" />
                         <div id='avatar_container_forMobile'>
-                                <div id='avatar' style={{width:`${(window.screen.width*0.13) - 20}px`,height: `${(window.screen.width*0.13) - 20}px`, position: 'relative', border: '1px solid var(--bg)'}}>
-                                    <img id='avatar_image' src='./avatar.png' alt='Avatar'></img>
-                                </div>
+                            <div id='avatar' style={{width:`${(window.screen.width*0.13) - 20}px`,height: `${(window.screen.width*0.13) - 20}px`, position: 'relative', border: '1px solid var(--bg)'}}>
+                                <img id='avatar_image' src='./avatar.png' alt='Avatar'></img>
                             </div>
+                        </div>
                         <div id='username'>
                             <h1> {window.sessionStorage.getItem('username')} </h1>
-                            
                         </div>
                     </div>
 
@@ -82,14 +81,11 @@ class Profile extends Component{
                                     <div class='tab' onClick={() => this.changeTab('account')} style={this.state.activeContainer === 'account' ? this.state.activeStyle : this.state.deactiveStyle}>
                                         <h4> Account </h4>
                                     </div>
-                                    <div class='tab' onClick={() => this.changeTab('friends')} style={this.state.activeContainer === 'friends' ? this.state.activeStyle : this.state.deactiveStyle}>
-                                        <h4> Friends </h4>
-                                    </div>
                                     <div class='tab' onClick={() => this.changeTab('notification')} style={this.state.activeContainer === 'notification' ? this.state.activeStyle : this.state.deactiveStyle}>
                                         <h4> Notification </h4>
                                     </div>
-                                    <div class='tab' onClick={() => this.changeTab('statistics')} style={this.state.activeContainer === 'statistics' ? this.state.activeStyle : this.state.deactiveStyle}>
-                                        <h4> Statistics </h4>
+                                    <div class='tab' onClick={() => this.changeTab('friends')} style={this.state.activeContainer === 'friends' ? this.state.activeStyle : this.state.deactiveStyle}>
+                                        <h4> Friends </h4>
                                     </div>
                                 </div>
                             </div>
@@ -100,15 +96,29 @@ class Profile extends Component{
 
                         <div id='content'>
                             {
-                                this.state.activeContainer === 'friends' ? <Friends /> :
-                                this.state.activeContainer === 'notification' ? <Notification displayMessage={this.displayMessage} /> : 
-                                this.state.activeContainer === 'statistics' ? <Statistics /> :
-                                <Account 
-                                    status={this.state.cnfContainer}
-                                    updateStatus={this.showCnfContainer}
-                                    confirmContanier={this.state.confirmContanier}
-                                    toggleCnfWindow={this.toggleConfirmationWindow}
-                                />
+                                window.screen.width >= '800' ? 
+                                    this.state.activeContainer === 'friends' ? <Friends /> :
+                                    this.state.activeContainer === 'notification' ? <Notification displayMessage={this.displayMessage} /> : 
+                                    <Account 
+                                        status={this.state.cnfContainer}
+                                        updateStatus={this.showCnfContainer}
+                                        confirmContanier={this.state.confirmContanier}
+                                        toggleCnfWindow={this.toggleConfirmationWindow}
+                                    />
+                                :
+                                <>
+                                    <h3 id='mobile_tabs'>Profile</h3>
+                                    <Account 
+                                        status={this.state.cnfContainer}
+                                        updateStatus={this.showCnfContainer}
+                                        confirmContanier={this.state.confirmContanier}
+                                        toggleCnfWindow={this.toggleConfirmationWindow}
+                                    />
+                                    
+                                    <h3 id='mobile_tabs'>Notificaion</h3>
+                                    <Notification displayMessage={this.displayMessage} />
+                                    {/* <Friends /> */}
+                                </>
                             }
                         </div>
 
@@ -248,20 +258,5 @@ function Friends(){
 }
 
 
-function Statistics(){
-    return(
-        <div id='statistics-container' class='sb'>
-            <div class='new-feature'>
-                <h2> WE ARE WORKING HARD TO ADD THIS FEATURE </h2>
-            </div>
-            <div class='new-feature nf2'>
-                <h2> YOU WILL BE UPDATED SOON WHEN ITS LIVE </h2>
-            </div>
-            <div id='working-img-container'>
-                <img src='./working.png' alt='Working Hard'/>
-            </div>
-        </div>
-    )
-}
 
 export default Profile;
